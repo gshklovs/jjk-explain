@@ -1,0 +1,53 @@
+{
+  "topic": "Gradient descent, second lesson: how the stride (learning rate, momentum) is chosen, what a local minimum means, and how any of it relates to the answer an AI gives",
+  "slug": "gradient-descent-2",
+  "tier": "technique",
+  "register": "narrator",
+  "narrator_voice": "Omniscient dark-shonen anime narrator. Deep, calm, solemn, absolute. Every sentence lands like a verdict. Pause a full beat at every period.",
+  "cast": "a tall adult sorceress with a voluptuous, full-figured build, long wavy black hair, a fitted black high-collared uniform jacket over a white shirt and a short dark skirt, electric cyan cursed-energy glow at her fingertips",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 降下・続",
+      "english": "Cursed Technique: Descent, Second Lesson",
+      "narration": "Cursed Technique: Descent. Second lesson. Three questions remain: the stride, the trap, and what any of it has to do with the answer the machine gives you.",
+      "sound": "sub-bass hit, then silence"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "narration": "The terrain does not choose the stride. The user sets it before the first step, and shortens it on a schedule. Momentum carries her: each step remembers the last, so a narrow valley cannot throw her side to side.",
+      "video_prompt": "Wide shot at night. The sorceress strides down a narrow ravine of black glass with steep walls, fog hiding everything beyond a few meters. Her first steps are long and confident, then visibly shorter; a trailing streak of cyan light follows her path and smooths out where the ravine zigzags, so she glides through the center instead of bouncing off the walls. Slow tracking shot, hard one-sided rim light.",
+      "sound": "low ominous drone, footsteps on glass slowing, wind"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "Know what the ground is. Every point on this terrain is one complete setting of the machine's weights: billions of dials. The height is how wrong its answers were, on everything it was shown.",
+      "video_prompt": "Extreme close-up of the black glass ground beneath the sorceress's boot as the camera pulls back: the surface is made of billions of tiny glowing dials packed together like scales, each turned to a slightly different angle. The camera keeps pulling back until the dials blur into rolling hills and valleys under fog. She stands small on a ridge, looking down. Dramatic low angle, desaturated navy palette with cyan glints.",
+      "sound": "faint mechanical ticking of countless dials, drone"
+    },
+    {
+      "id": "s4",
+      "kind": "shot",
+      "narration": "So each step is not a step. It is every dial turned slightly, so that the next answer is slightly less wrong. The path is the training. The place she stops is the machine you talk to.",
+      "video_prompt": "Medium shot. The sorceress takes one deliberate step downhill; as her boot lands, a wave of light ripples outward across the ground and every tiny dial in the surface turns a fraction in unison. Far ahead in the fog, a blurred glowing silhouette of written text sharpens slightly into focus with each step she takes. Slow push-in, hard rim light, cyan glow at her fingertips.",
+      "sound": "a single deep click on each step, string ostinato rising slowly"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "narration": "A local minimum is a machine that stopped improving, not one that is right. It answers with the habits it settled into. In so many dimensions true traps are rare; most are long flat saddles, and momentum is what carries her across.",
+      "video_prompt": "Wide shot. The sorceress walks onto a vast flat plateau of black glass in the fog, where the slope vanishes and her steps shrink to almost nothing; the cyan streak behind her keeps pushing and slides her forward across the flat until the ground suddenly tilts down again on the far side. Dramatic low angle, wide lens, fog, one enormous dim eye-like moon overhead.",
+      "sound": "quiet drone, footsteps almost stopping, then a low whoosh as she slides forward"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "When you ask it a question, no descent occurs. The dials are frozen where the descent ended. What you receive is the floor of the valley she found. The sorceress smiles. Then let us hope it was a deep one.",
+      "video_prompt": "Close-up on the sorceress standing still at the bottom of a valley of glowing dials, all of them frozen and dimly lit. A line of glowing white text scrolls past in the fog above her like an answer being written. Cut to her face, half in black shadow, cyan light in her eyes; a small confident smile. Monochrome inverted flash frame, hard cut to black.",
+      "sound": "silence, a soft hum, a single sub-bass hit at the end"
+    }
+  ]
+}
