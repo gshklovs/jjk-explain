@@ -380,11 +380,18 @@ def main():
         thumb = f"{out}/thumb.jpg"
         sh(["ffmpeg", "-y", "-ss", f"{t:.2f}", "-i", clip, "-frames:v", "1", "-q:v", "2",
             "-vf", f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2", thumb])
+        # make it frame one too (a 2-frame hold, invisible in playback, so every player's poster is this frame)
+        hold = 2 / FPS
         tmp = final + ".tmp.mp4"
-        sh(["ffmpeg", "-y", "-i", final, "-i", thumb, "-map", "0", "-map", "1", "-c", "copy",
-            "-c:v:1", "mjpeg", "-disposition:v:1", "attached_pic", "-movflags", "+faststart", tmp])
-        os.replace(tmp, final)
-        print(f"[thumb] {scenes[j]['id']} @ {t:.1f}s -> {thumb}", flush=True)
+        sh(["ffmpeg", "-y", "-loop", "1", "-framerate", str(FPS), "-t", f"{hold:.4f}", "-i", thumb,
+            "-f", "lavfi", "-t", f"{hold:.4f}", "-i", "anullsrc=r=48000:cl=stereo", "-i", final,
+            "-filter_complex", "[0:v]format=yuv420p,setsar=1[sv];[sv][1:a][2:v][2:a]concat=n=2:v=1:a=1[v][a]",
+            "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-crf", "18", "-preset", "fast",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000", tmp])
+        sh(["ffmpeg", "-y", "-i", tmp, "-i", thumb, "-map", "0", "-map", "1", "-c", "copy",
+            "-c:v:1", "mjpeg", "-disposition:v:1", "attached_pic", "-movflags", "+faststart", final])
+        os.remove(tmp)
+        print(f"[thumb] {scenes[j]['id']} @ {t:.1f}s -> {thumb} (also frame 1 + cover art)", flush=True)
     total = dur(final)
     with open(f"{out}/transcript.md", "w") as f:
         f.write(f"# {S.get('topic', '')}\n\n")
