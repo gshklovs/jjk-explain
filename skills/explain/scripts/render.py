@@ -130,7 +130,8 @@ def tts(text, voice, instructions, out):
 
 
 # ---------- clips ----------
-def fal_clip(prompt, seconds, resolution, out):
+def fal_clip(prompt, seconds, resolution, out, image=None):
+    """image: optional local path used as the first frame (switches to the image-to-video endpoint)."""
     if os.path.exists(out):
         return 0.0
     key = os.environ.get("FAL_KEY") or os.environ.get("FAL_API_KEY")
@@ -138,8 +139,16 @@ def fal_clip(prompt, seconds, resolution, out):
         raise SystemExit("FAL_KEY / FAL_API_KEY not set (use --dry-run to test without it)")
     h = {"Authorization": f"Key {key}", "Content-Type": "application/json"}
     body = {"prompt": prompt, "duration": int(seconds), "resolution": resolution,
-            "aspect_ratio": "16:9", "prompt_expansion_mode": "balanced"}
-    r = requests.post(f"https://queue.fal.run/{FAL_ENDPOINT}", json=body, headers=h, timeout=60)
+            "prompt_expansion_mode": "balanced"}
+    endpoint = FAL_ENDPOINT
+    if image:
+        import base64, mimetypes
+        mime = mimetypes.guess_type(image)[0] or "image/jpeg"
+        body["image_url"] = f"data:{mime};base64," + base64.b64encode(open(image, "rb").read()).decode()
+        endpoint = FAL_ENDPOINT.replace("text-to-video", "image-to-video")
+    else:
+        body["aspect_ratio"] = "16:9"
+    r = requests.post(f"https://queue.fal.run/{endpoint}", json=body, headers=h, timeout=60)
     r.raise_for_status()
     q = r.json()
     t0 = time.time()
@@ -301,8 +310,13 @@ def main():
             return 0.0
         if os.path.exists(clip):
             return 0.0
-        t = fal_clip(prompt, secs, a.resolution, clip)
-        print(f"[fal] {sc['id']} {secs}s in {t:.0f}s", flush=True)
+        image = sc.get("image", S.get("image"))
+        if image:
+            image = os.path.expanduser(image)
+            if not os.path.isabs(image):
+                image = os.path.join(HOME, image)
+        t = fal_clip(prompt, secs, a.resolution, clip, image=image)
+        print(f"[fal] {sc['id']} {secs}s in {t:.0f}s" + (" (image-to-video)" if image else ""), flush=True)
         return secs * FAL_PRICE[a.resolution]
     print(f"[clips] {FAL_ENDPOINT} @ {a.resolution}", flush=True)
     with ThreadPoolExecutor(a.jobs) as ex:
