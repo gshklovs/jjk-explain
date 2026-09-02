@@ -26,7 +26,7 @@ Optional: any music file dropped into `assets/`. The canonical bed is the "Delir
 Everything else. Point Claude Code (or any agent) at this repo and say "set this up"; [AGENTS.md](AGENTS.md) has the steps. By hand:
 
 ```bash
-git clone https://github.com/<you>/jjk-explain && cd jjk-explain
+git clone https://github.com/gshklovs/jjk-explain && cd jjk-explain
 ./install.sh                      # symlinks skills/explain into ~/.claude/skills
 cp .env.example .env              # add the two keys
 brew install ffmpeg               # if missing
