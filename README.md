@@ -1,16 +1,23 @@
 # jjk-explain
 
-Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion. Original characters, real narrator cadence, kanji title cards, generated footage.
+Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion. Original characters (or your own robot), real narrator cadence, kanji title cards, generated footage. One Claude Code command.
 
-![gradient descent, domain expansion](examples/gradient-descent/thumb.jpg)
+<table>
+<tr>
+<td width="50%"><img src="docs/media/inverse-kinematics.gif" alt="/explain inverse kinematics" width="100%"></td>
+<td width="50%"><img src="docs/media/gradient-descent.gif" alt="/explain gradient descent" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><code>/explain ik</code> with a reference image of the user's robot<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/inverse-kinematics.mp4">▶ full video with narration (85 s)</a></td>
+<td align="center"><code>/explain gradient descent</code><br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/gradient-descent.mp4">▶ full video with narration (82 s)</a></td>
+</tr>
+</table>
 
-`/explain gradient descent` produces:
-
-> Cursed Technique: Descent. The user is granted no sight of the terrain. Only the slope beneath their feet.
+> *Cursed Technique: Inverse Kinematics. The user does not choose the angles of its joints. It chooses only where the hand must arrive.*
 > ...
-> Its binding vow: with each step, the stride grows shorter. Speed is surrendered so the descent may settle, instead of oscillating forever.
+> *Its binding vow is damping. Near a singularity, where the arm locks straight and the map collapses, the user surrenders exactness for stability, and the joints stay calm.*
 
-Full example: [examples/gradient-descent/transcript.md](examples/gradient-descent/transcript.md), script: [script.json](examples/gradient-descent/script.json).
+Full examples with scripts and transcripts: [inverse kinematics](examples/inverse-kinematics/), [gradient descent](examples/gradient-descent/), [the fold flywheel](examples/fold-flywheel/).
 
 ## What the human does
 

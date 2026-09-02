@@ -1,0 +1,63 @@
+{
+  "topic": "Inverse kinematics",
+  "slug": "inverse-kinematics",
+  "tier": "full",
+  "register": "narrator",
+  "narrator_voice": "Omniscient dark-shonen anime narrator. Deep, calm, solemn, absolute. Every sentence lands like a verdict. Pause a full beat at every period.",
+  "cast": "a matte-black humanoid robot, slim and human height, a smooth featureless head with a single vertical slit of white light for a face, exposed circular rotary joints at the shoulders and hips, long articulated arms with five-fingered hands, standing in darkness",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 逆運動学",
+      "english": "Cursed Technique: Inverse Kinematics",
+      "narration": "Cursed Technique: Inverse Kinematics. The user does not choose the angles of its joints. It chooses only where the hand must arrive.",
+      "sound": "sub-bass hit, then silence"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "image": "assets/ref/phantom-full.jpg",
+      "narration": "Forward kinematics is the lesser art: set the joints, and the hand lands where it lands. This runs the chain backward. Name the target, and the joints are solved.",
+      "video_prompt": "The robot stands still in darkness, then a small point of cyan light appears in the air to its right at chest height. The robot's shoulder, elbow and wrist joints glow cyan one after another and rotate smoothly so that its right hand rises and closes precisely on the point of light. Static frontal shot, slow push-in, hard one-sided rim light, thin glowing lines tracing each joint's rotation.",
+      "sound": "low ominous drone, soft servo whirs, a single glass chime when the hand reaches the light"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "The mechanism is the Jacobian: how far the hand moves for a small turn of each joint. Invert it, step toward the target, repeat until the error is nothing.",
+      "video_prompt": "Close-up on the robot's right arm from the side. Faint cyan arcs appear at the shoulder, elbow and wrist showing tiny rotations, and a matching small cyan arrow appears at the hand showing where it would move. The arm steps toward a floating crimson target point in several small, deliberate moves, the arrow shrinking each time until the hand rests exactly on the target. Dark background, shallow focus, slow push-in.",
+      "sound": "quiet ticking, servo whirs getting smaller, silence at the end"
+    },
+    {
+      "id": "s4",
+      "kind": "title",
+      "kanji": "領域展開 可到達域",
+      "english": "Domain Expansion: Reachable Space",
+      "narration": "Domain Expansion. Reachable Space.",
+      "sound": "sudden silence, then a single taiko hit"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "image": "assets/ref/phantom-full.jpg",
+      "narration": "Within the barrier, every target is a sure hit. Nineteen joints, and the hand arrives wherever it is pointed.",
+      "video_prompt": "The robot raises both hands into a mudra hand sign and holds. The darkness around it dissolves from the edges inward into a boundless cosmos of cyan and violet nebula, and a translucent glowing sphere the size of the robot's reach materializes around it, filled with hundreds of tiny drifting crimson target points. The robot's hands strike three of them in quick succession, each vanishing in a white flash. Dramatic low angle, volumetric fog.",
+      "sound": "sudden silence, then a deep string ostinato rising, sharp impacts"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "Its binding vow is damping. Near a singularity, where the arm locks straight and the map collapses, the user surrenders exactness for stability, and the joints stay calm.",
+      "video_prompt": "Inside the cosmic domain, medium shot. The robot's right arm extends fully straight toward a crimson point just at the edge of the glowing sphere; the cyan arcs at the joints flicker violently and begin to spin. Crimson chains of light wrap the elbow and shoulder joints and tighten, the flicker stops, and the arm settles smoothly a hair short of the point. Rim light red on one side, cyan on the other, slow push-in.",
+      "sound": "string ostinato, a rising electrical whine cut off by heavy chains, then calm"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "Yet the domain has edges. Ask for a point beyond the arm's length, and the technique strains toward nothing. The robot lowers its hand. Then bring the target closer.",
+      "video_prompt": "Wide shot inside the cosmic domain. A crimson target point drifts outside the glowing sphere of reach. The robot leans and stretches its arm toward it, joints glowing cyan, but the hand stops at the sphere's surface with a ripple and cannot pass. The robot lowers its arm slowly. Cut to close-up of its slit-light face as the light brightens. Monochrome inverted flash frame, hard cut to black.",
+      "sound": "quiet drone, a ripple like glass, silence, a single sub-bass hit at the end"
+    }
+  ]
+}
