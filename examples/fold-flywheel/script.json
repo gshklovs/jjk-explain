@@ -1,0 +1,68 @@
+{
+  "topic": "The fold flywheel: a voice-to-outline system where open threads cascade-close, user corrections become few-shot examples, repeated corrections become rules, and every rule must pass a regression gate",
+  "slug": "fold-flywheel",
+  "tier": "full",
+  "register": "narrator",
+  "narrator_voice": "You are the omniscient narrator of a dark shonen anime explaining a sorcerer's technique. Deep, calm, solemn, absolute. Slow and deliberate, about 2.3 words per second. Every sentence lands like a verdict. Pause a full beat at every period. Never rush, never smile, no upward inflection.",
+  "cast": "a young sorcerer in a high-collared black uniform, short dark hair, sharp eyes half in shadow, a faint electric cyan glow rising off his shoulders like smoke",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 折畳",
+      "english": "Cursed Technique: Fold",
+      "narration": "Cursed Technique: Fold. The user speaks, and their words are bound into an outline as they fall.",
+      "sound": "sub-bass hit, then silence"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "narration": "Every question raised opens a bracket. Every answer closes one. When the last bracket beneath a question shuts, the question closes with it. A cascade.",
+      "video_prompt": "Static frontal close-up of a young sorcerer in a high-collared black uniform, short dark hair, sharp eyes half in shadow, a faint electric cyan glow rising off his shoulders like smoke. He speaks silently in an empty rain-slick night street; glowing cyan brackets of light materialize from his breath and hang in the air in vertical columns like an outline, then snap shut one after another in a chain from bottom to top. Very slow push-in, background falls to black.",
+      "sound": "low ominous drone, distant rain on concrete, soft glass chimes as brackets close"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "But the technique carries a flaw. An outline seventy percent correct is worse than nothing. The user stops thinking, and begins proofreading.",
+      "video_prompt": "Dramatic low angle. The sorcerer stands beneath a towering column of glowing cyan outline-brackets that begins to warp and misalign; several brackets flicker sickly violet and drift out of place. His expression hardens, eyes lit as glowing slits, one hand rising to his temple. Cold streetlight, wet asphalt reflections, cracked concrete. Slow push-in.",
+      "sound": "drone rising in tension, faint electrical crackle"
+    },
+    {
+      "id": "s4",
+      "kind": "title",
+      "kanji": "領域展開 修正の飛輪",
+      "english": "Domain Expansion: Wheel of Correction",
+      "narration": "And so. Domain Expansion. Wheel of Correction.",
+      "sound": "sudden silence, then a single taiko hit"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "narration": "Inside the barrier, every correction the user makes is a sure hit. Move one thought beneath another, and the next fold already knows.",
+      "video_prompt": "The sorcerer's hands rise into a mudra hand sign and hold. Hard cut: the night street dissolves from the edges inward and is replaced by a boundless dark cosmos with cyan and violet nebula and one enormous slowly turning wheel of pale light overhead, its spokes made of thousands of small floating outline cards. Volumetric fog, no ground plane. The sorcerer stands small at the bottom of the frame; as he gestures, cards slide into new positions along the spokes and lock with a flash.",
+      "sound": "sudden silence, then a deep string ostinato rising, low mechanical turning"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "Its binding vow: a correction made twice becomes a rule. But no rule takes effect until it has refolded every past conversation and proven the scores did not fall.",
+      "video_prompt": "Inside the cosmic domain, wide reveal shot. A single card of light detaches from the great wheel and hardens into a red-glowing sigil. The entire wheel spins backwards rapidly, every card flashing as it is re-tested, then slows. A crimson chain of light wraps around the sorcerer's wrist and tightens as the sigil locks into the wheel's hub. Dramatic low angle, the sorcerer small against the giant interior, rim light red on one side and cyan on the other.",
+      "sound": "string ostinato, heavy chains, a low bell"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "The domain does not ask its user to check everything. It folds each conversation five times, and speaks only where it disagreed with itself.",
+      "video_prompt": "Medium shot inside the cosmic domain. Five translucent copies of the same outline column of light overlap in front of the sorcerer, almost identical; where they disagree, three brackets flicker and glow amber. The other brackets dim to near black. The sorcerer looks only at the three amber points, calm. Slow push-in, shallow focus.",
+      "sound": "quiet drone, soft ticking, a single glass chime"
+    },
+    {
+      "id": "s8",
+      "kind": "shot",
+      "narration": "Yet even this domain has a crack. A bracket closed through a side door, with no record of what closed it, teaches the wheel the wrong shape. Then I will close it properly.",
+      "video_prompt": "Close-up: at the edge of the great wheel, one outline card snaps shut with no thread of light connecting it to anything, and a hairline crack of violet spreads across the wheel's rim. Cut to the sorcerer's face, half in black shadow, eyes lit cyan; he exhales slowly and a small smile appears. Hard cut to black on the last frame. Monochrome inverted flash frame on the cut.",
+      "sound": "crack of stone, silence, a single sub-bass hit at the end"
+    }
+  ]
+}

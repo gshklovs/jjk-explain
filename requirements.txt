@@ -1,0 +1,2 @@
+requests>=2.31
+openai>=1.50   # only for the optional OpenAI fallback voice

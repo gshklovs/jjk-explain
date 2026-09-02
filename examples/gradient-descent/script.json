@@ -1,0 +1,61 @@
+{
+  "topic": "Gradient descent",
+  "slug": "gradient-descent",
+  "tier": "full",
+  "register": "narrator",
+  "narrator_voice": "You are the omniscient narrator of a dark shonen anime explaining a sorcerer's technique. Deep, calm, solemn, absolute. Slow and deliberate, about 2.3 words per second. Every sentence lands like a verdict. Pause a full beat at every period. Never rush, never smile, no upward inflection.",
+  "cast": "a young sorceress with long white hair tied back, a black kimono-style uniform lined in dark red, a strip of black cloth bound over her eyes, crimson cursed-energy glow flickering at her fingertips",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 降下",
+      "english": "Cursed Technique: Descent",
+      "narration": "Cursed Technique: Descent. The user is granted no sight of the terrain. Only the slope beneath their feet.",
+      "sound": "sub-bass hit, then silence"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "narration": "A landscape of error, its floor unseen. At every step the technique reads the gradient: which direction rises fastest. And the user steps the opposite way.",
+      "video_prompt": "Wide shot at night. A young sorceress with long white hair tied back, a black kimono-style uniform lined in dark red, a strip of black cloth bound over her eyes, crimson cursed-energy glow flickering at her fingertips, stands on a vast rolling terrain of black glass hills and valleys shrouded in fog so only the ground within a few meters of her is visible. Thin crimson lines of light spread from her feet across the ground, revealing the slope; she turns and takes one deliberate step downhill. Slow push-in, hard one-sided rim light.",
+      "sound": "low ominous drone, wind over glass, a single footstep"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "The stride is fixed. Too small, and descent takes a thousand years. Too large, and the user leaps clean over the valley.",
+      "video_prompt": "Split action on the foggy black-glass terrain. First, the sorceress takes tiny shuffling steps down a long slope while the moon arcs rapidly overhead, time-lapse. Then a hard cut: she launches into one enormous leap, arcs over an entire dark valley, and lands on the far rising slope, the valley floor untouched below her. Dramatic low angle, speed lines on the leap, one held frame at the apex with debris of glass frozen mid-air.",
+      "sound": "ticking clock accelerating, then a whoosh and a heavy landing thud"
+    },
+    {
+      "id": "s4",
+      "kind": "title",
+      "kanji": "領域展開 盲谷",
+      "english": "Domain Expansion: Blind Valley",
+      "narration": "Domain Expansion. Blind Valley.",
+      "sound": "sudden silence, then a single taiko hit"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "narration": "Within the barrier, the user need not see the whole landscape. Every step reads a slope, and every slope is a sure hit toward lower ground.",
+      "video_prompt": "The sorceress raises her hands into a mudra hand sign and holds. Hard cut: the fog and terrain dissolve from the edges inward and are replaced by a boundless dark cosmos with cyan and violet nebula and one enormous slowly turning eye-like sphere overhead, no ground plane. Beneath her a narrow path of crimson light draws itself one segment at a time, each segment tilting downward, into the void. She walks it calmly, small against the giant interior. Wide reveal, volumetric fog.",
+      "sound": "sudden silence, then a deep string ostinato rising slowly"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "Its binding vow: with each step, the stride grows shorter. Speed is surrendered so the descent may settle, instead of oscillating forever.",
+      "video_prompt": "Inside the cosmic domain, medium shot from behind and above. The sorceress descends the crimson path of light; each step is visibly shorter than the last, the segments of the path shrinking in length as they approach a glowing cyan point of light at the bottom of a bowl-shaped dip in the void. Crimson chains of light wrap around her ankles and tighten with every step. Rim light red on one side, cyan on the other. Slow push-in.",
+      "sound": "string ostinato, heavy chains, footsteps slowing"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "Yet it cannot tell a valley from the deepest valley. It halts wherever the ground stops falling. The sorceress lowers her eyes. Then we begin again, from somewhere else.",
+      "video_prompt": "Close-up on the sorceress standing still at the bottom of a small dip in the crimson path, the light beneath her feet steady. The camera pulls back to reveal, far beyond the fog behind her, a vastly deeper chasm glowing cyan that she cannot see. Cut to her face, half in black shadow, the cloth over her eyes; she tilts her head down slightly, then a small resolute smile. Monochrome inverted flash frame, hard cut to black.",
+      "sound": "quiet drone, distant deep rumble, silence, a single sub-bass hit at the end"
+    }
+  ]
+}

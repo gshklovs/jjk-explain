@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "source": "~/.claude/projects/-Users-grisha-workspace-BerkeleyAIHacks/b216bb89-*.jsonl (2026-08-22/23). No 'fortnite terms' requests exist in local Claude Code logs; those were likely claude.ai web chats.",
+    "purpose": "Real ELI5 requests to use as test inputs for the /explain JJK-narrator video skill. Each case has the raw technical context Claude had, the literal ask, and the prose ELI5 Claude gave (reference answer, not target style)."
+  },
+  "cases": [
+    {
+      "id": "fold-flywheel",
+      "ask": "eli 5 the whole thing",
+      "concept": "A voice-to-outline app where unresolved threads stay visibly open and cascade-close when answered, plus a calibration flywheel: user corrections become few-shot goldens immediately, recurring corrections get promoted to policy rules, and every rule must pass a regression gate (re-fold the corpus, score six axes, block if overall drops) before landing. Self-consistency sampling drives an interviewer that asks only where the model disagreed with itself.",
+      "technical_context": "segmenter -> add pass -> self-consistency sampler -> resolution pass with confidence banding -> interviewer -> capture -> corpus -> policy draft -> regression gate. Verified: correction persists as golden; duplicate correction promoted to rule, gate re-folded corpus, blocked it (0.814 -> 0.804); near-identical transcript picked up the correction via few-shot (examples_used: 2). Two defects: few-shot never transmits resolved_by; add pass can close a node with resolved_by=None, bypassing the resolution pass.",
+      "reference_eli5": "Brackets that snap shut like Tetris rows clearing. Taste can't be written as rules, so: guess, you fix, fix becomes an example card, similar cards get copied next time, repeated fixes become a rule, rules are tested against all old examples and rejected if scores drop. Interviewer = it runs the guess several times and asks only where it wobbled.",
+      "jjk_mapping_hint": "Technique = cascade-closing outline. Domain = the flywheel (guaranteed hit: every correction lands). Binding vow = regression gate (a rule only gains power if it survives the trial). Weakness = the side-door closure bug."
+    },
+    {
+      "id": "nub-vs-interviewer",
+      "ask": "english eli 5 (after: what is the difference between interviewer asks and confirm closure)",
+      "concept": "Two overlapping uncertainty mechanisms. Confidence banding on proposed closures: >=0.80 auto-close, 0.40-0.79 becomes a pending 'yellow nub' on the fold with confirm/dismiss, <0.40 dropped. Separately, the interviewer lists the N lowest-agreement decisions of any type (type, nesting, split, reopen), regardless of whether anything was acted on. Both 20%-confidence closure questions on screen were in the dropped band, so they were asked about but not visible anywhere on the fold. All three input paths (nub, interviewer answer, manual edit) produce the same outline edit and train identically.",
+      "technical_context": "closures_from_decisions in loop/cycle.py; contributes_to op -> fold.suggested_closures -> yellow nub; select_questions ranks by sample disagreement.",
+      "reference_eli5": "Robot tidying a desk: very sure = files the paper; kind of sure = balances it on the folder with a sticky note (the nub); not sure = leaves it alone. Separately hands you a list of its 3 biggest doubts (the interviewer). Buttons are shortcuts, not a training mode.",
+      "jjk_mapping_hint": "Two techniques with different activation conditions: the nub is a conditional half-strike that needs the user's confirmation to complete; the interviewer is a scanning technique that reveals where the user's own output wavered. Cursed energy output thresholds = 80/40 bands."
+    },
+    {
+      "id": "batching-option-2",
+      "ask": "what is 2 eli 5 (pointing at option 2 in a list of latency fixes)",
+      "concept": "Dropping the canonical pass. The fold pipeline ran 11 sequential model calls: 1 deterministic canonical call plus 5 add samples plus 5 resolution samples. Option 1 parallelizes each sample group (11 calls -> 3 rounds). Option 2 removes the canonical round entirely: the newer model refuses temperature=0 so a deterministic canonical is impossible anyway, and taking the modal structure from the samples already collected means the fold and its confidence come from the same evidence. Together 119s -> ~19s with no quality loss.",
+      "technical_context": "propose() loops 11 sync OpenAI calls; gpt-5.6-luna rejects temperature=0; self-consistency = majority structure across samples.",
+      "reference_eli5": "(not answered; user interrupted and redirected)",
+      "jjk_mapping_hint": "A maximum-output technique that stopped throwing the 'perfect' opening strike because the opponent nullifies it, and instead reads the consensus of five simultaneous shadow-clone attacks. Cost paid once (the binding vow of giving up determinism) in exchange for a 6x speed gain."
+    }
+  ]
+}

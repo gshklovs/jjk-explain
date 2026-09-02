@@ -1,0 +1,10 @@
+.env
+out/
+assets/
+render/
+*.mp4
+*.wav
+*.m4a
+*.mp3
+__pycache__/
+.DS_Store
