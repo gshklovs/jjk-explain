@@ -1,15 +1,27 @@
 # jjk-explain
 
-Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion, or as a tea-shop lesson from Uncle Iroh. Original characters (or your own robot, or a referenced likeness), real narrator cadence, title cards, generated footage, lip-synced dialogue. One Claude Code command.
+Explain any concept as a ~60 second video in one of five voices: the Jujutsu Kaisen narrator revealing a cursed technique, a tea-shop lesson from Uncle Iroh, Rick ranting at Morty in the garage, Tony Stark testing it in the workshop with JARVIS, or the Hunter x Hunter narrator freezing the frame to state the rule. Original characters (or your own robot, or a referenced likeness), real narrator cadence, title cards, generated footage, lip-synced dialogue. One Claude Code command.
 
 <table>
 <tr>
-<td width="50%"><img src="docs/media/inverse-kinematics.gif" alt="/explain inverse kinematics" width="100%"></td>
-<td width="50%"><img src="docs/media/gradient-descent.gif" alt="/explain gradient descent" width="100%"></td>
+<td width="33%"><img src="docs/media/cycloidal-drive-jjk.gif" alt="/explain cycloidal drives" width="100%"></td>
+<td width="33%"><img src="docs/media/cycloidal-rick.gif" alt="/explain-rick cycloidal actuators" width="100%"></td>
+<td width="33%"><img src="docs/media/cycloidal-hxh.gif" alt="/explain-hxh cycloidal actuators" width="100%"></td>
 </tr>
 <tr>
-<td align="center"><code>/explain ik</code> with a reference image of the user's robot<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/inverse-kinematics.mp4">▶ full video with narration (85 s)</a></td>
-<td align="center"><code>/explain gradient descent</code><br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/gradient-descent.mp4">▶ full video with narration (82 s)</a></td>
+<td align="center"><code>/explain cycloidal drives</code> (JJK narrator, turbo, $0.28)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-drive.mp4">▶ full video (81 s)</a></td>
+<td align="center"><code>/explain-rick cycloidal actuators</code> (seeded, two voices)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-rick.mp4">▶ full video (57 s)</a></td>
+<td align="center"><code>/explain-hxh cycloidal actuators</code> (seeded, off-screen narrator)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-hxh-seeded.mp4">▶ full video (93 s)</a></td>
+</tr>
+<tr>
+<td width="33%"><img src="docs/media/cycloidal-stark.gif" alt="/explain-stark cycloidal actuators" width="100%"></td>
+<td width="33%"><img src="docs/media/launch-stark.gif" alt="/explain-stark launch day" width="100%"></td>
+<td width="33%"><img src="docs/media/inverse-kinematics.gif" alt="/explain inverse kinematics" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><code>/explain-stark cycloidal actuators</code> (workshop test, real-footage seed)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-stark-2.mp4">▶ full video (88 s)</a></td>
+<td align="center"><code>/explain-stark</code> why a startup is suddenly everywhere<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/everywhere-launch-stark.mp4">▶ full video (68 s)</a> · <a href="https://x.com/0xfjuan/status/2095192939169234945?s=10">the post on X</a></td>
+<td align="center"><code>/explain ik</code> with a reference image of the user's robot<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/inverse-kinematics.mp4">▶ full video (85 s)</a></td>
 </tr>
 </table>
 
@@ -34,6 +46,12 @@ Full examples with scripts and transcripts: [inverse kinematics](examples/invers
 
 ## v1.2
 
+- Five styles in one renderer, selected by `"style"` in script.json: `jjk`, `iroh`, `rick`, `stark`, `hxh`. The seeded ones (Rick, Stark, HxH) use reference stills cut from real footage and clip-cut voice samples in lean mode, so nobody is described in prompts, only shown.
+- **Object references**: `"objects": {path: label}` on a script or scene adds images of the thing itself (a drive, a gripper, an engine) after the character stills; without one the first cycloidal drive rendered as a spur gear. The skills now fetch 2-3 object images before writing the script.
+- **Off-screen speakers**: `"offscreen": ["ai"]` renders that speaker's scenes silent and voices the line with its fish.audio voice, so no mouth on screen can be animated (JARVIS).
+- **Timed captions**: in lean mode captions are cut from Whisper word timestamps on each clip's own audio instead of a word-count estimate.
+- Reference-to-video is always requested at 768P (same price as 480P). Bibles gained three rules every style follows: narration is never stage direction, the one number is said once and every other line states a distinct property, and mechanism beats show the thing being taken apart.
+- Renders in this release: the five in the table above.
 - **`/explain-hxh`**: the same pipeline as a calm omniscient-narrator lecture in the manner of a 2011 shonen adventure anime's power explanations: the action freezes, a glowing outline and a schematic are drawn over the characters, and the rule, its condition, its one number and its exception ("However.") are stated like law. Own bible ([skills/explain-hxh/reference.md](skills/explain-hxh/reference.md)) with three registers (`hxh-lecture`, `hxh-ominous`, `hxh-rules`), cream schematic title cards with a 念 seal, an early-2010s bright-cel style lock, its own fish.audio narrator voice (`HXH_FISH_VOICE_ID` overrides), and three beds in `assets/hxh/` picked with `"music": "lecture" | "ominous" | "rules"`. Plain narration over turbo clips, like `/explain`: no lip sync, no references, so a 60-75 s video costs about $1.50 at regular pricing. `"style": "hxh"` in script.json selects it. Research notes: [docs/hxh-research.md](docs/hxh-research.md).
 
 ## What the human does
