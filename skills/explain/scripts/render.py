@@ -17,7 +17,7 @@ Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh". The
      prompt style lock, the title-card look, the default fish voice and the default music
      ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/).
 """
-import argparse, glob, json, math, os, subprocess, sys, textwrap, time
+import argparse, glob, json, math, os, re, subprocess, sys, textwrap, time
 from concurrent.futures import ThreadPoolExecutor
 
 import requests
@@ -464,7 +464,6 @@ def main():
         cast = S.get("cast", "").strip()
         if cast and cast[:40].lower() not in vp.lower():
             # enforce character consistency: expand the first generic mention into the full cast description
-            import re
             vp, n = re.subn(r"\b[Tt]he (" + STYLE["cast_words"] + r")\b", cast, vp, count=1)
             if n == 0:
                 vp = cast[0].upper() + cast[1:] + " is present. " + vp
