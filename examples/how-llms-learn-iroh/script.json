@@ -1,0 +1,78 @@
+{
+  "style": "iroh",
+  "topic": "How LLMs learn, taught straight to the viewer with one physical demonstration per idea",
+  "slug": "how-llms-learn-iroh-2",
+  "tier": "mastery",
+  "register": "iroh-teaching",
+  "narrator_voice": "Warm, patient, elderly teacher speaking directly to you, plain and direct, a smile in the voice. A grandfather who wants to be understood.",
+  "cast": "a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly.",
+  "refs": [
+    "assets/ref/iroh/full.jpg",
+    "assets/ref/iroh/iroh-smile-bust.png",
+    "assets/ref/iroh/iroh-paisho.png",
+    "assets/ref/iroh/iroh-tan-full.png"
+  ],
+  "seed": 11,
+  "music": "tsungi",
+  "lipsync": true,
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "第一課 猜字",
+      "english": "First Lesson: Guessing the Next Word",
+      "narration": "Come, sit with me. Today I will show you how a language machine learns. It is simpler than you fear.",
+      "sound": "tea pouring into a clay cup, a single guzheng note, no dialogue"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "narration": "People ask me if it thinks. It does not. It reads text and guesses the next word. That is the whole trick.",
+      "video_prompt": "medium close-up across a low wooden table in a small tea shop with paper lanterns, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, looking straight into the camera and speaking to the viewer, mouth moving as he talks, holds up an unrolled paper scroll of handwritten text and covers the last word with his palm, then taps the covered spot with one finger, warm amber lantern light, steam from a teacup, no on-screen text",
+      "sound": "quiet tea shop, erhu far away, no dialogue"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "Each word becomes a row of numbers. Similar words get similar rows. Watch: the meaning is in how close they sit.",
+      "video_prompt": "overhead shot of a wooden table, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, looking straight into the camera and speaking to the viewer, mouth moving as he talks, lays square wooden game tiles in neat rows on a grid board, pushes two rows close together side by side and slides a third row far to the edge, then looks up at the camera, warm lantern light, watercolor wood grain, no on-screen text",
+      "sound": "wooden tiles clicking, wind chimes, no dialogue"
+    },
+    {
+      "id": "s4",
+      "kind": "shot",
+      "narration": "Stack many layers. Each one mixes the numbers and passes them up. At the top, the highest score wins.",
+      "video_prompt": "medium shot, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, looking straight into the camera and speaking to the viewer, mouth moving as he talks, stacks bamboo tea strainers one on top of another into a tower on the table, then pours hot water into the top strainer and the water trickles down through each layer into a single cup at the bottom, he lifts the cup toward the camera, steam rising, warm lantern light, no on-screen text",
+      "sound": "water trickling through bamboo, pipa a few notes, no dialogue"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "narration": "It guesses. We show it the real word. Every number moves a little to close the gap, trillions of times.",
+      "video_prompt": "bright dry courtyard, packed sand floor, low camera close to the sand, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, kneels and looking straight into the camera and speaking to the viewer, mouth moving as he talks, draws in the sand with a wooden stick: a small circle, then a second circle a hand's width to the right, then an arrow from the first to the second, then wipes the first circle away with his palm and redraws it right beside the second, warm sunlight, watercolor stone wall behind, no on-screen text",
+      "sound": "stick scratching in sand, birdsong, bamboo flute far away, no dialogue"
+    },
+    {
+      "id": "s6",
+      "kind": "title",
+      "kanji": "戒",
+      "english": "The Caution",
+      "narration": "Now, one caution.",
+      "sound": "sudden quiet, kettle steam hiss, low horn drone, no dialogue"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "It was never told what is true. Only what people wrote. If a lie is written often enough, the machine learns it like any fact.",
+      "video_prompt": "dusk in the tea shop, lanterns lit, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, looking straight into the camera and speaking to the viewer, mouth moving as he talks, holds up one handwritten page, then sets it on a tall stack of identical copies of the same page on the table, taps the stack twice, and shakes his head slowly, warm amber and deep blue palette, no on-screen text",
+      "sound": "paper rustling, low horn drone, no dialogue"
+    },
+    {
+      "id": "s8",
+      "kind": "shot",
+      "narration": "So it learned to sound right, not to be right. Remember that, and it will serve you well. Now, your tea is getting cold.",
+      "video_prompt": "static close-up, a stout elderly man with a broad kind face, grey hair pulled into a small topknot, a long grey beard and heavy grey sideburns, thick dark eyebrows, warm half-closed eyes, wearing loose layered green robes with gold trim, wide cream sleeves and a brown sash, smiling warmly, looking straight into the camera and speaking to the viewer, mouth moving as he talks, then lifts a small clay teacup toward the camera as if offering it, steam curling up, eyes crinkling into a smile, hold on the smile, warm lantern light, no on-screen text",
+      "sound": "a sip, wooden tiles clicking in the background, guzheng plucked slowly, no dialogue"
+    }
+  ]
+}

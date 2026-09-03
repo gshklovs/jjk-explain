@@ -1,6 +1,6 @@
 # jjk-explain
 
-Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion. Original characters (or your own robot), real narrator cadence, kanji title cards, generated footage. One Claude Code command.
+Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion, or as a tea-shop lesson from Uncle Iroh. Original characters (or your own robot, or a referenced likeness), real narrator cadence, title cards, generated footage, lip-synced dialogue. One Claude Code command.
 
 <table>
 <tr>
@@ -19,14 +19,25 @@ Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu
 
 Full examples with scripts and transcripts: [inverse kinematics](examples/inverse-kinematics/), [gradient descent](examples/gradient-descent/), [the fold flywheel](examples/fold-flywheel/).
 
+## v1.1
+
+- **`/explain-iroh`**: the same pipeline as a warm tea-shop lesson from an old firebending master to a stuck student (or straight to the viewer). Own bible ([skills/explain-iroh/reference.md](skills/explain-iroh/reference.md)), parchment title cards with brush calligraphy, a 2000s East-Asian-influenced style lock, its own fish.audio voice. Both skills share one renderer; a top-level `"style": "jjk" | "iroh"` in script.json selects the style table (style lock, title card, voice, music, pacing). Full example: [examples/how-llms-learn-iroh/](examples/how-llms-learn-iroh/), [▶ video](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-2.mp4).
+- **Character likeness**: `"refs": [stills]` plus `"seed"` route a scene to `minimax/h3-max/reference-to-video` (up to 9 reference images; the renderer cites them as "Image 1 to Image N show the same character"). `"ref_videos"` adds motion reference. The `"image"` first-frame path still works. Stills live in gitignored `assets/ref/<style>/`; generate them with an image model or crop them from stills you own.
+- **Lip sync**: `"lipsync": true` passes each scene's narration wav as reference audio; the model re-speaks the line in that voice while animating the mouth, and the mix keeps the model's track (`"lipsync_audio": "model"`) because the model drifts after sentence pauses if you overlay the original narration.
+- **Lean mode** (Iroh default): a single `voice_sample` wav sets the voice, the prompt carries the words, and no per-scene TTS runs at all. Fish is only needed once, to make the sample. Title cards are silent over music.
+- **Speaker tags**: `[zuko] Uncle, does it think? [iroh] No.` in narration maps to per-speaker fish.audio voices (the `voices` table in each style). Tags are stripped from captions.
+- **Model and resolution**: `--model h3-max-turbo|h3-max`, `--resolution 480P|768P`, script-level `"model"` / `"resolution"`, or `EXPLAIN_MODEL` / `EXPLAIN_RESOLUTION`. Defaults are `h3-max-turbo` at `480P`, the cheapest combination. Scenes that need references (refs, ref_videos, lipsync, lean) are routed to `h3-max` automatically, since turbo has no reference endpoint. Prices per second, regular: turbo $0.025 (480P) / $0.04 (768P); h3-max reference-to-video $0.08 at either resolution.
+- **Music and pacing per style**: beds in `assets/<style>/`, chosen per script with `"music": "<substring>"`; TTS speed and sentence pause are per-style (`fish_speed`, `pause`).
+- Renders in this release: [how LLMs learn (JJK)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn.mp4), [robot balancing policies (JJK, Nanami register)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/robot-balance.mp4), [how LLMs learn (Iroh, likeness + lip sync, 480P)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-2.mp4).
+
 ## What the human does
 
 Two API keys. Both are card-on-file, pay-as-you-go, no approval process:
 
-1. **fal.ai** key from https://fal.ai/dashboard/keys. Runs MiniMax H3-Max, the video model. A 60 s video is about $1 at 480p, about $4 at 768p (regular pricing).
-2. **fish.audio** key from https://fish.audio/app/developers, then top up API credit on the same page. This is the narrator voice. A whole video costs about one cent. API credit is separate from a fish.audio subscription.
+1. **fal.ai** key from https://fal.ai/dashboard/keys. Runs MiniMax H3-Max and H3-Max Turbo, the video models. With the defaults (turbo, 480P) a 60 s JJK video is about $1.50 at regular pricing and pennies during fal promos; an Iroh lesson with likeness and lip sync is about $5 (reference-to-video is $0.08/s at any resolution).
+2. **fish.audio** key from https://fish.audio/app/developers, then top up API credit on the same page. This is the narrator voice. A whole video costs about one cent. API credit is separate from a fish.audio subscription. For `/explain-iroh` in lean mode, Fish is only used once to record a voice sample.
 
-Optional: any music file dropped into `assets/`. The canonical bed is the "Delirious" 1 hour loop from the JJK OST; fine for personal use, expect a Content ID claim if you upload.
+Optional: any music file dropped into `assets/` (JJK) or `assets/iroh/` (Iroh; three beds are picked by name with `"music"`). The canonical bed is the "Delirious" 1 hour loop from the JJK OST; fine for personal use, expect a Content ID claim if you upload.
 
 ## What the agent does
 
@@ -46,6 +57,7 @@ Then in Claude Code:
 /explain gradient descent
 /explain the thing we just debugged
 /explain raft consensus --register nanami --tier full
+/explain-iroh how language models learn
 ```
 
 The skill writes `out/<slug>/script.json` (the narrator script plus one video prompt per scene), renders, and opens the mp4. Outputs land in `out/<slug>/render/`: the mp4 with an embedded thumbnail, `thumb.jpg`, `transcript.md`, `captions.srt`, and every intermediate clip and narration file so reruns are free.
@@ -68,8 +80,8 @@ The metaphor structure is fixed by a small taxonomy: cursed energy is the input,
 ## Renderer flags
 
 ```
-python3 skills/explain/scripts/render.py out/<slug>/script.json [--voice fish|onyx] [--resolution 480P|768P]
-        [--dry-run] [--music FILE] [--narration FILE] [--no-captions] [--jobs N]
+python3 skills/explain/scripts/render.py out/<slug>/script.json [--voice fish|onyx] [--model h3-max-turbo|h3-max]
+        [--resolution 480P|768P] [--dry-run] [--music FILE] [--narration FILE] [--no-captions] [--jobs N]
 ```
 
 `--dry-run` renders everything with placeholder clips and zero fal spend, the right way to check a script. `--narration` uses one recorded take instead of TTS, scenes timed by word count. Reruns reuse every cached file, so tweaking the music or a single scene costs only that scene.
@@ -79,11 +91,13 @@ python3 skills/explain/scripts/render.py out/<slug>/script.json [--voice fish|on
 ```
 skills/explain/SKILL.md        the Claude Code skill
 skills/explain/reference.md    the bible: narrator beats, registers, taxonomy, style lock, prompt rules
-skills/explain/scripts/render.py
-examples/                      two finished scripts with transcripts
+skills/explain/scripts/render.py   shared renderer (STYLES and MODELS tables at the top)
+skills/explain-iroh/SKILL.md   the Uncle Iroh skill
+skills/explain-iroh/reference.md   its bible: beats, registers, tiers, style lock, title cards, sound
+examples/                      finished scripts with transcripts, both styles
 eval/cases.json                real ELI5 asks used as test inputs
 docs/research.md               model/voice/format research behind the design (Sept 2026)
-assets/  out/                  gitignored: music bed, renders
+assets/  out/                  gitignored: music beds, reference stills, voice samples, renders
 ```
 
 ## Notes

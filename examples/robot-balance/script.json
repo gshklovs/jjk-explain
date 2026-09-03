@@ -1,0 +1,70 @@
+{
+  "topic": "Robot balancing: whole-body locomotion policies",
+  "slug": "robot-balance",
+  "tier": "full",
+  "register": "nanami",
+  "narrator_voice": "Dry, procedural, deadpan anime narrator in the manner of a tired salaryman reading policy. Low, even, unhurried. States numbers and conditions flatly, as facts already decided. Short pauses at commas, a full beat at every period, no rise at the end of sentences.",
+  "cast": "a matte-black humanoid robot, slim and human height, a smooth featureless head with a single vertical slit of white light for a face, exposed circular rotary joints at the shoulders and hips, long articulated arms with five-fingered hands, standing in darkness",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 全身制御",
+      "english": "Cursed Technique: Whole-Body Control",
+      "narration": "Cursed Technique: Whole-Body Control. It allows the user to remain standing.",
+      "sound": "sub-bass hit, then silence"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "image": "assets/ref/phantom-full.jpg",
+      "narration": "Fifty times a second it reads its body: joint angles, joint speeds, the tilt of its core. It answers with the next pose. The motors follow.",
+      "video_prompt": "a matte-black humanoid robot, slim and human height, a smooth featureless head with a single vertical slit of white light for a face, exposed circular rotary joints at the shoulders and hips, long articulated arms with five-fingered hands, standing in darkness. The robot stands on a bare cracked concrete floor. Thin cyan rings of light pulse rapidly at every joint, like a metronome ticking, and a small cyan gyroscope symbol glows at its chest. Each pulse the robot shifts its weight a fraction, knees and hips making tiny corrections, arms held loose. Static frontal shot, very slow push-in, hard one-sided rim light, no dialogue, no on-screen text.",
+      "sound": "low ominous drone, a rapid quiet ticking like a metronome, soft servo whirs"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "No equation for balance lives inside it. Only weights that have fallen more than any body in history.",
+      "video_prompt": "Extreme close-up on the robot's smooth featureless head, the vertical slit of white light for a face glowing in darkness. The camera pushes slowly into the slit of light, and inside the light a dense web of thin cyan threads appears, thousands of them knotted together, faintly trembling. Behind the web, blurred ghostly silhouettes of the same humanoid robot fall over and over in the distance. Shallow focus, background falls to black, no dialogue, no on-screen text.",
+      "sound": "quiet drone, faint distant thuds of bodies falling, silence"
+    },
+    {
+      "id": "s4",
+      "kind": "title",
+      "kanji": "領域展開 万倒",
+      "english": "Domain Expansion: Ten Thousand Falls",
+      "narration": "Domain Expansion. Ten Thousand Falls.",
+      "sound": "sudden silence, then a single taiko hit"
+    },
+    {
+      "id": "s5",
+      "kind": "shot",
+      "image": "assets/ref/phantom-full.jpg",
+      "narration": "Within the barrier, thousands of copies train at once. Every fall, penalized. Every step at the commanded speed, rewarded.",
+      "video_prompt": "a matte-black humanoid robot, slim and human height, a smooth featureless head with a single vertical slit of white light for a face, exposed circular rotary joints at the shoulders and hips, long articulated arms with five-fingered hands, standing in darkness. The robot raises both hands into a mudra hand sign and holds. The darkness dissolves from the edges inward into an endless flat grid floor under a dark cosmos with cyan and violet nebula. Thousands of translucent ghost copies of the same robot appear in rows stretching to the horizon, all walking forward at once; many stumble and collapse in crimson flashes, others stride on glowing cyan, the fallen ones rising again immediately. Dramatic low angle, wide lens, volumetric fog, no dialogue, no on-screen text.",
+      "sound": "sudden silence, then a deep string ostinato rising, thousands of soft footsteps, crimson thuds"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "Its binding vow: the barrier is never kind. Mass, friction, motor strength, all randomized. Invisible hands shove without warning. Harsher training, steadier body.",
+      "video_prompt": "Inside the cosmic grid domain, medium shot of the robot walking forward among its ghost copies. The grid floor under it turns to slick black ice, then to gravel, then tilts sideways. Giant pale translucent hands appear from the fog and shove the robot hard in the shoulder; it staggers, its arms swing wide, and it recovers its footing in three quick steps. Crimson chains of light wrap its wrists and ankles, tightening. Rim light red on one side, cyan on the other, slow push-in, no dialogue, no on-screen text.",
+      "sound": "string ostinato, a heavy impact, chains rattling and tightening, servo whirs"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "The arms belong to the same technique. When the floor tilts, it swings them. Not a gesture. A counterweight.",
+      "video_prompt": "Inside the cosmic grid domain, side view of the robot standing on a single square slab of the grid floor that suddenly tilts steeply like a seesaw. The robot's torso leans against the tilt and both long arms sweep out in a wide arc, the shoulder rotary joints glowing cyan, the whole body rotating as one to stay upright as the slab levels again. One held frame at the peak of the arm swing with speed lines, then motion resumes. Dark fog, hard rim light, no dialogue, no on-screen text.",
+      "sound": "a deep groan of tilting metal, whip of air, silence at the held frame, then a soft landing"
+    },
+    {
+      "id": "s8",
+      "kind": "shot",
+      "narration": "Yet the barrier is not the world. A surface it never walked, and ten thousand falls count for nothing. From here on, overtime.",
+      "video_prompt": "The cosmic grid domain shatters and falls away, leaving the robot alone on a real rain-slick night street with wet-asphalt reflections under a cold streetlight. It steps onto a patch of loose wet leaves it has never seen, its foot slides, and it begins to topple, arms flung out. Hard cut to a close-up of its slit-light face as the white light flares brighter. Monochrome inverted flash frame, hard cut to black. No dialogue, no on-screen text.",
+      "sound": "glass shattering into distant rain on concrete, a slip, sudden silence, a single sub-bass hit at the end"
+    }
+  ]
+}

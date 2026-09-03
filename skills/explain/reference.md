@@ -74,5 +74,6 @@ Domain interior presets (original): void sky (dark cosmos, cyan/violet nebula, o
 ## Sound line
 H3-Max generates native audio. Ask only for ambience and score: "low ominous drone", "sub-bass hit then silence", "distant rain on concrete", "taiko hit", "string ostinato rising", "sudden silence". Always "no dialogue".
 
-## Reference image (optional)
+## Reference images (optional)
 `"image": "assets/ref/foo.jpg"` on a scene (or at script top level for all shots) uses that picture as the clip's first frame via image-to-video. Use it on 2-3 character shots, not every shot, or every clip opens on the same pose. Paths are relative to the workspace root. Prepare the image as 16:9 (1280x720) with the subject isolated; the video follows the image's aspect ratio. Describe the subject in `cast` anyway so text-only shots stay consistent.
+`"refs": ["assets/ref/a.jpg", ...]` (top level or per scene, up to 9) sends a character sheet to `minimax/h3-max/reference-to-video` instead; the renderer tells the model that Image 1..N are the same character. Add a top-level `"seed"` to keep the look stable across shots. `refs` wins over `image`.

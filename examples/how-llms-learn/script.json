@@ -1,0 +1,68 @@
+{
+  "topic": "How LLMs learn: words as vectors, neural networks, and where 'truth' comes from",
+  "slug": "how-llms-learn",
+  "tier": "full",
+  "register": "narrator",
+  "narrator_voice": "Calm, absolute, reverent. Slow declaratives with a full stop after each. Let the word 'truth' land heavily and pause before it. The last spoken line is a character, quieter and flatter than the narrator.",
+  "cast": "a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "title",
+      "kanji": "術式 言語予測",
+      "english": "Cursed Technique: Language Prediction",
+      "narration": "Cursed Technique. Language Prediction.",
+      "sound": "sub-bass hit, then silence, no dialogue"
+    },
+    {
+      "id": "s2",
+      "kind": "shot",
+      "narration": "It allows the user to guess the next word of any text. Nothing more. That is the whole technique.",
+      "video_prompt": "a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages, standing alone on a rain-slick empty night street under one cold streetlight, reading the ledger, static frontal close-up, very slow push-in, shallow focus, background falls to black, hard one-sided rim light, face half in black shadow, no dialogue, no on-screen text",
+      "sound": "low ominous drone, distant rain on concrete, no dialogue"
+    },
+    {
+      "id": "s3",
+      "kind": "shot",
+      "narration": "Every word is assigned a row of numbers. Meaning is not in the word. It is in the distance between rows.",
+      "video_prompt": "extreme close-up of a white-gloved hand turning a ledger page, each line of the page is a long horizontal row of tiny glowing cyan digits, the rows drift and slide apart in the air above the page as if floating, some rows cluster close together, others hang far apart, cold fluorescent light, black background, very slow push-in, shallow focus, no dialogue, no on-screen text",
+      "sound": "soft glass-like chimes, low drone, no dialogue"
+    },
+    {
+      "id": "s4",
+      "kind": "shot",
+      "narration": "A neural network is a stack of such rows, multiplied and added, layer after layer. Its output is a bet on every word it knows.",
+      "video_prompt": "dramatic low angle, wide lens, a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages, small at the base of an enormous vertical stack of translucent glowing cyan grid-plates hanging in darkness, each plate a lattice of dim numbers, light pulsing upward through the plates one layer at a time until it reaches the top plate, cracked concrete floor, volumetric fog, no dialogue, no on-screen text",
+      "sound": "string ostinato rising, deep pulse on each layer, no dialogue"
+    },
+    {
+      "id": "s5",
+      "kind": "title",
+      "kanji": "領域展開 誤差逆伝播",
+      "english": "Domain Expansion: Backpropagation",
+      "narration": "Domain Expansion. Backpropagation.",
+      "sound": "sudden silence, then a single taiko hit, no dialogue"
+    },
+    {
+      "id": "s6",
+      "kind": "shot",
+      "narration": "Within the barrier there is no truth. There is only the word that actually came next. The gradient points at it. The network steps closer.",
+      "video_prompt": "a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages, raises one gloved hand into a mudra, hold, hard cut to black, the street dissolves from the edges inward into a void sky domain: dark cosmos, cyan and violet nebula, no ground, one enormous pale eye-like sphere overhead, beneath it a single glowing cyan word hangs in space and a thin crimson thread runs from the sorcerer's ledger straight to that word, pulling taut, volumetric fog, sudden silence, no dialogue, no on-screen text",
+      "sound": "sudden silence, then a low sub-bass swell, no dialogue"
+    },
+    {
+      "id": "s7",
+      "kind": "shot",
+      "narration": "The vow: it is never told what is true. Only what was written. Trillions of times. The reward is everything language ever encoded.",
+      "video_prompt": "inside the void sky domain, dark cosmos with cyan and violet nebula and no ground, a slow orbiting shot around a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages, while countless pages of handwritten text stream past him in every direction like a blizzard, millions of pages, each briefly lit cyan then fading, his ledger glowing brighter with every page that passes, film grain, no dialogue, no on-screen text",
+      "sound": "vast paper rustle like wind, deep string drone, no dialogue"
+    },
+    {
+      "id": "s8",
+      "kind": "shot",
+      "narration": "Its weakness is its vow. A lie written often enough becomes, to it, a fact. It doesn't know what's true. It knows what came next.",
+      "video_prompt": "static frontal close-up of a gaunt elderly sorcerer-scholar with cropped grey hair, round black-rimmed glasses, a long black coat buttoned to the throat, white gloves, holding a slim open ledger from which a cold electric cyan glow leaks between the pages, one page of the ledger glows sickly violet-black instead of cyan, thin violet smoke rising from it, he looks up from the ledger directly into the camera, face half in black shadow, one held frame, background falls to black, no dialogue, no on-screen text",
+      "sound": "drone cuts to near silence, faint violet hiss, distant rain, no dialogue"
+    }
+  ]
+}
