@@ -780,6 +780,17 @@ def main():
     print(f"[clips] {a.model} @ {a.resolution} (scenes with refs/lipsync -> h3-max reference-to-video @ {os.environ.get('EXPLAIN_REF_RESOLUTION', '768P')}, same price)", flush=True)
     with ThreadPoolExecutor(a.jobs) as ex:
         spend = sum(ex.map(make_clip, range(len(scenes))))
+    # a failed submit (fal lock, rate limit) used to leave one clip missing and exit 0; retry those once, then fail loudly
+    if not a.dry_run:
+        missing = [i for i, sc in enumerate(scenes) if not os.path.exists(f"{out}/{sc['id']}_clip.mp4")]
+        if missing:
+            print(f"[clips] {len(missing)} clip(s) missing after the first pass ({', '.join(scenes[i]['id'] for i in missing)}); retrying once", flush=True)
+            time.sleep(15)
+            for i in missing:
+                spend += make_clip(i)
+            still = [scenes[i]["id"] for i in missing if not os.path.exists(f"{out}/{scenes[i]['id']}_clip.mp4")]
+            if still:
+                raise SystemExit(f"clips still missing after retry: {', '.join(still)}. Check the fal balance/lock and re-run; finished clips are cached.")
 
     # 3. per-scene mix
     scene_files, durs = [], []
