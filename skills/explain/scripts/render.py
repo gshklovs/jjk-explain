@@ -13,9 +13,14 @@ Env (or <repo>/.env): FAL_API_KEY (or FAL_KEY), FISH_AI_API_KEY, OPENAI_API_KEY,
      EXPLAIN_MUSIC (music bed; default: first file in $EXPLAIN_HOME/assets/),
      EXPLAIN_JP_FONT / EXPLAIN_EN_FONT (fontconfig names for the title cards),
      IROH_FISH_VOICE_ID (override the fish.audio voice used when script.json has "style": "iroh")
-Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh". The style picks the
+     HXH_FISH_VOICE_ID (same, for "style": "hxh"; only used off lean mode, which is that style's default)
+     RICK_FISH_VOICE_ID / MORTY_FISH_VOICE_ID (fish voices for "style": "rick"; only needed off lean mode)
+     EXPLAIN_LEAN_DRY=1 (with --dry-run: still compose lean prompts; missing samples/refs only warn; no fal call)
+     STARK_FISH_VOICE_ID / AI_FISH_VOICE_ID (the inventor and the AI voices for "style": "stark")
+Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "hxh" | "stark" | "rick". The style picks the
      prompt style lock, the title-card look, the default fish voice and the default music
-     ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/).
+     ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/; "rick" defaults to no music).
+     "rick" is two-voice lean mode: "[rick] ..." / "[morty] ..." pick the voice sample and the prompt's speaker.
 """
 import argparse, glob, json, math, os, re, subprocess, sys, textwrap, time
 from concurrent.futures import ThreadPoolExecutor
@@ -105,6 +110,112 @@ STYLES = {
         "title": {"bg": "0xEBDCBA", "ink": "0x2A1E14", "en": "0x6B4A2B", "glyph": "茶", "noise": False},
         "thumb_kanji": "戒",
     },
+    "rick": {
+        "lock": ("2D American adult TV animation, thick uniform black outlines, flat saturated colours with no "
+                 "gradients, simple rounded shapes, slightly wobbly hand-drawn linework, sickly green and teal "
+                 "fluorescent lighting, cluttered sci-fi garage laboratory backgrounds, limited 24fps animation, "
+                 "exaggerated expressive faces, no anime shading, no film grain. "),
+        "fish_voice": os.environ.get("RICK_FISH_VOICE_ID") or "d2e75a3e3fd6419893057c02a375a113",   # "Rick Sanchez" public fish.audio voice (110k generations)
+        "voice_label": "rick",
+        "voices": {"rick": os.environ.get("RICK_FISH_VOICE_ID") or "d2e75a3e3fd6419893057c02a375a113",
+                   "morty": os.environ.get("MORTY_FISH_VOICE_ID") or "377e4ac186da47faa3b644d033775954"},   # "Morty Smith" public voice (36k generations)
+        "fish_speed": 1.0,
+        "lipsync_audio": "model",
+        "voice_sample": "assets/ref/rick/rick-voice.wav",   # lean mode default (untagged narration)
+        "voice_samples": {"rick": "assets/ref/rick/rick-voice.wav",      # lean mode: sample per leading [tag]
+                          "morty": "assets/ref/rick/morty-voice.wav"},
+        "pause": 0.7,
+        "words_per_sec": 2.6,   # lean duration estimate (he talks fast)
+        "music": None,          # no music bed unless the script or --music asks for one
+        "cast_words": r"scientist|old scientist|the old man|boy|teenager|the kid|grandson|grandfather",
+        "default_sound": "garage laboratory hum, fluorescent buzz, small gadgets beeping, no music",
+        "default_instr": "Fast, dismissive, brilliant old scientist, slurring slightly, stutters and mid-sentence burps, insults delivered casually; the boy is nervous, higher, stammering.",
+        "title": {"bg": "0x061A0E", "ink": "0x39FF14", "en": "0xA8F0B0", "glyph": None, "noise": True,
+                  "font": "Helvetica Neue", "split": False},   # fontconfig family for the big English lines (drawtext ignores :style= patterns); lines split on " / "
+        "thumb_kanji": "",      # no preferred title; thumbnail falls back to the brightest frame
+        # default reference stills (script "refs" wins); missing defaults are skipped with a warning
+        "refs": ["assets/ref/rick/rick-bust-iso.jpg", "assets/ref/rick/rick-3q-iso.jpg", "assets/ref/rick/rick-full-iso.jpg",
+                 "assets/ref/rick/morty-bust-iso.jpg", "assets/ref/rick/morty-full-iso.jpg"],
+        "ref_owners": ["rick", "rick", "rick", "morty", "morty"],   # parallel to refs
+        "ref_labels": {"rick": "the old scientist", "morty": "the boy"},   # how the prompt names each speaker
+        "seed": 4242,           # default seed (script "seed" wins)
+    },
+    "hxh": {
+        "lock": ("2D Japanese TV anime from the early 2010s, clean bright hand-drawn cel shading with soft "
+                 "two-tone shadows, thin precise linework, soft painterly watercolor backgrounds, saturated "
+                 "natural daylight palette, large expressive eyes, calm 24fps limited animation, diagrammatic "
+                 "cutaways with glowing outlines and flat hand-drawn schematic overlays, no CGI, no 3D render, no film grain. "),
+        "fish_voice": os.environ.get("HXH_FISH_VOICE_ID") or "07f821df8a8e4eb7af871d19de5c4619",   # "Hunter x Hunter Narrator" on fish.audio (29k generations, en)
+        "voice_label": "hxh narrator",
+        "fish_speed": 1.0,
+        "lipsync_audio": "model",
+        # lean mode (default): no TTS; the model speaks each scene's narration in this voice, OFF-SCREEN.
+        # The sample is a 14 s fish.audio generation of the narrator voice above (no music under it).
+        # "voice_sample": null or "lipsync": true in script.json restores the Fish narration path.
+        "voice_sample": "assets/ref/hxh/narrator-voice.wav",
+        "words_per_sec": 2.0,   # lean duration estimate; the Fish narrator clone measures ~2.4 wps with its own pauses
+        "pause": 1.0,
+        # lean mode: untagged narration is treated as the speaker "narrator" (lean_tag), whose say_lines entry asks
+        # for a voice-over: the narrator has no body, so nobody on screen mouths the words (same mechanism as stark's AI)
+        "lean_tag": "narrator",
+        "say_lines": {"narrator": ("The characters on screen do not speak and keep their mouths closed. An unseen narrator "
+                                   "says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\"")},
+        # style-level reference stills (script "refs" wins; "refs": [] opts out): the two students, three angles each
+        "refs": ["assets/ref/hxh/gon-bust.jpg", "assets/ref/hxh/gon-3q.jpg", "assets/ref/hxh/gon-full.jpg",
+                 "assets/ref/hxh/killua-bust.jpg", "assets/ref/hxh/killua-3q.jpg", "assets/ref/hxh/killua-full.jpg"],
+        "ref_owners": ["gon", "gon", "gon", "killua", "killua", "killua"],   # parallel to refs
+        "ref_labels": {"gon": "the boy in green", "killua": "the white-haired boy", "narrator": "the narrator"},
+        "seed": 1128,           # default seed (script "seed" wins)
+        "cast_words": r"hunter|student|character|user|subject|protagonist",
+        "default_sound": "soft piano and strings, quiet wind",
+        "default_instr": "Calm, precise, omniscient anime narrator. Measured and clinical, every rule stated plainly, a beat before each condition or exception. Pause at full stops.",
+        "title": {"bg": "0xF4ECD8", "ink": "0x1E1E1E", "en": "0xC8501E", "glyph": "念", "noise": False},   # cream schematic panel, red 念 seal
+        "thumb_kanji": "念",
+    },
+    "stark": {
+        "lock": ("Live-action cinematic footage, anamorphic lens with gentle horizontal flare, shallow depth of "
+                 "field, cool blue holographic key light against warm tungsten workshop practicals, polished "
+                 "concrete and steel workshop, 24fps film look, fine film grain, photoreal. "),
+        # public fish.audio voices, the most-used English ones (2026-09-02): "Iron Man/Tony Stark" 8.9k uses,
+        # "Jarvis (MCU)" 106k uses. STARK_FISH_VOICE_ID / AI_FISH_VOICE_ID override. Only used off lean mode.
+        "fish_voice": os.environ.get("STARK_FISH_VOICE_ID") or "d7a76ce437d34163a48b7e683f85cac7",
+        "voice_label": "stark",
+        "voices": {"stark": os.environ.get("STARK_FISH_VOICE_ID") or "d7a76ce437d34163a48b7e683f85cac7",   # the inventor
+                   "ai": os.environ.get("AI_FISH_VOICE_ID") or "612b878b113047d9a770c069c8b4fdfe"},        # the calm British AI
+        # narration may switch speakers inline: "[ai] Sir, the ratio is eleven to one. [stark] Eleven. Fine."
+        "fish_speed": 1.0,
+        "lipsync_audio": "model",
+        "voice_sample": "assets/ref/stark/stark-voice.wav",   # lean mode default (untagged narration)
+        "voice_samples": {"stark": "assets/ref/stark/stark-voice.wav",   # lean mode: sample per leading [tag]
+                          "ai": "assets/ref/stark/ai-voice.wav"},
+        "pause": 0.8,
+        "words_per_sec": 2.5,   # lean duration estimate (he talks fast; the AI is slower but short)
+        "music": None,          # no music bed unless the script or --music asks for one
+        "cast_words": r"inventor|engineer|mechanic|man at the bench",
+        "default_sound": "workshop hum, servo whir, soft hologram chimes, no music",
+        "default_instr": "Fast, wry, confident inventor narrating a test to the room while his hands work. Jokes carry the explanation. The AI is calm, dry, British, one clause.",
+        # English-only HUD card: near-black bg, hologram-blue ink, EN font for the stacked lines, a thin rule
+        # "split": False keeps "MARK 11 CYCLOID" on one line; " / " in kanji breaks lines
+        "title": {"bg": "0x05080F", "ink": "0x6EC6FF", "en": "0x9FD8FF", "glyph": None, "noise": False, "font": "en", "hud": True, "split": False},
+        "thumb_kanji": "",      # no preferred title; thumbnail falls back to the brightest frame
+        # lean mode: untagged narration is the inventor (lean_tag). How the prompt asks for each speaker's line:
+        # he keeps working and talks to the AI / the room (not to the lens); the AI has no body, so its lines are an
+        # unseen voice and nobody on screen mouths them.
+        "lean_tag": "stark",
+        "say_lines": {"stark": ("The inventor keeps his hands on the part and keeps working while he talks, half to the AI and "
+                                "half to the room, and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\""),
+                      "ai": ("The man never speaks in this shot: his lips stay pressed shut the whole time, he only listens, "
+                             "nods once and keeps working. The AI is an unseen voice from the ceiling speakers, not a person; "
+                             "no mouth on screen moves. The voice of Audio 1 says exactly these words and nothing else: \"{line}\"")},
+        # style-level defaults for the likeness path; a script's "refs": [] opts out, "seed" overrides
+        # five stills of him cut from the workshop scene (no armor); user-*.jpg seeds go FIRST via a script "refs"
+        "refs": ["assets/ref/stark/tony-face.jpg", "assets/ref/stark/tony-bust.jpg", "assets/ref/stark/tony-3q.jpg",
+                 "assets/ref/stark/tony-full.jpg", "assets/ref/stark/tony-hands.jpg"],
+        "seed": 42,
+        "refs_prefix": ("Image 1 to Image {n} show the same man; keep his face, hair, goatee and build consistent "
+                        "with them. "),
+        "ref_labels": {"stark": "the inventor", "ai": "the AI"},   # how lean prompts name each speaker
+    },
 }
 STYLE = STYLES["jjk"]   # set from script.json in main()
 # Models: "h3-max-turbo" (default; text/image-to-video only) and "h3-max" (adds reference-to-video:
@@ -183,6 +294,8 @@ def fish_tts(text, out, speed=1.0):
     chunks = []
     for spk, chunk in split_speakers(text):
         vid = voices.get(spk, STYLE["fish_voice"]) if spk else STYLE["fish_voice"]
+        if not vid:
+            raise SystemExit(f"fish voice for speaker {spk or STYLE.get('voice_label', 'default')} not set: export RICK_FISH_VOICE_ID / MORTY_FISH_VOICE_ID")
         for sent in (split_sentences(chunk) if FISH_SPLIT else [chunk]):
             chunks.append((vid, sent))
     for i, (vid, sent) in enumerate(chunks):
@@ -212,7 +325,7 @@ def fish_tts(text, out, speed=1.0):
 def tts(text, voice, instructions, out):
     stamp = out + ".txt"
     fspeed = STYLE.get("fish_speed", FISH_SPEED)
-    sig = f"{voice}|{(STYLE['fish_voice'] + '@' + str(fspeed) + '/' + str(STYLE.get('pause', PAUSE_SENTENCE)) + str(sorted(STYLE.get('voices', {}).items()))) if voice == 'fish' else ''}|{text}\n{instructions}"
+    sig = f"{voice}|{(str(STYLE['fish_voice']) + '@' + str(fspeed) + '/' + str(STYLE.get('pause', PAUSE_SENTENCE)) + str(sorted(STYLE.get('voices', {}).items()))) if voice == 'fish' else ''}|{text}\n{instructions}"
     if os.path.exists(out) and os.path.exists(stamp) and open(stamp).read() == sig:
         return
     open(stamp, "w").write(sig)
@@ -261,13 +374,20 @@ def fal_clip(prompt, seconds, resolution, out, image=None, refs=None, seed=None,
         if ref_audio:
             body["reference_audio_urls"] = [_data_url(ref_audio)]
         body["aspect_ratio"] = "16:9"
+        # reference-to-video costs the same at 480P and 768P, so always take the higher one
+        body["resolution"] = os.environ.get("EXPLAIN_REF_RESOLUTION", "768P")
         endpoint = base + "/reference-to-video"
     elif image:
         body["image_url"] = _data_url(image)
         endpoint = base + "/image-to-video"
     else:
         body["aspect_ratio"] = "16:9"
-    r = requests.post(f"https://queue.fal.run/{endpoint}", json=body, headers=h, timeout=60)
+    for attempt in range(5):   # submit; 403/429/5xx (concurrency cap, throttling) are retried with backoff
+        r = requests.post(f"https://queue.fal.run/{endpoint}", json=body, headers=h, timeout=60)
+        if r.status_code in (403, 429) or r.status_code >= 500:
+            print(f"[fal] {os.path.basename(out)}: submit {r.status_code}, retry {attempt + 1}/5 in {10 * (attempt + 1)}s", flush=True)
+            time.sleep(10 * (attempt + 1)); continue
+        break
     r.raise_for_status()
     q = r.json()
     t0 = time.time()
@@ -281,6 +401,8 @@ def fal_clip(prompt, seconds, resolution, out, image=None, refs=None, seed=None,
             raise SystemExit("fal task timed out")
         time.sleep(2)
     res = requests.get(q["response_url"], headers=h, timeout=60).json()
+    if not isinstance(res, dict) or "video" not in res:
+        raise SystemExit(f"fal returned no video for {os.path.basename(out)}: {json.dumps(res)[:600]}")
     url = res["video"]["url"]
     with open(out, "wb") as f:
         f.write(requests.get(url, timeout=300).content)
@@ -300,15 +422,29 @@ def title_clip(kanji, english, seconds, out):
     if os.path.exists(out):
         return
     T = STYLE["title"]
-    lines = kanji.split() or [kanji]
+    split = T.get("split", True)
+    if split:
+        lines = kanji.split() or [kanji]
+    else:   # English big text: lines split on " / " (so "CYCLOIDAL / ACTUATORS" is two lines), not on whitespace
+        lines = [ln.strip() for ln in kanji.split(" / ") if ln.strip()] or [kanji]
+    # "font": "en" -> EN_FONT; any other value is a fontconfig name for the big lines; default JP_FONT
+    font = EN_FONT if T.get("font") == "en" else (T.get("font") or JP_FONT)
+    cap0 = 110 if T.get("hud") else 150                    # smaller cap so a ~14-char English title fits
     # size each line to fit 90% of the width; first line largest
     parts = []
     y = -60 - 55 * (len(lines) - 1)
     for i, ln in enumerate(lines):
-        size = min(150 if i == 0 else 96, int(W * 0.9 / max(1, len(ln))))
-        parts.append(f"drawtext=font='{JP_FONT}':text='{esc(ln)}':fontcolor={T['ink']}:fontsize={size}:"
+        if split:
+            size = min(cap0 if i == 0 else 96, int(W * 0.9 / max(1, len(ln))))
+        else:   # Latin glyphs are ~0.6 em wide, so the per-character budget can be larger
+            size = min(cap0 if i == 0 else 96, int(W * 0.9 / max(1, len(ln)) * 1.7))
+        parts.append(f"drawtext=font='{font}':text='{esc(ln)}':fontcolor={T['ink']}:fontsize={size}:"
                      f"x=(w-tw)/2:y=(h-th)/2+({y}):alpha='if(lt(t,{0.15 + 0.25 * i}),0,1)'")
         y += size + 20
+    if T.get("hud"):   # thin HUD rule between the title block and the English subtitle
+        parts.append(f"drawbox=x=(iw-560)/2:y=ih/2+({y - 8}):w=560:h=2:color={T['ink']}@0.85:t=fill:"
+                     f"enable='gte(t,0.5)'")
+        y += 14
     parts.append(f"drawtext=font='{EN_FONT}':text='{esc(english)}':fontcolor={T['en']}:fontsize=34:"
                  f"x=(w-tw)/2:y=(h-th)/2+({y + 10}):alpha='if(lt(t,0.7),0,min(1,(t-0.7)/0.4))'")
     if T["glyph"]:   # small seal-like glyph near the bottom (a teacup/lotus stand-in), fades in last
@@ -346,8 +482,45 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False):
     return dur(out)
 
 
-def write_srt(scenes, starts, nar_durs, path):
-    """One cue per sentence, spread proportionally to character count within the narration."""
+def lean_sentence_timings(clip, sents, cache):
+    """Lean mode: the video model spoke the line at its own pace, so time captions from the clip's own
+    audio. Whisper word timestamps (OpenAI API) are mapped onto the script's sentences by word count.
+    Returns [(start, end), ...] relative to the clip, or None if no key / transcription failed."""
+    key = os.environ.get("OPENAI_API_KEY")
+    if not key:
+        return None
+    if os.path.exists(cache):
+        words = json.load(open(cache))
+    else:
+        wav = cache.replace(".json", ".wav")
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", clip, "-vn", "-ac", "1", "-ar", "16000", wav], check=True)
+        r = subprocess.run(["curl", "-s", "https://api.openai.com/v1/audio/transcriptions",
+                            "-H", f"Authorization: Bearer {key}", "-F", f"file=@{wav}", "-F", "model=whisper-1",
+                            "-F", "response_format=verbose_json", "-F", "timestamp_granularities[]=word",
+                            "-F", "language=en"], capture_output=True, text=True)
+        try:
+            words = [(w["word"], float(w["start"]), float(w["end"])) for w in json.loads(r.stdout)["words"]]
+        except Exception:
+            print(f"[captions] whisper failed for {os.path.basename(clip)}: {r.stdout[:200]}", flush=True)
+            return None
+        json.dump(words, open(cache, "w"))
+    if not words:
+        return None
+    counts = [len(re.findall(r"[A-Za-z0-9']+", s)) for s in sents]
+    scale = len(words) / max(1, sum(counts))   # whisper may split/merge a few tokens; spread the difference
+    out, k = [], 0
+    for i, c in enumerate(counts):
+        n = len(words) - k if i == len(counts) - 1 else max(1, round(c * scale))
+        seg = words[k:k + n] or words[-1:]
+        nxt = words[k + n][1] if k + n < len(words) else seg[-1][2] + 0.25
+        out.append((seg[0][1], min(seg[-1][2] + 0.25, nxt)))   # hold a beat, never overlap the next cue
+        k += n
+    return out
+
+
+def write_srt(scenes, starts, nar_durs, path, timings=None):
+    """One cue per sentence, spread proportionally to character count within the narration,
+    unless timings[scene_id] gives measured (start, end) pairs per sentence (lean mode)."""
     import re
     n, lines = 1, []
     for sc, st, nd in zip(scenes, starts, nar_durs):
@@ -355,9 +528,12 @@ def write_srt(scenes, starts, nar_durs, path):
         sents = [s for s in re.split(r"(?<=[.!?])\s+", text) if s]
         total = sum(len(s) for s in sents) or 1
         t = st + 0.35
-        for s in sents:
+        measured = (timings or {}).get(sc["id"])
+        for j, s in enumerate(sents):
             d = nd * len(s) / total
             a, b = t, t + d
+            if measured and j < len(measured):
+                a, b = st + measured[j][0], st + measured[j][1]
             def ts(x):
                 h, r = divmod(x, 3600); m, s2 = divmod(r, 60)
                 return f"{int(h):02}:{int(m):02}:{int(s2):02},{int((s2 % 1) * 1000):03}"
@@ -394,7 +570,10 @@ def main():
         raise SystemExit(f"unknown style {style!r}; known: {', '.join(STYLES)}")
     STYLE = STYLES[style]
     if a.music is None:
-        a.music = resolve_music(S.get("music"), style) or default_music(style)
+        if S.get("music"):
+            a.music = resolve_music(S.get("music"), style)
+        elif STYLE.get("music", "auto") is not None:   # a style may default to no bed ("music": None)
+            a.music = default_music(style)
     a.resolution = a.resolution or S.get("resolution") or DEFAULT_RESOLUTION
     a.model = a.model or S.get("model") or DEFAULT_MODEL
     if a.model not in MODELS:
@@ -403,11 +582,24 @@ def main():
     # -> skip TTS, the model speaks each scene's narration in that voice. "voice_sample": null turns it off.
     _vs = S["voice_sample"] if "voice_sample" in S else STYLE.get("voice_sample")
     LEAN = None
-    if _vs and not S.get("lipsync") and not a.dry_run and a.narration is None:
+    LEAN_DRY = bool(a.dry_run and os.environ.get("EXPLAIN_LEAN_DRY"))   # dry-run that still composes lean prompts
+    if _vs and not S.get("lipsync") and (not a.dry_run or LEAN_DRY) and a.narration is None:
         LEAN = _vs if os.path.isabs(_vs) else os.path.join(HOME, _vs)
         if not os.path.exists(LEAN):
-            raise SystemExit(f"voice_sample not found: {LEAN}")
+            if LEAN_DRY:
+                print(f"[lean-dry] voice_sample not found (ignored): {LEAN}", flush=True)
+            else:
+                raise SystemExit(f"voice_sample not found: {LEAN}")
         S["voice_sample"] = LEAN
+        # per-speaker samples (style "voice_samples", script "voice_samples" wins): checked here, picked per scene
+        _vss = S.get("voice_samples", STYLE.get("voice_samples")) or {}
+        for _tag, _p in _vss.items():
+            _p = _p if os.path.isabs(_p) else os.path.join(HOME, _p)
+            if not os.path.exists(_p):
+                if LEAN_DRY:
+                    print(f"[lean-dry] voice_samples[{_tag}] not found (ignored): {_p}", flush=True)
+                else:
+                    raise SystemExit(f"voice_samples[{_tag}] not found: {_p}")
     out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.script)), "render")
     os.makedirs(out, exist_ok=True)
     scenes = S["scenes"]
@@ -439,7 +631,7 @@ def main():
         nar_durs = []
         for sc in scenes:
             text = strip_speakers(sc["narration"])
-            nd = 3.0 if sc["kind"] == "title" else min(14.0, len(text.split()) / 1.9 + pause * max(0, len(split_sentences(text)) - 1) + 0.6)
+            nd = 3.0 if sc["kind"] == "title" else min(14.0, len(text.split()) / STYLE.get("words_per_sec", 1.9) + pause * max(0, len(split_sentences(text)) - 1) + 0.6)
             w = f"{out}/{sc['id']}_nar.wav"
             if not (os.path.exists(w) and os.path.exists(w + ".txt") and open(w + ".txt").read() == f"LEAN {nd:.3f}"):
                 sh(["ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", f"{nd:.3f}", w])
@@ -478,13 +670,48 @@ def main():
         image = sc.get("image", S.get("image"))
         image = ws(image) if image else None
         refs = [ws(r) for r in (sc.get("refs", S.get("refs")) or [])]
+        owners = list(sc.get("ref_owners", S.get("ref_owners")) or []) if refs else []   # parallel to refs, optional
+        if not refs and "refs" not in sc and "refs" not in S and STYLE.get("refs"):
+            # style default stills: skip the ones missing on disk (with a warning) instead of failing
+            d_own = list(STYLE.get("ref_owners") or [])
+            for k, r in enumerate(ws(r) for r in STYLE["refs"]):
+                if os.path.exists(r):
+                    refs.append(r); owners.append(d_own[k] if k < len(d_own) else None)
+                else:
+                    print(f"[refs] {sc['id']}: default ref missing, skipped: {r}", flush=True)
         ref_videos = [ws(v) for v in (sc.get("ref_videos", S.get("ref_videos")) or [])]
-        missing = [r for r in refs + ref_videos if not os.path.exists(r)]
+        # object references: {"objects": {"assets/ref/objects/cycloidal/disc.jpg": "the cycloidal disc and its ring of pins"}}
+        # (script or scene level) for things whose exact shape has to be right (a drive, a gripper, an engine, a sneaker)
+        obj_items = [(ws(q), lbl) for q, lbl in (sc.get("objects", S.get("objects")) or {}).items()]
+        missing = [r for r in refs + ref_videos + [q for q, _ in obj_items] if not os.path.exists(r)]
         if missing:
-            raise SystemExit(f"{sc['id']}: reference image(s) not found: {', '.join(missing)}")
+            if LEAN_DRY:
+                print(f"[lean-dry] {sc['id']}: reference image(s) not found (ignored): {', '.join(missing)}", flush=True)
+            else:
+                raise SystemExit(f"{sc['id']}: reference image(s) not found: {', '.join(missing)} "
+                                 f"(set \"refs\": [] in script.json to render text-only)")
         if refs:
             # cite the sheet so the model binds the description to the pictures
-            prompt = f"Image 1 to Image {len(refs)} show the same character; keep the face, hair, beard and clothes consistent with them. " + prompt
+            if len(owners) == len(refs) and all(owners):
+                # several characters: group consecutive same-owner runs ("Image 1 to Image 3 show the old scientist; ...")
+                labels = STYLE.get("ref_labels", {})
+                runs, k = [], 0
+                while k < len(owners):
+                    j = k
+                    while j + 1 < len(owners) and owners[j + 1] == owners[k]:
+                        j += 1
+                    name = labels.get(owners[k], owners[k])
+                    runs.append((f"Image {k + 1} to Image {j + 1} show " if j > k else f"Image {k + 1} shows ") + name)
+                    k = j + 1
+                prompt = "; ".join(runs) + "; keep each character's face, hair and clothes consistent with their images. " + prompt
+            else:
+                prompt = (STYLE.get("refs_prefix") or "Image 1 to Image {n} show the same character; keep the face, hair, beard and clothes consistent with them. ").format(n=len(refs)) + prompt
+        if obj_items:
+            obj_items = obj_items[:max(0, 9 - len(refs))]   # the endpoint takes 9 images in all
+            base = len(refs)
+            refs = refs + [q for q, _ in obj_items]
+            prompt = ("; ".join(f"Image {base + i + 1} shows {lbl}" for i, (_, lbl) in enumerate(obj_items))
+                      + "; reproduce that object's exact shape, parts and proportions wherever it appears. " + prompt)
         if ref_videos:
             prompt = f"Video 1 shows how the same character moves, gestures and holds his face; match that manner. " + prompt
         lipsync = bool(sc.get("lipsync", S.get("lipsync", False))) and not a.dry_run and a.narration is None
@@ -498,25 +725,40 @@ def main():
             else:
                 print(f"[lipsync] {sc['id']}: narration missing or outside 2-15 s, skipping reference audio", flush=True)
         sample = sc.get("voice_sample", S.get("voice_sample"))
-        if sample and not ref_audio and not a.dry_run:
-            # lean mode: one voice sample sets the voice; the video_prompt carries the words the character says
+        if sample and not ref_audio and (not a.dry_run or LEAN_DRY):
+            # lean mode: a voice sample sets the voice; the video_prompt carries the words the character says.
+            # The leading [tag] of the narration picks a per-speaker sample (style/script "voice_samples").
+            tags = [t for t, _ in split_speakers(sc["narration"]) if t]
+            tag = tags[0] if tags else STYLE.get("lean_tag")   # a style may treat untagged lines as a named speaker (hxh: the off-screen narrator)
+            if tag and len(set(tags)) > 1:
+                print(f"[lean] {sc['id']}: mixed speakers, using {tag}", flush=True)
+            if "voice_sample" not in sc and tag:
+                sample = (S.get("voice_samples", STYLE.get("voice_samples")) or {}).get(tag, sample)
             ref_audio = ws(sample)
             if not os.path.exists(ref_audio):
-                raise SystemExit(f"{sc['id']}: voice_sample not found: {ref_audio}")
+                if LEAN_DRY:
+                    print(f"[lean-dry] {sc['id']}: voice_sample not found (ignored): {ref_audio}", flush=True)
+                else:
+                    raise SystemExit(f"{sc['id']}: voice_sample not found: {ref_audio}")
+            who = STYLE.get("ref_labels", {}).get(tag, "the character") if tag else "the character"
             line = strip_speakers(sc["narration"])
-            prompt = ("Audio 1 is the character's voice. " + prompt +
-                      f" The character looks at the camera and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\"")
+            say = (STYLE.get("say_lines") or {}).get(tag) if tag else None   # per-speaker phrasing (e.g. a bodiless AI, an off-screen narrator)
+            prompt = (f"Audio 1 is {who}'s voice. " + prompt + " " +
+                      (say.format(line=line) if say else
+                       f"{who[0].upper() + who[1:]} looks at the camera and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\""))
+            if LEAN_DRY:
+                ref_audio = None   # dry run: no fal call, the prompt file is the product
         open(f"{out}/{sc['id']}_prompt.txt", "w").write(prompt)
         if a.dry_run:
             placeholder_clip(f"{sc['id']}  {secs}s", secs, clip)
             return 0.0
         if os.path.exists(clip):
             return 0.0
-        t, used = fal_clip(prompt, secs, a.resolution, clip, image=image, refs=refs, seed=sc.get("seed", S.get("seed")), ref_videos=ref_videos, ref_audio=ref_audio, model=a.model)
+        t, used = fal_clip(prompt, secs, a.resolution, clip, image=image, refs=refs, seed=sc.get("seed", S.get("seed", STYLE.get("seed"))), ref_videos=ref_videos, ref_audio=ref_audio, model=a.model)
         mode = f" (reference-to-video, {len(refs)} refs, {len(ref_videos)} ref videos{', lipsync' if ref_audio else ''})" if (refs or ref_videos or ref_audio) else (" (image-to-video)" if image else "")
         print(f"[fal] {sc['id']} {secs}s in {t:.0f}s via {used}{mode}", flush=True)
         return secs * MODELS[used]["price"][a.resolution]
-    print(f"[clips] {a.model} @ {a.resolution} (scenes with refs/lipsync -> h3-max reference-to-video)", flush=True)
+    print(f"[clips] {a.model} @ {a.resolution} (scenes with refs/lipsync -> h3-max reference-to-video @ {os.environ.get('EXPLAIN_REF_RESOLUTION', '768P')}, same price)", flush=True)
     with ThreadPoolExecutor(a.jobs) as ex:
         spend = sum(ex.map(make_clip, range(len(scenes))))
 
@@ -563,7 +805,17 @@ def main():
         vmap = "0:v"
     else:
         srt = f"{out}/captions.srt"
-        write_srt(scenes, starts, nar_durs, srt)
+        timings = {}
+        if LEAN and not a.dry_run:
+            for sc in scenes:
+                if sc["kind"] == "title" or not sc.get("narration", "").strip():
+                    continue
+                sents = [x for x in re.split(r"(?<=[.!?])\s+", strip_speakers(sc["narration"])) if x]
+                tm = lean_sentence_timings(f"{out}/{sc['id']}_clip.mp4", sents, f"{out}/{sc['id']}_words.json")
+                if tm:
+                    timings[sc["id"]] = tm
+            print(f"[captions] lean mode: {len(timings)} scene(s) timed from the clip audio (whisper)", flush=True)
+        write_srt(scenes, starts, nar_durs, srt, timings)
         style = "FontName=Helvetica Neue,FontSize=20,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=1.5,Shadow=0,Alignment=2,MarginV=40"
         fc.append(f"[0:v]subtitles='{srt}':force_style='{style}'[v]"); vmap = "[v]"
     sh(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", vmap, "-map", amap,
@@ -580,7 +832,7 @@ def main():
     shots = [i for i, sc in enumerate(scenes) if sc["kind"] != "title"]
     preferred = None
     for i, sc in enumerate(scenes):
-        if sc["kind"] == "title" and STYLE["thumb_kanji"] in sc.get("kanji", ""):
+        if sc["kind"] == "title" and STYLE.get("thumb_kanji") and STYLE["thumb_kanji"] in sc.get("kanji", ""):
             preferred = next((j for j in shots if j > i), None); break
     cands = []
     for j in shots:

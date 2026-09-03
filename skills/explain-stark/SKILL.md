@@ -1,0 +1,55 @@
+---
+name: explain-stark
+description: Explain a concept as a ~60-75s workshop test from a wry inventor alone with his calm British AI and two robot arms (Tony Stark / JARVIS style, the 2008 workshop scene). Same pipeline as /explain (script.json, MiniMax H3-Max clips on fal, ffmpeg), different bible, live-action style lock, seeded on real-footage stills, two clip-cut voice samples (lean mode, no TTS), HUD title cards, no music.
+argument-hint: <concept or question> [--tier build|system|mastery] [--register stark-build|stark-lecture|stark-sleep-deprived] [--dry-run]
+allowed-tools: Bash(python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py *), Bash(open *), Bash(osascript *)
+---
+
+# /explain-stark
+
+Turn `$ARGUMENTS` into a workshop-test video: the inventor brings a broken or heavy thing in, sets a number, tests it on camera, it fails, he takes it apart on the bench, finds the mechanism inside, gets the one number on the hologram, services it, and proves it under load. The concept is what he changes between attempt one and attempt two. The renderer is shared with `/explain`: `${CLAUDE_SKILL_DIR}/../explain/scripts/render.py`. The only switch is `"style": "stark"` in script.json.
+
+## 1. Load the bible
+Read `${CLAUDE_SKILL_DIR}/reference.md` (how he narrates a test, the AI's rules, the action-arc beats, the three visual devices, registers, tiers, style lock, cast paragraph, HUD title card and sound vocabulary). Do not skip it; it is the whole voice. Do not load the JJK, Iroh or Rick bibles; the voices must not blend.
+
+## 2. Understand the concept
+If the concept refers to the current conversation or codebase, gather what you need first. Reduce it to: the thing under test (what is broken, heavy or slow), the part inside that IS the mechanism (a thing he pulls out and holds), the first attempt's failure mode (what jams, slops, overshoots, throws him), the one variable he changes, the one number (the ratio, the limit, the rate), the proof under load, and the landing line. Pick a tier unless `--tier` is given. Roll the "temperature": vary tier, register, the thing under test and the failure; never reuse the previous run's part or failure. The cast paragraph is fixed; the bench changes.
+
+Object references: if the concept is or contains a specific complicated object (a drive, a gripper, an engine, a specific character, vehicle or product), fetch 2-3 reference images of it first via a research subagent and pass them as `"objects"` (see the bible's "Object references" section). The model will not get a complicated shape right from words alone.
+
+## 3. Write `script.json`
+Workspace root: `python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py --where` (the repo, or `$EXPLAIN_HOME`). Path: `<workspace>/out/<slug>-stark/script.json` (slug = kebab of the concept; the `-stark` suffix keeps it apart from other takes). Shape and rules are in reference.md. Mandatory: `"style": "stark"` at the top level (without it the renderer uses the JJK look and voice). Target 60-75 s: 100-135 words, 6-7 scenes, 1 title card (2 at `mastery`), at most 22 words per shot. Title cards are English only: `"kanji"` holds the short HUD title on one line (e.g. `"MARK 11 ELBOW"`; use `" / "` to break a second line), `"english"` the subtitle. Every shot gets a `video_prompt` that stands alone (the renderer prepends the style lock and the reference-image prefix) and a `sound` line from the bible's vocabulary. Exactly one concrete number in the whole script; the mechanism is a physical part he takes apart and holds. Never name the actor, the character, the films or the studio in any video prompt.
+
+The prompt rule that matters most: the stills already carry his likeness, so spend at most one clause on him and the rest on what his hands do with the part and how the camera sees it (hands, close-ups, the part in isolation, cutaways). Every `[stark]` shot starts with a "what the hands do" clause. Do not write "looks into the camera": he narrates to the AI and the room while working. Paste the cast paragraph verbatim where he appears (the renderer checks its first 40 characters, "a dark-haired man with a trimmed goatee").
+
+## 4. Render
+```
+python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py <workspace>/out/<slug>-stark/script.json
+```
+Flags are the same as `/explain`: `--dry-run` (placeholder clips, no fal spend; add `EXPLAIN_LEAN_DRY=1` to the environment to see the assembled lean prompts in `render/*_prompt.txt`), `--music /path.mp3`, `--resolution 480P|768P`, `--no-captions`, `--narration FILE`, `--voice fish` (the fish.audio fallback voices; override with `STARK_FISH_VOICE_ID` and `AI_FISH_VOICE_ID`), `--voice onyx` (OpenAI fallback).
+Model: every scene in this style uses reference stills and a voice sample, so it is routed to `h3-max` reference-to-video ($0.08/s at either resolution; 480P saves nothing). A 7-scene lesson is about $5. The log line per clip names the model used; `"refs": []` in the script drops to `h3-max-turbo` text-to-video. Reference-to-video costs the same at 480P and 768P, so the renderer always requests reference scenes at 768P (`EXPLAIN_REF_RESOLUTION` overrides).
+Keys: the renderer reads `<workspace>/.env` (see `.env.example`) and the environment. If they live only in the user's shell rc, load them without printing: `eval "$(grep -E "^\s*export (FAL_API_KEY|FISH_AI_API_KEY|OPENAI_API_KEY)=" ~/.zshrc)"`. Only `FAL_API_KEY` is needed for the default (lean) path. If it is missing, run with `--dry-run` and tell the user.
+
+### Lean mode (the default): two clip-cut voice samples, no TTS
+The style carries `voice_samples: {"stark": "assets/ref/stark/stark-voice.wav", "ai": "assets/ref/stark/ai-voice.wav"}`: 12 s of him announcing a test and 9 s of the AI's status lines, both cut from real clip dialogue with no score under them (the fish.audio generations are kept beside them as `*-tts.wav`). With no `lipsync` key in the script, the renderer skips TTS entirely: each shot's narration is written into the prompt, the sample chosen by the scene's leading `[tag]` goes in as `reference_audio_urls`, and the model speaks the line in sync with the mouth. `[stark]` (or no tag: the style's `lean_tag`) is phrased as "the inventor keeps his hands on the part and keeps working while he talks, half to the AI and half to the room, and says, in the voice of Audio 1, exactly these words"; `[ai]` as an unseen voice from the ceiling speakers, nobody on screen mouths it. A scene is one speaker; if a scene mixes tags the first wins and the log warns. Scene length is estimated from word count (`words_per_sec` 2.5 plus 0.8 s per sentence pause), so keep each shot at or under 22 words. Title cards are silent. Set `"voice_sample": null` or `"lipsync": true` to go back to Fish narration.
+
+### Lip sync via Fish narration (alternative)
+Set `"lipsync": true` at the top level (or per scene). The renderer passes that scene's finished narration wav as `reference_audio_urls`; the model re-speaks the words in sync, and the mix keeps the model's own track (`lipsync_audio: "model"`). Hard limit: 2-15 s of reference audio per shot. Needs `FISH_AI_API_KEY` and the fish voices in the style's `voices` table (`stark` = the public "Iron Man/Tony Stark" voice `d7a76ce437d34163a48b7e683f85cac7`, `ai` = the public "Jarvis (MCU)" voice `612b878b113047d9a770c069c8b4fdfe`).
+
+### Two voices
+Narration switches speakers with a leading tag per scene: `[stark] ...` or `[ai] ...`. Untagged text is the inventor. Tags are stripped from captions. AI lines exist for three things only: the viewer's question, a correction, or the number. The AI never explains. Keep the inventor fast and plain: the test announcement is the explanation, and every joke states a fact.
+
+### Music (off by default)
+This style has no music bed: the sound line carries the workshop (hum, servos, the camcorder's room tone, the chain hoist) and the default sound ends in "no music". The style sets `"music": None`, so the renderer adds no bed and the log says `[style] stark, no music`. To opt in, set `"music": "<name>"` at the top level of script.json (bare name, substring match against `<workspace>/assets/stark/`, then `assets/`) or pass `--music FILE`.
+
+### Reference stills and video (the likeness path)
+Paths relative to the workspace root, all under `assets/ref/stark/` (gitignored; the recipe is in `docs/stark-research.md`):
+- Default refs are set by the style: `tony-face.jpg`, `tony-bust.jpg`, `tony-3q.jpg`, `tony-full.jpg`, `tony-hands.jpg` (five 1280x720 frames of him at the bench and on the test floor, no armor, cut from the workshop scene) with `"seed": 42`, so every shot goes to `minimax/h3-max/reference-to-video` and he is the same man across cuts. The renderer prepends "Image 1 to Image 5 show the same man; keep his face, hair, goatee and build consistent with them." Override with a top-level or per-scene `"refs"` / `"seed"`; `"refs": []` renders text-only. A default still missing from disk is skipped with a `[refs]` warning; a still you name yourself must exist. Cost: $0.08/s of output; the first ~4 reference images are free, keep a per-scene list at or under 9.
+- User seeds: if the user drops their own image, crop it 16:9 at 1280x720, save it as `user-<n>.jpg` and list it FIRST in a top-level `"refs"` (then the five defaults).
+- Extras on disk: `tony-rig.jpg` (on the boot rig in the camcorder wide), `suitup-1.jpg` / `suitup-2.jpg` / `suitup-3.jpg` (robot arms assembling the armor on him, the finished suit, stepping off the platform; add one per-scene to the under-load beat), `set-rec-1.jpg` / `set-rec-2.jpg` (the empty test floor from the camcorder, before and after the smoke; good as `"image"` first frames for test-camera shots), `set-workshop-1.jpg` / `set-workshop-2.jpg` (bench and wide workshop, no people), `tony-hands-alt.jpg` (a different day's shirt, do not mix into the defaults). The armor-only stills (`suit-*.jpg`, `mk2-*.jpg`) are kept for a `"refs"` override when the suit itself is the part on the bench.
+- `"ref_videos": ["assets/ref/stark/user-ref.mp4"]` (top level or per scene, up to 3, under ~10 s and 480p) adds motion reference: 8 s of him working the arm and looking up. Untested on the endpoint; try on one scene first.
+- `"image": "assets/ref/stark/set-rec-1.jpg"` on a scene uses that still as the clip's first frame (image-to-video). `refs` wins when both are given.
+Making more stills: 720p frames from the workshop scene, letterbox cropped (`crop=1280:532:0:94`), then a 16:9 window scaled to 1280x720, no captions, no channel bug, no REC overlay on likeness stills (keep it on set frames). View every frame before keeping. Do not stop for missing stills: the renderer skips them.
+
+## 5. Deliver
+Print the script scene by scene (inventor and AI lines), the final path, then open the mp4. QuickTime shows a blank document if the same path was re-rendered while open, so quit it first: `osascript -e 'tell application "QuickTime Player" to quit'; open -a "QuickTime Player" <path>`. Report cost from the renderer's summary line.

@@ -26,9 +26,15 @@ Full examples with scripts and transcripts: [inverse kinematics](examples/invers
 - **Lip sync**: `"lipsync": true` passes each scene's narration wav as reference audio; the model re-speaks the line in that voice while animating the mouth, and the mix keeps the model's track (`"lipsync_audio": "model"`) because the model drifts after sentence pauses if you overlay the original narration.
 - **Lean mode** (Iroh default): a single `voice_sample` wav sets the voice, the prompt carries the words, and no per-scene TTS runs at all. Fish is only needed once, to make the sample. Title cards are silent over music.
 - **Speaker tags**: `[zuko] Uncle, does it think? [iroh] No.` in narration maps to per-speaker fish.audio voices (the `voices` table in each style). Tags are stripped from captions.
-- **Model and resolution**: `--model h3-max-turbo|h3-max`, `--resolution 480P|768P`, script-level `"model"` / `"resolution"`, or `EXPLAIN_MODEL` / `EXPLAIN_RESOLUTION`. Defaults are `h3-max-turbo` at `480P`, the cheapest combination. Scenes that need references (refs, ref_videos, lipsync, lean) are routed to `h3-max` automatically, since turbo has no reference endpoint. Prices per second, regular: turbo $0.025 (480P) / $0.04 (768P); h3-max reference-to-video $0.08 at either resolution.
+- **Model and resolution**: `--model h3-max-turbo|h3-max`, `--resolution 480P|768P`, script-level `"model"` / `"resolution"`, or `EXPLAIN_MODEL` / `EXPLAIN_RESOLUTION`. Defaults are `h3-max-turbo` at `480P`, the cheapest combination. Scenes that need references (refs, ref_videos, lipsync, lean) are routed to `h3-max` automatically, since turbo has no reference endpoint. Prices per second, regular: turbo $0.025 (480P) / $0.04 (768P); h3-max reference-to-video $0.08 at either resolution, so reference scenes are always requested at 768P whatever `--resolution` says (`EXPLAIN_REF_RESOLUTION` overrides).
 - **Music and pacing per style**: beds in `assets/<style>/`, chosen per script with `"music": "<substring>"`; TTS speed and sentence pause are per-style (`fish_speed`, `pause`).
+- **`/explain-stark`**: an armored inventor explains a concept while building it in his workshop, bantering with a dry British AI. Live-action cinematic style lock, English-only HUD title cards, two voices (`[stark]` / `[ai]` tags), no music by default, and style-level default reference stills (`assets/ref/stark/`, seed 42; `"refs": []` opts out). Bible: [skills/explain-stark/reference.md](skills/explain-stark/reference.md).
+- **`/explain-rick`**: a drunk genius scientist explains a concept to his nervous grandson in a garage laboratory full of gadgets (Rick and Morty style). Own bible ([skills/explain-rick/reference.md](skills/explain-rick/reference.md)) with registers `rick-lecture`, `rick-annoyed`, `rick-drunk-genius`; a flat-colour adult-animation style lock; acid-green English title cards; two voice samples in lean mode (`[rick]` / `[morty]` tags pick the sample per scene, no TTS); no music by default (a style-level `music: None`); default reference stills for both characters (`assets/ref/rick/`, seed 4242, `ref_owners` tells the model which images are which character); a per-style `words_per_sec` for the lean timing. Every shot goes through reference-to-video, so a 6-scene lesson is about $4-6. Research notes: [docs/rick-research.md](docs/rick-research.md).
 - Renders in this release: [how LLMs learn (JJK)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn.mp4), [robot balancing policies (JJK, Nanami register)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/robot-balance.mp4), [how LLMs learn (Iroh, likeness + lip sync, 480P)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-3.mp4).
+
+## v1.2
+
+- **`/explain-hxh`**: the same pipeline as a calm omniscient-narrator lecture in the manner of a 2011 shonen adventure anime's power explanations: the action freezes, a glowing outline and a schematic are drawn over the characters, and the rule, its condition, its one number and its exception ("However.") are stated like law. Own bible ([skills/explain-hxh/reference.md](skills/explain-hxh/reference.md)) with three registers (`hxh-lecture`, `hxh-ominous`, `hxh-rules`), cream schematic title cards with a 念 seal, an early-2010s bright-cel style lock, its own fish.audio narrator voice (`HXH_FISH_VOICE_ID` overrides), and three beds in `assets/hxh/` picked with `"music": "lecture" | "ominous" | "rules"`. Plain narration over turbo clips, like `/explain`: no lip sync, no references, so a 60-75 s video costs about $1.50 at regular pricing. `"style": "hxh"` in script.json selects it. Research notes: [docs/hxh-research.md](docs/hxh-research.md).
 
 ## What the human does
 
@@ -58,6 +64,7 @@ Then in Claude Code:
 /explain the thing we just debugged
 /explain raft consensus --register nanami --tier full
 /explain-iroh how language models learn
+/explain-rick cycloidal actuators
 ```
 
 The skill writes `out/<slug>/script.json` (the narrator script plus one video prompt per scene), renders, and opens the mp4. Outputs land in `out/<slug>/render/`: the mp4 with an embedded thumbnail, `thumb.jpg`, `transcript.md`, `captions.srt`, and every intermediate clip and narration file so reruns are free.
@@ -94,6 +101,12 @@ skills/explain/reference.md    the bible: narrator beats, registers, taxonomy, s
 skills/explain/scripts/render.py   shared renderer (STYLES and MODELS tables at the top)
 skills/explain-iroh/SKILL.md   the Uncle Iroh skill
 skills/explain-iroh/reference.md   its bible: beats, registers, tiers, style lock, title cards, sound
+skills/explain-hxh/SKILL.md    the freeze-frame narrator skill
+skills/explain-hxh/reference.md    its bible: the feel, beats, registers, diagram presets, title card
+skills/explain-stark/SKILL.md  the workshop inventor skill
+skills/explain-stark/reference.md  its bible: beats, registers, tiers, style lock, HUD title cards, sound
+skills/explain-rick/SKILL.md   the garage-lab skill
+skills/explain-rick/reference.md   its bible: how he teaches, beats, registers, tiers, style lock, cast, title cards, sound
 examples/                      finished scripts with transcripts, both styles
 eval/cases.json                real ELI5 asks used as test inputs
 docs/research.md               model/voice/format research behind the design (Sept 2026)
@@ -103,6 +116,4 @@ assets/  out/                  gitignored: music beds, reference stills, voice s
 ## Notes
 
 - macOS first. Title cards use Hiragino Mincho; on Linux set `EXPLAIN_JP_FONT` to a font with kanji glyphs (Noto Serif CJK JP) and `EXPLAIN_EN_FONT`.
-- Characters are original by design. Prompts never name the show, the studio, or its cast; the style lock in `reference.md` reproduces the look. Named IP is also blocked by the video API.
-- The fish.audio narrator voice is a community voice model. Personal use.
 - fal promo pricing on H3-Max (about a quarter of the regular rate) was running through early September 2026.

@@ -102,3 +102,14 @@ H3-Max generates native audio. Ask only for ambience and score: "guzheng plucked
 
 ## Reference images (optional)
 `"refs": [...]` (list of character-sheet stills, top level or per scene) switches the clip to the reference-to-video endpoint; `"image": "assets/ref/iroh/foo.jpg"` uses one still as the first frame. Details and the sheet recipe are in SKILL.md. Describe the master in `cast` anyway so text-only shots stay consistent.
+
+## Narration is not stage direction (applies to every style)
+The spoken line carries the idea: the rule, the condition, the cost, the number, the consequence, or something one person says to another. The `video_prompt` carries the action. Never narrate what the camera shows ("he turns the cam", "the disc wobbles", "the frame freezes", "she holds it up to the light"): the viewer can see it, and spoken shot description sounds like a prompt being read aloud. Test before rendering: if a narration sentence could be pasted into `video_prompt` unchanged, cut it or turn it into a claim ("A cam offset from center forces the disc to orbit, not spin"). Describing a character's decision or intent in the present tense is allowed only where the bible's register calls for it, and only about intent, never about motion. Lines addressed to someone (the student, the viewer) are the surest way to stay on the right side of this.
+
+## Object references (complicated shapes must be right)
+If the concept is, or hinges on, a specific physical object with a complicated shape that has to be drawn correctly to make conceptual sense (a cycloidal drive, a robot gripper, an engine, a specific character or vehicle, a branded sneaker), the video model will not get it from words: the first cycloidal-drive render came out as a plain spur gear. Before writing `script.json`, dispatch a research subagent (Sonnet is enough) to fetch 2-3 clean reference images of the object (WebSearch/WebFetch, a product page, a paper figure, or yt-dlp frames), crop them to 16:9 1280x720 with no captions or watermarks, and save them under `<workspace>/assets/ref/objects/<object-slug>/`. Then put them on the scenes where the object is shown:
+```json
+"objects": {"assets/ref/objects/cycloidal/disc-and-pins.jpg": "the cycloidal disc with its scalloped lobed edge inside a ring of pins",
+            "assets/ref/objects/cycloidal/exploded.jpg": "the drive's parts laid out: eccentric cam, lobed disc, pin ring, output pins"}
+```
+Script level applies to every shot; scene level to that shot. The renderer appends them after the character stills (nine images in all) and tells the model "Image N shows <label>; reproduce that object's exact shape, parts and proportions". A scene with only object references still routes to the reference-to-video endpoint. If the user supplies an image, use theirs first.
