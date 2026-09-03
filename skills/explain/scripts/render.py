@@ -202,6 +202,9 @@ STYLES = {
         # he keeps working and talks to the AI / the room (not to the lens); the AI has no body, so its lines are an
         # unseen voice and nobody on screen mouths them.
         "lean_tag": "stark",
+        # speakers with no body: their scenes are rendered SILENT (no reference audio, so no mouth can be animated)
+        # and the line is spoken by the tag's fish.audio voice, mixed over the clip like ordinary narration
+        "offscreen": ["ai"],
         "say_lines": {"stark": ("The inventor keeps his hands on the part and keeps working while he talks, half to the AI and "
                                 "half to the room, and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\""),
                       "ai": ("The man never speaks in this shot: his lips stay pressed shut the whole time, he only listens, "
@@ -600,6 +603,12 @@ def main():
                     print(f"[lean-dry] voice_samples[{_tag}] not found (ignored): {_p}", flush=True)
                 else:
                     raise SystemExit(f"voice_samples[{_tag}] not found: {_p}")
+    OFFSCREEN = set(S.get("offscreen", STYLE.get("offscreen", [])) or [])
+    def lean_tag_of(sc):
+        tags = [t for t, _ in split_speakers(sc.get("narration", "")) if t]
+        return tags[0] if tags else STYLE.get("lean_tag")
+    def is_offscreen(sc):
+        return bool(LEAN) and lean_tag_of(sc) in OFFSCREEN
     out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.script)), "render")
     os.makedirs(out, exist_ok=True)
     scenes = S["scenes"]
@@ -625,12 +634,20 @@ def main():
             for f in (f"{out}/{sc['id']}_scene.mp4",):
                 if os.path.exists(f): os.remove(f)
     elif LEAN:
-        # lean mode: no TTS; silent stand-ins sized from word count, the video model speaks the lines
+        # lean mode: no TTS; silent stand-ins sized from word count, the video model speaks the lines.
+        # Exception: off-screen speakers (style/script "offscreen": [tag, ...]) get real Fish TTS, and their
+        # clips are rendered silent, so nothing on screen can mouth a bodiless voice.
         print(f"[lean] no TTS; {os.path.basename(LEAN)} sets the voice, prompts carry the lines", flush=True)
         pause = STYLE.get("pause", PAUSE_SENTENCE)
         nar_durs = []
         for sc in scenes:
             text = strip_speakers(sc["narration"])
+            if is_offscreen(sc) and sc["kind"] != "title" and not a.dry_run:
+                w = f"{out}/{sc['id']}_nar.wav"
+                tts(sc["narration"], "fish", instr, w)
+                nar_durs.append(dur(w))
+                print(f"[lean] {sc['id']}: off-screen speaker, Fish TTS over a silent clip", flush=True)
+                continue
             nd = 3.0 if sc["kind"] == "title" else min(14.0, len(text.split()) / STYLE.get("words_per_sec", 1.9) + pause * max(0, len(split_sentences(text)) - 1) + 0.6)
             w = f"{out}/{sc['id']}_nar.wav"
             if not (os.path.exists(w) and os.path.exists(w + ".txt") and open(w + ".txt").read() == f"LEAN {nd:.3f}"):
@@ -659,7 +676,7 @@ def main():
             vp, n = re.subn(r"\b[Tt]he (" + STYLE["cast_words"] + r")\b", cast, vp, count=1)
             if n == 0:
                 vp = cast[0].upper() + cast[1:] + " is present. " + vp
-        speaks = bool(sc.get("lipsync", S.get("lipsync", False)) or sc.get("voice_sample", S.get("voice_sample")))
+        speaks = bool(sc.get("lipsync", S.get("lipsync", False)) or sc.get("voice_sample", S.get("voice_sample"))) and not is_offscreen(sc)
         snd = sc.get("sound", STYLE["default_sound"])
         if speaks:
             snd = re.sub(r",?\s*no dialogue", "", snd, flags=re.I).strip(" ,")
@@ -724,7 +741,7 @@ def main():
                           "mouth and jaw moving in sync with the audio, natural pauses where the audio pauses. " + prompt)
             else:
                 print(f"[lipsync] {sc['id']}: narration missing or outside 2-15 s, skipping reference audio", flush=True)
-        sample = sc.get("voice_sample", S.get("voice_sample"))
+        sample = None if is_offscreen(sc) else sc.get("voice_sample", S.get("voice_sample"))
         if sample and not ref_audio and (not a.dry_run or LEAN_DRY):
             # lean mode: a voice sample sets the voice; the video_prompt carries the words the character says.
             # The leading [tag] of the narration picks a per-speaker sample (style/script "voice_samples").
@@ -770,7 +787,8 @@ def main():
                                 lipsync=bool(sc.get("lipsync", S.get("lipsync", False))) and sc["kind"] != "title" and not a.dry_run,
                                 model_audio=((sc.get("lipsync_audio", S.get("lipsync_audio", STYLE.get("lipsync_audio", "narration"))) == "model"
                                               and bool(sc.get("lipsync", S.get("lipsync", False))))
-                                             or bool(sc.get("voice_sample", S.get("voice_sample")))) and sc["kind"] != "title" and not a.dry_run))
+                                             or bool(sc.get("voice_sample", S.get("voice_sample")))) and sc["kind"] != "title" and not a.dry_run
+                                             and not is_offscreen(sc)))
         scene_files.append(f)
     starts = [sum(durs[:i]) for i in range(len(durs))]
 
@@ -808,7 +826,7 @@ def main():
         timings = {}
         if LEAN and not a.dry_run:
             for sc in scenes:
-                if sc["kind"] == "title" or not sc.get("narration", "").strip():
+                if sc["kind"] == "title" or not sc.get("narration", "").strip() or is_offscreen(sc):
                     continue
                 sents = [x for x in re.split(r"(?<=[.!?])\s+", strip_speakers(sc["narration"])) if x]
                 tm = lean_sentence_timings(f"{out}/{sc['id']}_clip.mp4", sents, f"{out}/{sc['id']}_words.json")

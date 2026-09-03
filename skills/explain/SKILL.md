@@ -20,6 +20,8 @@ Object references: if the concept is or contains a specific complicated object (
 ## 3. Write `script.json`
 Workspace root: `python3 ${CLAUDE_SKILL_DIR}/scripts/render.py --where` (the repo, or `$EXPLAIN_HOME`). Path: `<workspace>/out/<slug>/script.json` (slug = kebab of the concept). Shape and rules are in reference.md. Target 60-75 s total: 115-145 words (the narrator voice runs ~1.9 words/s plus scene padding). 6-8 scenes. Title-card kanji: put the category (領域展開) and the name as two space-separated groups; the renderer stacks them. Every scene gets a `video_prompt` that stands alone (the renderer prepends the style lock), and a `sound` line.
 
+Off-screen speakers: a tagged speaker with no body on screen (an AI, a radio, a narrator nobody should mouth) goes in `"offscreen": ["tag"]` (style default or script level); its scenes render silent and the line comes from that tag's fish.audio voice, so no mouth can be animated. See the bible's "Off-screen speakers" section.
+
 ## 4. Render
 ```
 python3 ${CLAUDE_SKILL_DIR}/scripts/render.py <workspace>/out/<slug>/script.json --voice fish

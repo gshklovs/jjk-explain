@@ -22,6 +22,8 @@ Workspace root: `python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py --wher
 
 The prompt rule that matters most: the stills already carry his likeness, so spend at most one clause on him and the rest on what his hands do with the part and how the camera sees it (hands, close-ups, the part in isolation, cutaways). Every `[stark]` shot starts with a "what the hands do" clause. Do not write "looks into the camera": he narrates to the AI and the room while working. Paste the cast paragraph verbatim where he appears (the renderer checks its first 40 characters, "a dark-haired man with a trimmed goatee").
 
+Off-screen speakers: a tagged speaker with no body on screen (an AI, a radio, a narrator nobody should mouth) goes in `"offscreen": ["tag"]` (style default or script level); its scenes render silent and the line comes from that tag's fish.audio voice, so no mouth can be animated. See the bible's "Off-screen speakers" section.
+
 ## 4. Render
 ```
 python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py <workspace>/out/<slug>-stark/script.json

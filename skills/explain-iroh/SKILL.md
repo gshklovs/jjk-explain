@@ -20,6 +20,8 @@ Object references: if the concept is or contains a specific complicated object (
 ## 3. Write `script.json`
 Workspace root: `python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py --where` (the repo, or `$EXPLAIN_HOME`). Path: `<workspace>/out/<slug>-iroh/script.json` (slug = kebab of the concept; the `-iroh` suffix keeps it apart from a JJK take on the same concept). Shape and rules are in reference.md. Mandatory: `"style": "iroh"` at the top level (without it the renderer uses the JJK look and voice). Target 60-80 s: 115-145 words, 6-8 scenes, 1-2 title cards. Title-card `kanji` is Chinese, two space-separated groups (category, then name). Every shot gets a `video_prompt` that stands alone (the renderer prepends the Iroh style lock) and a `sound` line from the bible's vocabulary. Exactly one concrete number in the whole script; the concept is a physical thing the characters touch.
 
+Off-screen speakers: a tagged speaker with no body on screen (an AI, a radio, a narrator nobody should mouth) goes in `"offscreen": ["tag"]` (style default or script level); its scenes render silent and the line comes from that tag's fish.audio voice, so no mouth can be animated. See the bible's "Off-screen speakers" section.
+
 ## 4. Render
 ```
 python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py <workspace>/out/<slug>-iroh/script.json --voice fish

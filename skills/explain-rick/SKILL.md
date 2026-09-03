@@ -20,6 +20,8 @@ Object references: if the concept is or contains a specific complicated object (
 ## 3. Write `script.json`
 Workspace root: `python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py --where` (the repo, or `$EXPLAIN_HOME`). Path: `<workspace>/out/<slug>-rick/script.json`. Shape and rules are in reference.md. Mandatory: `"style": "rick"` at the top level. Target 50-70 s: 110-140 words, 5-6 scenes, 1 title card. Every shot narration starts with `[rick]` or `[morty]` and is at most 22 words (one speaker per scene). Title-card `kanji` holds English capitals, lines split on " / ". Every shot gets a `video_prompt` that stands alone (the renderer prepends the style lock and the reference-image prefix) and a `sound` line from the bible's vocabulary (never music). Exactly one concrete number in the whole script; the concept is a prop the teacher holds.
 
+Off-screen speakers: a tagged speaker with no body on screen (an AI, a radio, a narrator nobody should mouth) goes in `"offscreen": ["tag"]` (style default or script level); its scenes render silent and the line comes from that tag's fish.audio voice, so no mouth can be animated. See the bible's "Off-screen speakers" section.
+
 ## 4. Render
 ```
 python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py <workspace>/out/<slug>-rick/script.json
