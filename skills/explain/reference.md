@@ -97,3 +97,6 @@ The one concrete number is the cause, not the takeaway. State it once, at the be
 
 ## No meta examples: the running example is a concrete product, never the craft itself
 When the concept is about communication, marketing, teaching, writing or persuasion, the running example must be a concrete, everyday product or situation (a canned cold brew, a bakery, a bike lock, a dentist), never an example drawn from the same craft (a founder buying "a content strategy" to illustrate marketing; a lesson about lessons). A same-craft example makes the viewer lose track of what is the lesson and what is the illustration ("before you are invisible and after you are invisible?"). Test: could a twelve-year-old say which sentence is the product's and which is the narrator's? If not, change the product.
+
+## Outro (JJK): five seconds of theme after the last line
+The JJK style holds the final frame for 5 s after the last narration ends, with the music bed still playing, and fades the whole mix out over the last 2 s (`outro` / `outro_fade` in the style table; a script may set `"outro"` / `"outro_fade"` at the top level to override, `0` to disable). Other styles default to 0. Write the last shot so its held frame can carry that silence: a character still, a wide, a landscape; not mid-gesture.

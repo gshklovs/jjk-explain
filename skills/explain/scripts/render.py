@@ -89,6 +89,8 @@ STYLES = {
         "default_instr": "Deep, calm, solemn anime narrator. Slow, deliberate, absolute. Pause at full stops.",
         "title": {"bg": "black", "ink": "white", "en": "0xBBBBBB", "glyph": None, "noise": True},
         "thumb_kanji": "領域",   # prefer the first shot after a title containing this
+        "outro": 5.0,            # hold the last frame this long after the final line; the theme plays on
+        "outro_fade": 2.0,       # and the whole mix fades out over the last N seconds of that hold
     },
     "iroh": {
         "lock": ("2D American TV animation from the mid-2000s with strong East Asian influence, clean "
@@ -802,25 +804,38 @@ def main():
     final = f"{out}/{S.get('slug', 'explain')}.mp4"
     inputs = ["-i", joined]
     fc = []
+    # outro: hold the last frame for `outro` seconds after the final line with the music bed still playing,
+    # fading the whole mix over the last `outro_fade` seconds (JJK default 5 s / 2 s; other styles 0)
+    outro = float(S.get("outro", STYLE.get("outro", 0.0)) or 0.0)
+    outro_fade = min(outro, float(S.get("outro_fade", STYLE.get("outro_fade", 2.0)) or 0.0))
+    total_len = dur(joined) + outro
+    vsrc = "[0:v]"
+    if outro > 0:
+        fc.append(f"[0:v]tpad=stop_mode=clone:stop_duration={outro:.3f}[vx]"); vsrc = "[vx]"
+        print(f"[outro] +{outro:.1f}s hold, {outro_fade:.1f}s fade", flush=True)
+    fade = f",afade=t=out:st={total_len - outro_fade:.3f}:d={outro_fade:.3f}" if outro_fade > 0 else ""
     if full_nar:
         inputs += ["-i", full_nar]
-        fc.append("[1:a]adelay=350|350,volume=8dB,apad[nar];[0:a][nar]amix=inputs=2:duration=first:normalize=0[base]")
+        fc.append("[1:a]adelay=350|350,volume=8dB,apad[nar];[0:a]apad[a0];[a0][nar]amix=inputs=2:duration=first:normalize=0[base]")
         mi = 2
     else:
-        fc.append("[0:a]anull[base]"); mi = 1
+        fc.append("[0:a]apad[base]"); mi = 1
     if a.music and os.path.exists(a.music):
         inputs += ["-stream_loop", "-1", "-i", a.music]
         fc.append(f"[base]asplit=2[voice][key];"
                   f"[{mi}:a]aformat=sample_rates=48000:channel_layouts=stereo,volume=-15dB[mus];"
                   "[mus][key]sidechaincompress=threshold=0.03:ratio=6:attack=40:release=700[duck];"
-                  "[voice][duck]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[a]")
+                  f"[voice][duck]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000{fade}[a]")
         amap = "[a]"
     else:
         if a.music:
             print(f"[music] not found: {a.music}", flush=True)
-        fc.append("[base]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[a]"); amap = "[a]"
+        fc.append(f"[base]loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000{fade}[a]"); amap = "[a]"
     if a.no_captions:
-        vmap = "0:v"
+        if outro > 0:
+            vmap = "[vx]"
+        else:
+            vmap = "0:v"
     else:
         srt = f"{out}/captions.srt"
         timings = {}
@@ -835,9 +850,10 @@ def main():
             print(f"[captions] lean mode: {len(timings)} scene(s) timed from the clip audio (whisper)", flush=True)
         write_srt(scenes, starts, nar_durs, srt, timings)
         style = "FontName=Helvetica Neue,FontSize=20,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=1.5,Shadow=0,Alignment=2,MarginV=40"
-        fc.append(f"[0:v]subtitles='{srt}':force_style='{style}'[v]"); vmap = "[v]"
+        fc.append(f"{vsrc}subtitles='{srt}':force_style='{style}'[v]"); vmap = "[v]"
     sh(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", vmap, "-map", amap,
-        "-c:v", "libx264", "-crf", "18", "-preset", "fast", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "-shortest", final])
+        "-c:v", "libx264", "-crf", "18", "-preset", "fast", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart",
+        "-t", f"{total_len:.3f}", final])
 
     # 6. thumbnail: brightest, caption-free frame; prefer the domain reveal (first shot after a 領域展開 title)
     def yavg(path, t):
