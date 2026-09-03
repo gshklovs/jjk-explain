@@ -1,27 +1,15 @@
 # jjk-explain
 
-Explain any concept as a ~60 second video in one of five voices: the Jujutsu Kaisen narrator revealing a cursed technique, a tea-shop lesson from Uncle Iroh, Rick ranting at Morty in the garage, Tony Stark testing it in the workshop with JARVIS, or the Hunter x Hunter narrator freezing the frame to state the rule. Original characters (or your own robot, or a referenced likeness), real narrator cadence, title cards, generated footage, lip-synced dialogue. One Claude Code command.
+Explain any concept as a ~60 second anime explainer, in the voice of the Jujutsu Kaisen narrator revealing a sorcerer's cursed technique and domain expansion. Original characters (or your own robot), real narrator cadence, title cards, generated footage. One Claude Code command. Four more voices below. Original characters (or your own robot, or a referenced likeness), real narrator cadence, title cards, generated footage, lip-synced dialogue. One Claude Code command.
 
 <table>
 <tr>
-<td width="33%"><img src="docs/media/cycloidal-drive-jjk.gif" alt="/explain cycloidal drives" width="100%"></td>
-<td width="33%"><img src="docs/media/cycloidal-rick.gif" alt="/explain-rick cycloidal actuators" width="100%"></td>
-<td width="33%"><img src="docs/media/cycloidal-hxh.gif" alt="/explain-hxh cycloidal actuators" width="100%"></td>
+<td width="50%"><img src="docs/media/inverse-kinematics.gif" alt="/explain inverse kinematics" width="100%"></td>
+<td width="50%"><img src="docs/media/gradient-descent.gif" alt="/explain gradient descent" width="100%"></td>
 </tr>
 <tr>
-<td align="center"><code>/explain cycloidal drives</code> (JJK narrator, turbo, $0.28)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-drive.mp4">▶ full video (81 s)</a></td>
-<td align="center"><code>/explain-rick cycloidal actuators</code> (seeded, two voices)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-rick.mp4">▶ full video (57 s)</a></td>
-<td align="center"><code>/explain-hxh cycloidal actuators</code> (seeded, off-screen narrator)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-hxh-seeded.mp4">▶ full video (93 s)</a></td>
-</tr>
-<tr>
-<td width="33%"><img src="docs/media/cycloidal-stark.gif" alt="/explain-stark cycloidal actuators" width="100%"></td>
-<td width="33%"><img src="docs/media/launch-stark.gif" alt="/explain-stark launch day" width="100%"></td>
-<td width="33%"><img src="docs/media/inverse-kinematics.gif" alt="/explain inverse kinematics" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><code>/explain-stark cycloidal actuators</code> (workshop test, real-footage seed)<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-stark-2.mp4">▶ full video (88 s)</a></td>
-<td align="center"><code>/explain-stark</code> why a startup is suddenly everywhere<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/everywhere-launch-stark.mp4">▶ full video (68 s)</a> · <a href="https://x.com/0xfjuan/status/2095192939169234945?s=10">the post on X</a></td>
-<td align="center"><code>/explain ik</code> with a reference image of the user's robot<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/inverse-kinematics.mp4">▶ full video (85 s)</a></td>
+<td align="center"><code>/explain ik</code> with a reference image of the user's robot<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/inverse-kinematics.mp4">▶ full video with narration (85 s)</a></td>
+<td align="center"><code>/explain gradient descent</code><br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v0.1/gradient-descent.mp4">▶ full video with narration (82 s)</a></td>
 </tr>
 </table>
 
@@ -31,7 +19,36 @@ Explain any concept as a ~60 second video in one of five voices: the Jujutsu Kai
 
 Full examples with scripts and transcripts: [inverse kinematics](examples/inverse-kinematics/), [gradient descent](examples/gradient-descent/), [the fold flywheel](examples/fold-flywheel/).
 
-## v1.1
+## Other voices
+
+Same renderer, same script shape, a different bible per voice. A top-level `"style"` in script.json picks the voice; each skill loads its own bible.
+
+<table>
+<tr>
+<td width="25%"><img src="docs/media/cycloidal-rick.gif" alt="/explain-rick" width="100%"></td>
+<td width="25%"><img src="docs/media/launch-stark.gif" alt="/explain-stark" width="100%"></td>
+<td width="25%"><img src="docs/media/cycloidal-hxh.gif" alt="/explain-hxh" width="100%"></td>
+<td width="25%"><img src="docs/media/cycloidal-stark.gif" alt="/explain-stark" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><code>/explain-rick</code> garage rant, two voices<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-rick.mp4">▶ 57 s</a></td>
+<td align="center"><code>/explain-stark</code> launch day, from <a href="https://x.com/0xfjuan/status/2095192939169234945?s=10">this post</a><br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/everywhere-launch-stark.mp4">▶ 68 s</a></td>
+<td align="center"><code>/explain-hxh</code> freeze-frame narrator<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-hxh-seeded.mp4">▶ 93 s</a></td>
+<td align="center"><code>/explain-stark</code> workshop test<br><a href="https://github.com/gshklovs/jjk-explain/releases/download/v1.2/cycloidal-actuators-stark-2.mp4">▶ 88 s</a></td>
+</tr>
+</table>
+
+- **`/explain-iroh`**: a tea-shop lesson from an old firebending master to a stuck student. [bible](skills/explain-iroh/reference.md) · [example](examples/how-llms-learn-iroh/) · [▶ video](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-3.mp4)
+- **`/explain-rick`**: a drunk genius explains it to his nervous grandson in the garage; no music, two voice samples. [bible](skills/explain-rick/reference.md)
+- **`/explain-stark`**: an inventor tests it in his workshop with a dry British AI: set a number, fail, take it apart, fix one thing, prove it under load. [bible](skills/explain-stark/reference.md)
+- **`/explain-hxh`**: the calm narrator freezes the frame, draws the diagram, and states the rule, its condition, one number and the exception. [bible](skills/explain-hxh/reference.md)
+
+The seeded voices (Rick, Stark, HxH) use reference stills cut from real footage and a short voice sample, so the video model draws the character and speaks the line itself; no TTS. A seeded six-shot lesson is about $5; a JJK lesson on turbo is under a dollar.
+
+<details>
+<summary>Changelog</summary>
+
+### v1.1
 
 - **`/explain-iroh`**: the same pipeline as a warm tea-shop lesson from an old firebending master to a stuck student (or straight to the viewer). Own bible ([skills/explain-iroh/reference.md](skills/explain-iroh/reference.md)), parchment title cards with brush calligraphy, a 2000s East-Asian-influenced style lock, its own fish.audio voice. Both skills share one renderer; a top-level `"style": "jjk" | "iroh"` in script.json selects the style table (style lock, title card, voice, music, pacing). Full example: [examples/how-llms-learn-iroh/](examples/how-llms-learn-iroh/), [▶ video](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-3.mp4).
 - **Character likeness**: `"refs": [stills]` plus `"seed"` route a scene to `minimax/h3-max/reference-to-video` (up to 9 reference images; the renderer cites them as "Image 1 to Image N show the same character"). `"ref_videos"` adds motion reference. The `"image"` first-frame path still works. Stills live in gitignored `assets/ref/<style>/`; generate them with an image model or crop them from stills you own.
@@ -40,19 +57,21 @@ Full examples with scripts and transcripts: [inverse kinematics](examples/invers
 - **Speaker tags**: `[zuko] Uncle, does it think? [iroh] No.` in narration maps to per-speaker fish.audio voices (the `voices` table in each style). Tags are stripped from captions.
 - **Model and resolution**: `--model h3-max-turbo|h3-max`, `--resolution 480P|768P`, script-level `"model"` / `"resolution"`, or `EXPLAIN_MODEL` / `EXPLAIN_RESOLUTION`. Defaults are `h3-max-turbo` at `480P`, the cheapest combination. Scenes that need references (refs, ref_videos, lipsync, lean) are routed to `h3-max` automatically, since turbo has no reference endpoint. Prices per second, regular: turbo $0.025 (480P) / $0.04 (768P); h3-max reference-to-video $0.08 at either resolution, so reference scenes are always requested at 768P whatever `--resolution` says (`EXPLAIN_REF_RESOLUTION` overrides).
 - **Music and pacing per style**: beds in `assets/<style>/`, chosen per script with `"music": "<substring>"`; TTS speed and sentence pause are per-style (`fish_speed`, `pause`).
-- **`/explain-stark`**: an armored inventor explains a concept while building it in his workshop, bantering with a dry British AI. Live-action cinematic style lock, English-only HUD title cards, two voices (`[stark]` / `[ai]` tags), no music by default, and style-level default reference stills (`assets/ref/stark/`, seed 42; `"refs": []` opts out). Bible: [skills/explain-stark/reference.md](skills/explain-stark/reference.md).
-- **`/explain-rick`**: a drunk genius scientist explains a concept to his nervous grandson in a garage laboratory full of gadgets (Rick and Morty style). Own bible ([skills/explain-rick/reference.md](skills/explain-rick/reference.md)) with registers `rick-lecture`, `rick-annoyed`, `rick-drunk-genius`; a flat-colour adult-animation style lock; acid-green English title cards; two voice samples in lean mode (`[rick]` / `[morty]` tags pick the sample per scene, no TTS); no music by default (a style-level `music: None`); default reference stills for both characters (`assets/ref/rick/`, seed 4242, `ref_owners` tells the model which images are which character); a per-style `words_per_sec` for the lean timing. Every shot goes through reference-to-video, so a 6-scene lesson is about $4-6. Research notes: [docs/rick-research.md](docs/rick-research.md).
 - Renders in this release: [how LLMs learn (JJK)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn.mp4), [robot balancing policies (JJK, Nanami register)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/robot-balance.mp4), [how LLMs learn (Iroh, likeness + lip sync, 480P)](https://github.com/gshklovs/jjk-explain/releases/download/v1.1/how-llms-learn-iroh-3.mp4).
 
-## v1.2
+### v1.2
 
 - Five styles in one renderer, selected by `"style"` in script.json: `jjk`, `iroh`, `rick`, `stark`, `hxh`. The seeded ones (Rick, Stark, HxH) use reference stills cut from real footage and clip-cut voice samples in lean mode, so nobody is described in prompts, only shown.
+- **`/explain-rick`**: a drunk genius scientist explains a concept to his nervous grandson in a garage laboratory full of gadgets (Rick and Morty style). Own bible ([skills/explain-rick/reference.md](skills/explain-rick/reference.md)) with registers `rick-lecture`, `rick-annoyed`, `rick-drunk-genius`; a flat-colour adult-animation style lock; acid-green English title cards; two voice samples in lean mode (`[rick]` / `[morty]` tags pick the sample per scene, no TTS); no music by default (a style-level `music: None`); default reference stills for both characters (`assets/ref/rick/`, seed 4242, `ref_owners` tells the model which images are which character); a per-style `words_per_sec` for the lean timing. Every shot goes through reference-to-video, so a 6-scene lesson is about $4-6. Research notes: [docs/rick-research.md](docs/rick-research.md).
+- **`/explain-stark`**: a workshop test from a wry inventor alone with his calm British AI and two robot arms (the 2008 workshop scene): he brings the heavy or broken thing in, sets a number, tests it on camera, it fails, he takes the part apart on the bench and proves it under load; the payoff cuts to him already in the suit. Seeded on five stills cut from real footage of him in a tank top at the bench (`assets/ref/stark/`, seed 42; `"refs": []` opts out), so no armor in the prompts; the AI is an off-screen voice (`[stark]` / `[ai]` tags, `"offscreen": ["ai"]`). Live-action style lock, English-only HUD title cards, no music by default. Bible: [skills/explain-stark/reference.md](skills/explain-stark/reference.md).
 - **Object references**: `"objects": {path: label}` on a script or scene adds images of the thing itself (a drive, a gripper, an engine) after the character stills; without one the first cycloidal drive rendered as a spur gear. The skills now fetch 2-3 object images before writing the script.
 - **Off-screen speakers**: `"offscreen": ["ai"]` renders that speaker's scenes silent and voices the line with its fish.audio voice, so no mouth on screen can be animated (JARVIS).
 - **Timed captions**: in lean mode captions are cut from Whisper word timestamps on each clip's own audio instead of a word-count estimate.
 - Reference-to-video is always requested at 768P (same price as 480P). Bibles gained three rules every style follows: narration is never stage direction, the one number is said once and every other line states a distinct property, and mechanism beats show the thing being taken apart.
 - Renders in this release: the five in the table above.
-- **`/explain-hxh`**: the same pipeline as a calm omniscient-narrator lecture in the manner of a 2011 shonen adventure anime's power explanations: the action freezes, a glowing outline and a schematic are drawn over the characters, and the rule, its condition, its one number and its exception ("However.") are stated like law. Own bible ([skills/explain-hxh/reference.md](skills/explain-hxh/reference.md)) with three registers (`hxh-lecture`, `hxh-ominous`, `hxh-rules`), cream schematic title cards with a 念 seal, an early-2010s bright-cel style lock, its own fish.audio narrator voice (`HXH_FISH_VOICE_ID` overrides), and three beds in `assets/hxh/` picked with `"music": "lecture" | "ominous" | "rules"`. Plain narration over turbo clips, like `/explain`: no lip sync, no references, so a 60-75 s video costs about $1.50 at regular pricing. `"style": "hxh"` in script.json selects it. Research notes: [docs/hxh-research.md](docs/hxh-research.md).
+- **`/explain-hxh`**: the same pipeline as a calm omniscient-narrator lecture in the manner of a 2011 shonen adventure anime's power explanations: the action freezes, a glowing outline and a schematic are drawn over the characters, and the rule, its condition, its one number and its exception ("However.") are stated like law. Own bible ([skills/explain-hxh/reference.md](skills/explain-hxh/reference.md)) with three registers (`hxh-lecture`, `hxh-ominous`, `hxh-rules`), cream schematic title cards with a 念 seal, an early-2010s bright-cel style lock, its own fish.audio narrator voice (`HXH_FISH_VOICE_ID` overrides), and three beds in `assets/hxh/` picked with `"music": "lecture" | "ominous" | "rules"`. Seeded on stills of the two students (`assets/ref/hxh/`) with the narrator as an off-screen voice sample in lean mode, so the boys keep their mouths closed while the voice-over runs; every shot is reference-to-video, about $6-7 for a 7-scene lesson (`"refs": []` + `"voice_sample": null` puts it back on turbo with Fish narration). `"style": "hxh"` in script.json selects it. Research notes: [docs/hxh-research.md](docs/hxh-research.md).
+
+</details>
 
 ## What the human does
 
