@@ -100,3 +100,10 @@ When the concept is about communication, marketing, teaching, writing or persuas
 
 ## Outro (JJK): five seconds of theme after the last line
 The JJK style holds the final frame for 5 s after the last narration ends, with the music bed still playing, and fades the whole mix out over the last 2 s (`outro` / `outro_fade` in the style table; a script may set `"outro"` / `"outro_fade"` at the top level to override, `0` to disable). Other styles default to 0. Write the last shot so its held frame can carry that silence: a character still, a wide, a landscape; not mid-gesture.
+
+## Full sentences, five ideas, one thread
+- Full sentences only: 7 to 16 words each, at most 3 per shot, every one ending in a full stop. No fragments ("Shoulder, far. Wrist, barely."), no colon lists, no riddles. A fragment is folded into the sentence before it ("A turn at the shoulder carries the cup far; at the wrist, barely at all."). The TTS rushes a four-word sentence and it stops sounding like the narrator; the viewer hears a shot list.
+- At most five ideas per video, one per shot. The last shot carries only the payoff of the running example and the takeaway; it introduces no new fact. If the property list is longer than five, cut properties, do not pack them.
+- One thread: the running example is named in at least every other shot, so the payoff lands on something the viewer has been holding. A puzzle set up in shot 2 and next mentioned in the last shot arrives cold.
+- The payoff states the consequence in words ("the spare joint is a choice: bend low, pass beneath the lamp, and the cup reaches the shelf"), never a pose or a gesture ("Elbow high meets the lamp. Elbow low, the shelf.").
+Evidence: the fresh inverse-kinematics render had six four-word sentences in its last shot, a puzzle abandoned for five shots, and a payoff written as two poses; the user heard cut-offs, lines "not in the narrator's voice", and a story that "made slightly less sense".

@@ -22,7 +22,7 @@ Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "h
      ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/; "rick" defaults to no music).
      "rick" is two-voice lean mode: "[rick] ..." / "[morty] ..." pick the voice sample and the prompt's speaker.
 """
-import argparse, glob, json, math, os, re, subprocess, sys, textwrap, time
+import argparse, glob, hashlib, json, math, os, re, subprocess, sys, textwrap, time
 from concurrent.futures import ThreadPoolExecutor
 
 import requests
@@ -304,7 +304,8 @@ def fish_tts(text, out, speed=1.0):
         for sent in (split_sentences(chunk) if FISH_SPLIT else [chunk]):
             chunks.append((vid, sent))
     for i, (vid, sent) in enumerate(chunks):
-        seg = f"{out[:-4]}_{i}.wav"
+        # cache per sentence by content (voice, text, speed), not by position: an edited line used to reuse the old audio
+        seg = f"{out[:-4]}_{hashlib.md5(f'{vid}|{sent}|{speed}'.encode()).hexdigest()[:10]}.wav"
         if not os.path.exists(seg):
             for attempt in range(6):
                 r = requests.post("https://api.fish.audio/v1/tts", headers=h, timeout=180, json={
@@ -321,7 +322,10 @@ def fish_tts(text, out, speed=1.0):
     inputs, fc, n = [], [], 0
     for i, seg in enumerate(parts):
         inputs += ["-i", seg]
+        # Fish trims short sentences to the last consonant; give every segment a 60 ms fade and 150 ms of room
+        # before the sentence pause so nothing sounds cut off
         fc.append(f"[{i}:a]aformat=sample_rates=48000:channel_layouts=stereo,"
+                  f"areverse,afade=t=in:d=0.06,areverse,apad=pad_dur=0.15,"
                   f"apad=pad_dur={STYLE.get('pause', PAUSE_SENTENCE) if i < len(parts) - 1 else 0.15}[p{i}]")
     fc.append("".join(f"[p{i}]" for i in range(len(parts))) + f"concat=n={len(parts)}:v=0:a=1[a]")
     sh(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", "[a]", out])
@@ -330,7 +334,7 @@ def fish_tts(text, out, speed=1.0):
 def tts(text, voice, instructions, out):
     stamp = out + ".txt"
     fspeed = STYLE.get("fish_speed", FISH_SPEED)
-    sig = f"{voice}|{(str(STYLE['fish_voice']) + '@' + str(fspeed) + '/' + str(STYLE.get('pause', PAUSE_SENTENCE)) + str(sorted(STYLE.get('voices', {}).items()))) if voice == 'fish' else ''}|{text}\n{instructions}"
+    sig = f"{voice}|{(str(STYLE['fish_voice']) + '@' + str(fspeed) + '/' + str(STYLE.get('pause', PAUSE_SENTENCE)) + str(sorted(STYLE.get('voices', {}).items())) + '+tail') if voice == 'fish' else ''}|{text}\n{instructions}"
     if os.path.exists(out) and os.path.exists(stamp) and open(stamp).read() == sig:
         return
     open(stamp, "w").write(sig)
@@ -469,8 +473,8 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False):
     lipsync clips carry the model's own speech track (spoken in sync with the mouth by construction).
     model_audio=True keeps that track as the voice and drops our narration; otherwise the clip audio
     is muted and our narration starts at 0 (drifts after pauses)."""
-    if os.path.exists(out):
-        return dur(out)
+    if os.path.exists(out) and os.path.getmtime(out) >= max(os.path.getmtime(clip), os.path.getmtime(nar)):
+        return dur(out)   # up to date; a newer clip or narration rebuilds the scene
     cd, nd = dur(clip), dur(nar)
     lead = 0.0 if (lipsync or model_audio) else 0.6
     target = max(cd, nd + lead + 1.0)
