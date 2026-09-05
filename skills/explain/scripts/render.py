@@ -614,8 +614,13 @@ def main():
     def lean_tag_of(sc):
         tags = [t for t, _ in split_speakers(sc.get("narration", "")) if t]
         return tags[0] if tags else STYLE.get("lean_tag")
+    def is_work(sc):
+        # "shot": "work" = no face on screen (hands, the part, a diagram, a hologram, sand): rendered on the cheap
+        # model with no character refs, and the line is dubbed as voice-over with the speaker's fish.audio voice.
+        # "shot": "character" (default in seeded styles) = the face is on screen and speaks: reference path, lean voice.
+        return sc.get("shot", S.get("shot", "character")) == "work"
     def is_offscreen(sc):
-        return bool(LEAN) and lean_tag_of(sc) in OFFSCREEN
+        return bool(LEAN) and (lean_tag_of(sc) in OFFSCREEN or is_work(sc))
     out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.script)), "render")
     os.makedirs(out, exist_ok=True)
     scenes = S["scenes"]
@@ -693,9 +698,10 @@ def main():
             return p if os.path.isabs(p) else os.path.join(HOME, p)
         image = sc.get("image", S.get("image"))
         image = ws(image) if image else None
-        refs = [ws(r) for r in (sc.get("refs", S.get("refs")) or [])]
+        work = is_work(sc)
+        refs = [] if work else [ws(r) for r in (sc.get("refs", S.get("refs")) or [])]
         owners = list(sc.get("ref_owners", S.get("ref_owners")) or []) if refs else []   # parallel to refs, optional
-        if not refs and "refs" not in sc and "refs" not in S and STYLE.get("refs"):
+        if not refs and not work and "refs" not in sc and "refs" not in S and STYLE.get("refs"):
             # style default stills: skip the ones missing on disk (with a warning) instead of failing
             d_own = list(STYLE.get("ref_owners") or [])
             for k, r in enumerate(ws(r) for r in STYLE["refs"]):
@@ -703,7 +709,7 @@ def main():
                     refs.append(r); owners.append(d_own[k] if k < len(d_own) else None)
                 else:
                     print(f"[refs] {sc['id']}: default ref missing, skipped: {r}", flush=True)
-        ref_videos = [ws(v) for v in (sc.get("ref_videos", S.get("ref_videos")) or [])]
+        ref_videos = [] if work else [ws(v) for v in (sc.get("ref_videos", S.get("ref_videos")) or [])]
         # object references: {"objects": {"assets/ref/objects/cycloidal/disc.jpg": "the cycloidal disc and its ring of pins"}}
         # (script or scene level) for things whose exact shape has to be right (a drive, a gripper, an engine, a sneaker)
         obj_items = [(ws(q), lbl) for q, lbl in (sc.get("objects", S.get("objects")) or {}).items()]
