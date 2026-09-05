@@ -89,6 +89,7 @@ STYLES = {
         "default_instr": "Deep, calm, solemn anime narrator. Slow, deliberate, absolute. Pause at full stops.",
         "title": {"bg": "black", "ink": "white", "en": "0xBBBBBB", "glyph": None, "noise": True},
         "thumb_kanji": "領域",   # prefer the first shot after a title containing this
+        "label": {"color": "white", "border": "black", "size": 30},   # renderer-drawn labels ("labels" on a scene)
         "outro": 5.0,            # hold the last frame this long after the final line; the theme plays on
         "outro_fade": 2.0,       # and the whole mix fades out over the last N seconds of that hold
     },
@@ -200,6 +201,7 @@ STYLES = {
         # "split": False keeps "MARK 11 CYCLOID" on one line; " / " in kanji breaks lines
         "title": {"bg": "0x05080F", "ink": "0x6EC6FF", "en": "0x9FD8FF", "glyph": None, "noise": False, "font": "en", "hud": True, "split": False},
         "thumb_kanji": "",      # no preferred title; thumbnail falls back to the brightest frame
+        "label": {"color": "0x9FD8FF", "border": "0x05080F", "size": 30},   # HUD labels drawn by the renderer
         # lean mode: untagged narration is the inventor (lean_tag). How the prompt asks for each speaker's line:
         # he keeps working and talks to the AI / the room (not to the lens); the AI has no body, so its lines are an
         # unseen voice and nobody on screen mouths them.
@@ -469,7 +471,7 @@ def title_clip(kanji, english, seconds, out):
 
 
 # ---------- per-scene assembly ----------
-def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False):
+def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labels_fc=""):
     """Normalize clip, extend to cover narration, mix narration over clip audio.
     lipsync clips carry the model's own speech track (spoken in sync with the mouth by construction).
     model_audio=True keeps that track as the voice and drops our narration; otherwise the clip audio
@@ -482,7 +484,8 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False):
     amb_gain = "-100dB" if (is_title or (lipsync and not model_audio)) else ("0dB" if model_audio else "-9dB")
     nar_gain = "-100dB" if model_audio else "0dB"
     fc = (f"[0:v]scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,"
-          f"fps={FPS},format=yuv420p,tpad=stop_mode=clone:stop_duration={max(0, target-cd)+0.1}[v];"
+          f"fps={FPS},format=yuv420p,tpad=stop_mode=clone:stop_duration={max(0, target-cd)+0.1}"
+          + (f",{labels_fc}" if labels_fc else "") + "[v];"
           f"[0:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={amb_gain},apad[amb];"
           f"[1:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={nar_gain},adelay={int(lead*1000)}|{int(lead*1000)}[nar];"
           f"[amb][nar]amix=inputs=2:duration=longest:normalize=0[a]")
@@ -492,28 +495,63 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False):
     return dur(out)
 
 
-def lean_sentence_timings(clip, sents, cache):
-    """Lean mode: the video model spoke the line at its own pace, so time captions from the clip's own
-    audio. Whisper word timestamps (OpenAI API) are mapped onto the script's sentences by word count.
-    Returns [(start, end), ...] relative to the clip, or None if no key / transcription failed."""
+def whisper_words(audio, cache):
+    """Word timestamps [(word, start, end), ...] for an audio/video file via the OpenAI transcription API,
+    cached as JSON beside the render. None if no key or the call failed."""
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         return None
     if os.path.exists(cache):
-        words = json.load(open(cache))
-    else:
-        wav = cache.replace(".json", ".wav")
-        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", clip, "-vn", "-ac", "1", "-ar", "16000", wav], check=True)
-        r = subprocess.run(["curl", "-s", "https://api.openai.com/v1/audio/transcriptions",
-                            "-H", f"Authorization: Bearer {key}", "-F", f"file=@{wav}", "-F", "model=whisper-1",
-                            "-F", "response_format=verbose_json", "-F", "timestamp_granularities[]=word",
-                            "-F", "language=en"], capture_output=True, text=True)
-        try:
-            words = [(w["word"], float(w["start"]), float(w["end"])) for w in json.loads(r.stdout)["words"]]
-        except Exception:
-            print(f"[captions] whisper failed for {os.path.basename(clip)}: {r.stdout[:200]}", flush=True)
-            return None
-        json.dump(words, open(cache, "w"))
+        return json.load(open(cache))
+    wav = cache.replace(".json", ".wav")
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", audio, "-vn", "-ac", "1", "-ar", "16000", wav], check=True)
+    r = subprocess.run(["curl", "-s", "https://api.openai.com/v1/audio/transcriptions",
+                        "-H", f"Authorization: Bearer {key}", "-F", f"file=@{wav}", "-F", "model=whisper-1",
+                        "-F", "response_format=verbose_json", "-F", "timestamp_granularities[]=word",
+                        "-F", "language=en"], capture_output=True, text=True)
+    try:
+        words = [(w["word"], float(w["start"]), float(w["end"])) for w in json.loads(r.stdout)["words"]]
+    except Exception:
+        print(f"[whisper] failed for {os.path.basename(audio)}: {r.stdout[:200]}", flush=True)
+        return None
+    json.dump(words, open(cache, "w"))
+    return words
+
+
+def label_chain(labels, words, offset):
+    """Labels drawn by us, not the video model: each {"text": "Founder", "cue": "founder"} pops in (0.25 s fade)
+    the moment its cue word is spoken and stays to the end of the shot, stacked down the right edge (or at the
+    label's own "x"/"y" fractions). Timing comes from whisper words on the scene's audio, plus `offset`
+    (the narration lead when our TTS is mixed over the clip). Returns a drawtext filter chain or ""."""
+    if not labels:
+        return ""
+    lab = STYLE.get("label", {})
+    font, color, size, border = lab.get("font", EN_FONT), lab.get("color", "white"), lab.get("size", 30), lab.get("border", "black")
+    norm = lambda w: re.sub(r"[^a-z0-9]", "", w.lower())
+    parts, k = [], 0
+    for i, L in enumerate(labels):
+        cue = norm(L.get("cue", L["text"]))
+        start = 0.0
+        if words and cue:
+            for j in range(k, len(words)):
+                wj = norm(words[j][0])
+                if wj and (wj.startswith(cue) or (cue.startswith(wj) and len(wj) >= 4)):
+                    start = words[j][1] + offset; k = j + 1; break
+            else:
+                print(f"[labels] cue not heard: {L.get('cue', L['text'])!r}; label shown from the start", flush=True)
+        x = f"w*{float(L['x']):.3f}" if "x" in L else "w-tw-64"
+        y = f"h*{float(L['y']):.3f}" if "y" in L else f"{72 + i * (size + 26)}"
+        parts.append(f"drawtext=text='{esc(L['text'])}':font='{font}':fontsize={size}:fontcolor={color}:"
+                     f"borderw=2:bordercolor={border}:x={x}:y={y}:"
+                     f"alpha='if(lt(t\\,{start:.3f})\\,0\\,min(1\\,(t-{start:.3f})/0.25))'")
+    return ",".join(parts)
+
+
+def lean_sentence_timings(clip, sents, cache):
+    """Lean mode: the video model spoke the line at its own pace, so time captions from the clip's own
+    audio. Whisper word timestamps are mapped onto the script's sentences by word count.
+    Returns [(start, end), ...] relative to the clip, or None if no key / transcription failed."""
+    words = whisper_words(clip, cache)
     if not words:
         return None
     counts = [len(re.findall(r"[A-Za-z0-9']+", s)) for s in sents]
@@ -807,12 +845,25 @@ def main():
     scene_files, durs = [], []
     for i, sc in enumerate(scenes):
         f = f"{out}/{sc['id']}_scene.mp4"
+        model_audio = ((sc.get("lipsync_audio", S.get("lipsync_audio", STYLE.get("lipsync_audio", "narration"))) == "model"
+                        and bool(sc.get("lipsync", S.get("lipsync", False))))
+                       or bool(sc.get("voice_sample", S.get("voice_sample")))) and sc["kind"] != "title" and not a.dry_run \
+                      and not is_offscreen(sc)
+        labels_fc = ""
+        if sc.get("labels") and sc["kind"] != "title":
+            stamp = f"{out}/{sc['id']}_labels.txt"; sig = json.dumps(sc["labels"], sort_keys=True)
+            if not (os.path.exists(stamp) and open(stamp).read() == sig):
+                open(stamp, "w").write(sig)
+                if os.path.exists(f): os.remove(f)   # labels changed: rebuild the scene
+            words = None
+            if not a.dry_run:
+                audio = f"{out}/{sc['id']}_clip.mp4" if model_audio else f"{out}/{sc['id']}_nar.wav"
+                words = whisper_words(audio, f"{out}/{sc['id']}_{'words' if model_audio else 'narwords'}.json")
+            labels_fc = label_chain(sc["labels"], words, 0.0 if (model_audio or a.dry_run) else 0.6)
+            print(f"[labels] {sc['id']}: {len(sc['labels'])} label(s)" + ("" if words else " (no word timing; shown from the start)"), flush=True)
         durs.append(build_scene(f"{out}/{sc['id']}_clip.mp4", f"{out}/{sc['id']}_nar.wav", f, sc["kind"] == "title",
                                 lipsync=bool(sc.get("lipsync", S.get("lipsync", False))) and sc["kind"] != "title" and not a.dry_run,
-                                model_audio=((sc.get("lipsync_audio", S.get("lipsync_audio", STYLE.get("lipsync_audio", "narration"))) == "model"
-                                              and bool(sc.get("lipsync", S.get("lipsync", False))))
-                                             or bool(sc.get("voice_sample", S.get("voice_sample")))) and sc["kind"] != "title" and not a.dry_run
-                                             and not is_offscreen(sc)))
+                                model_audio=model_audio, labels_fc=labels_fc))
         scene_files.append(f)
     starts = [sum(durs[:i]) for i in range(len(durs))]
 
