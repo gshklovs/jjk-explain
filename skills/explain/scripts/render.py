@@ -230,7 +230,7 @@ MODELS = {
     "h3-max-turbo": {"base": "minimax/h3-max-turbo", "reference": False,
                      "price": {"480P": 0.025, "768P": 0.04}},
     "h3-max":       {"base": "minimax/h3-max", "reference": True,
-                     "price": {"480P": 0.08, "768P": 0.08}},   # reference-to-video is 0.08 at both
+                     "price": {"480P": 0.05, "768P": 0.08}},   # reference-to-video (fal model page, 2026-09-03); 75% promo until 2026-09-14
 }
 DEFAULT_MODEL = os.environ.get("EXPLAIN_MODEL", "h3-max-turbo")
 DEFAULT_RESOLUTION = os.environ.get("EXPLAIN_RESOLUTION", "480P")
@@ -383,8 +383,9 @@ def fal_clip(prompt, seconds, resolution, out, image=None, refs=None, seed=None,
         if ref_audio:
             body["reference_audio_urls"] = [_data_url(ref_audio)]
         body["aspect_ratio"] = "16:9"
-        # reference-to-video costs the same at 480P and 768P, so always take the higher one
-        body["resolution"] = os.environ.get("EXPLAIN_REF_RESOLUTION", "768P")
+        # reference-to-video is $0.05/s at 480P vs $0.08/s at 768P, so it follows --resolution (480P default);
+        # EXPLAIN_REF_RESOLUTION forces one resolution for reference scenes only
+        body["resolution"] = os.environ.get("EXPLAIN_REF_RESOLUTION") or resolution
         endpoint = base + "/reference-to-video"
     elif image:
         body["image_url"] = _data_url(image)
@@ -781,7 +782,7 @@ def main():
         mode = f" (reference-to-video, {len(refs)} refs, {len(ref_videos)} ref videos{', lipsync' if ref_audio else ''})" if (refs or ref_videos or ref_audio) else (" (image-to-video)" if image else "")
         print(f"[fal] {sc['id']} {secs}s in {t:.0f}s via {used}{mode}", flush=True)
         return secs * MODELS[used]["price"][a.resolution]
-    print(f"[clips] {a.model} @ {a.resolution} (scenes with refs/lipsync -> h3-max reference-to-video @ {os.environ.get('EXPLAIN_REF_RESOLUTION', '768P')}, same price)", flush=True)
+    print(f"[clips] {a.model} @ {a.resolution} (scenes with refs/lipsync -> h3-max reference-to-video @ {os.environ.get('EXPLAIN_REF_RESOLUTION') or a.resolution})", flush=True)
     with ThreadPoolExecutor(a.jobs) as ex:
         spend = sum(ex.map(make_clip, range(len(scenes))))
     # a failed submit (fal lock, rate limit) used to leave one clip missing and exit 0; retry those once, then fail loudly

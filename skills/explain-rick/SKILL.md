@@ -27,7 +27,7 @@ Off-screen speakers: a tagged speaker with no body on screen (an AI, a radio, a 
 python3 ${CLAUDE_SKILL_DIR}/../explain/scripts/render.py <workspace>/out/<slug>-rick/script.json
 ```
 Flags are the same as `/explain`: `--dry-run` (placeholder clips, no fal spend; add `EXPLAIN_LEAN_DRY=1` to the environment to see the assembled lean prompts), `--resolution 480P|768P`, `--no-captions`, `--music FILE` (off by default for this style), `--voice fish` (only with `RICK_FISH_VOICE_ID` and `MORTY_FISH_VOICE_ID` set; see below).
-Model: every scene in this style uses reference stills and a voice sample, so it is routed to `h3-max` reference-to-video ($0.08/s at either resolution; 480P saves nothing). A 6-scene lesson is about $4-6. Reference-to-video costs the same at 480P and 768P, so the renderer always requests reference scenes at 768P (`EXPLAIN_REF_RESOLUTION` overrides).
+Model: every scene in this style uses reference stills and a voice sample, so it is routed to `h3-max` reference-to-video ($0.08/s at either resolution; 480P saves nothing). A 6-scene lesson is about $4-6. Reference-to-video is $0.05/s at 480P and $0.08/s at 768P, so it follows `--resolution` (480P default); `EXPLAIN_REF_RESOLUTION` forces one for reference scenes alone.
 Keys: the renderer reads `<workspace>/.env` (see `.env.example`) and the environment. If they live only in the user's shell rc, load them without printing: `eval "$(grep -E "^\s*export (FAL_API_KEY|FISH_AI_API_KEY|OPENAI_API_KEY)=" ~/.zshrc)"`. Only `FAL_API_KEY` is needed for the default (lean) path. If it is missing, run with `--dry-run` and tell the user.
 
 ### Lean mode (the default): two voice samples, no TTS
