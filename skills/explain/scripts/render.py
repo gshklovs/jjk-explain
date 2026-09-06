@@ -245,6 +245,7 @@ STYLES = {
         "music": None,          # no bed unless the script or --music asks
         "cast_words": r"young man|creator|influencer|streamer|kid",
         "cast_on_work": False,  # snap/work b-roll never gets the cast paragraph bolted on (nobody should be in it)
+        "thumb_from": "character",   # the poster is his face (he gets the clicks) with the phrase slammed across it
         "default_sound": "quiet room tone, the faint hiss of a phone microphone, no music",
         "default_instr": "Fast, flat, deadpan young man talking to his phone camera. Blunt one-word verdicts, no warmth, no upspeak; a beat of silence before the number.",
         # word slam: 1.5 s, bold white caps on black, yellow subtitle; omit title scenes from the script for no card
@@ -1102,6 +1103,15 @@ def main():
     for i, sc in enumerate(scenes):
         if sc["kind"] == "title" and STYLE.get("thumb_kanji") and STYLE["thumb_kanji"] in sc.get("kanji", ""):
             preferred = next((j for j in shots if j > i), None); break
+    # a script-level "thumb" ({"scene": "s2", "text": "COMPETITION IS FOR JESTERS", "at": 4.0}) or a style
+    # "thumb_from": "character" picks a face shot for the poster and slams the phrase across it in the caption look
+    tcfg = S.get("thumb") or ({} if STYLE.get("thumb_from") != "character" else {})
+    if S.get("thumb") is not None or STYLE.get("thumb_from") == "character":
+        want = (S.get("thumb") or {}).get("scene")
+        cand = next((j for j in shots if scenes[j]["id"] == want), None) if want else \
+               next((j for j in shots if scenes[j].get("shot", S.get("shot", "character")) == "character"), None)
+        if cand is not None:
+            preferred = cand
     cands = []
     for j in shots:
         clip = f"{out}/{scenes[j]['id']}_clip.mp4"
@@ -1113,9 +1123,18 @@ def main():
         good = [c for c in cands if c[3] >= MIN_Y]
         pref = [c for c in good if c[0] == preferred]
         j, clip, t, _ = max(pref or good or cands, key=lambda c: c[3])
+        if S.get("thumb", {}).get("at") is not None and preferred is not None and j == preferred:
+            t = float(S["thumb"]["at"])
         thumb = f"{out}/thumb.jpg"
-        sh(["ffmpeg", "-y", "-ss", f"{t:.2f}", "-i", clip, "-frames:v", "1", "-q:v", "2",
-            "-vf", f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2", thumb])
+        ttext = (S.get("thumb") or {}).get("text")
+        vf = f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2"
+        if ttext:
+            lab = STYLE.get("label", {})
+            font = lab.get("font", "Arial Black") if STYLE.get("captions", {}).get("mode") == "words" else lab.get("font", EN_FONT)
+            hi = STYLE.get("captions", {}).get("highlight", "yellow")
+            vf += (f",drawtext=text='{esc(ttext)}':font='{font}':fontsize=84:fontcolor={hi}:borderw=6:bordercolor=black:"
+                   f"x=(w-tw)/2:y=h-th-90")
+        sh(["ffmpeg", "-y", "-ss", f"{t:.2f}", "-i", clip, "-frames:v", "1", "-q:v", "2", "-vf", vf, thumb])
         # make it frame one too (a 2-frame hold, invisible in playback, so every player's poster is this frame)
         hold = 2 / FPS
         tmp = final + ".tmp.mp4"

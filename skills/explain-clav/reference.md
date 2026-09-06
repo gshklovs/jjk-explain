@@ -230,10 +230,13 @@ B-roll goes wrong in two ways: a stranger talking at the camera while the charac
 The quirk budget is a ceiling, not a quota. One or two of his moves per video, placed where they land on their own: the vocabulary verdict where the wrong way is shown, the rating as the one number. Five quirks in sixty seconds ("certified chud, descending", a self-own, a fake-serious pause and a slogan all in a row) read as a bit being performed; the user called it forced. If a line would work without the quirk, leave the quirk out. He is deadpan because he says less, not more.
 
 ## He is on screen
-The face is the continuity of a short. Two of six shots are him talking to the lens (the hook and the verdict), seeded from the sharpest stills (`clav-hd-*.jpg`); the snaps between them carry the visuals. Zero face is a fallback for a likeness that failed, not the default.
+The face is the continuity of a short. Three of six shots are him talking to the lens (the hook, the premise line in the middle, and the verdict), seeded from the sharpest stills (`clav-hd-*.jpg`); the snaps between them carry the visuals. The user's verdict on the first good cut: the last clip was golden, and a face in the middle keeps the short his. Zero face is a fallback for a likeness that failed, not the default.
 
 ## No numbers, no text, in the footage (hard rule)
 Video models cannot draw digits or words; every price tag, counter, sign, label, screen, chalkboard or handwritten number comes out garbled. Never write a prompt that asks for one, and never write a line whose visual would need one ("crossing out the price", "the counter reads eleven", "a sign that says..."). Show the quantity physically instead (four carts, three queues, a plate full versus a plate empty, a disc with eleven lobes you can count) and put any words or numbers in renderer `"labels"` or captions. Pre-render check: grep the prompts for digits and for sign|price|menu|label|screen|text|number|written|chalk; any hit is rewritten.
 
 ## Fewer numbers
 The premise carries the only number ("zero to one", "one to n"); do not add a decimal rating on top, it competes with the premise. Where a rating would go, use the vocabulary verdict instead ("that cart is a chud").
+
+## Thumbnail
+The poster is his face (he gets the clicks) with the video's phrase slammed across it in the caption look: script-level `"thumb": {"scene": "s2", "text": "COMPETITION IS FOR JESTERS", "at": 7.5}`; the style default picks the first character shot. The text is the premise or the verdict, three to five words, caps.
