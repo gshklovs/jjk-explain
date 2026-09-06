@@ -1,0 +1,49 @@
+# Building a new `/explain-*` style: the playbook
+
+Read this before adding a voice. It is the distilled record of what went wrong building the first six (JJK, Iroh, Rick, Stark, HxH, Clav) and what fixed it. The renderer is shared; a style is a data-table entry in `skills/explain/scripts/render.py` (`STYLES`) plus a bible (`skills/explain-<name>/reference.md`) and a `SKILL.md`. Do not fork the renderer; add fields.
+
+## 1. Research the voice (before writing anything)
+- Get real footage: the user's clips first (`~/Library/Messages` attachments or links they texted themselves), then 2-3 more via `yt-dlp` (`--write-auto-sub --skip-download` gives cadence cheaply). Transcribe with Whisper (word timestamps) so the bible quotes real rhythm, not an impression.
+- Study the gold clip frame by frame (ffmpeg tile + view it): how it is cut, how captions look and how fast they change, where it snaps to a visual, what the person does with their hands.
+- Collect the persona, not just the register: 12-15 of the person's funniest lines and bits, each tagged by what it is for (a rating, a dismissal, a self-own, a flex, a fake-serious aside), their vocabulary (Clav: mogged, over, brutal, jester, chud, ascending, descending), their tics (Rick's burp, Stark's number-before-every-attempt, Iroh's tea). Turn that into a per-script QUIRK BUDGET in `SKILL.md` step 3 that the writer must hit (e.g. one one-word verdict, one rating, "bro" twice, one out-of-pocket line, one self-deprecating aside). Without a budget the writer produces the topic's own phrasing ("competition is for losers") instead of the character's ("competition is for jesters, bro").
+
+## 2. Assets (`assets/ref/<name>/`, gitignored)
+- Stills cut from footage: face, bust, three-quarter, full, hands; 1280x720, no captions/watermarks; view every one. Soft or vertical crops give a "random dude" likeness: if the stills are weak, plan for zero or one character shot.
+- Voice sample 10-14 s, mono, no music, verified by transcription. Real clip audio beats a TTS clone. For dubbed shots, a fish.audio public clone or a private clone made from the sample.
+- Object references for anything with a specific shape (Wikipedia diagrams, product photos), padded to 16:9. Colored diagrams need "monochrome wireframe, ignore the reference's colors" in the prompt.
+
+## 3. Renderer entry (`STYLES["<name>"]`)
+lock, fish_voice/voices (+ env override), voice_sample/voice_samples, lipsync_audio "model", words_per_sec, pause, music (None for conversation styles), cast_words, default_sound, default_instr, title dict (English-only styles set font/hud/seconds), thumb_kanji, label look, offscreen tags, say_lines per speaker, lean_tag, refs/ref_owners/ref_labels/refs_prefix/seed, outro, cast_on_work, captions mode. Every shared behaviour is a field; if a style needs new behaviour, add a field with the old behaviour as default and prove the other styles are byte-identical (`EXPLAIN_LEAN_DRY=1 --dry-run` on one example per style; diff `s*_prompt.txt` and `captions.srt`).
+
+## 4. Bible sections every style carries (copy from `explain-stark/reference.md`)
+How they teach (anchor lines from transcripts) · beats · registers · tiers · script.json shape · cast paragraph (describe, never name IP in prompts) · style lock · title card · sound line · reference images · lean-mode rules · lesson ideas · and the shared rules: Narration is not stage direction · Object references · Off-screen speakers · Say the number once (repeat the MAIN POINT, never an incidental figure) · No meta examples · Full sentences, five ideas, one thread · Two kinds of shots (character vs work, interleaved, ask the user which) · The six-shot arc · Labels and reference visuals on work shots (the line asks, the visual answers; hands act per part; name every motion; ≤30 words per dubbed shot) · Never lip-sync a stranger · Visualizing the words (verb not noun, no text in the picture, nobody talking in dubbed b-roll, continuity lightly, optional prop paragraph).
+
+## 5. Test protocol
+1. Dry-run; read every prompt; sound-off test: strip the narration and the pictures should still tell the story in order.
+2. One-scene probe of any new mechanism (a voice-over from a sample, a hologram from a reference, a caption mode) before a full render.
+3. Full test: the six-shot arc, 3-4 work/snap shots dubbed on turbo, 2-3 character shots on the reference path only if the likeness proves out; the user decides the split when present.
+4. Check the render on a contact sheet before showing it: likeness, no stranger talking, no garbled text, labels on cue, the visual answering the line.
+5. Costs: reference-to-video $0.05/s at 480P; turbo $0.025/s (promos apply to turbo only, as of Sep 2026). A six-shot seeded lesson is $2-3; killed runs still bill submitted clips.
+
+## 6. Failure modes seen, in the order they were found
+| Symptom | Cause | Fix (now in the bibles or renderer) |
+|---|---|---|
+| Narrator reads what the camera shows | stage-direction lines | Narration is not stage direction |
+| Ratio repeated three times, "no one cares" | one-number rule applied as a refrain | Say the number once; other lines carry distinct properties |
+| Story "all over the place" | seven metaphors, no running object | Full sentences, five ideas, one thread; running example |
+| "Before you are invisible, after you are invisible" | a meta example (marketing explained with a marketing purchase) | No meta examples: a concrete product |
+| Lines cut off; fast, un-narrator-like delivery | 2-4 word fragments; TTS trims tails | segment tail pad in the renderer; full sentences only |
+| Edited line plays the old audio | TTS segments cached by index; scenes never rebuilt | cache by content; rebuild stale scenes |
+| Chin/mouth moves during the AI's line | reference audio attached to a shot with any face | offscreen speakers: silent clip + Fish dub; no head in frame |
+| Suit-up replayed the film shot | seeded suit-up stills | cut straight to him in the suit; one armored still |
+| Hologram of a hiking boot; "Exploded view" spoken as a caption | vague prop names; the line captions the picture | name props literally; the line asks, the visual answers |
+| Hands bob; nothing spins; diagram colors bleed in | one gesture; motion not named; colored reference | hands act per part in label order; name every motion; monochrome rule |
+| A stranger's face in a turbo work shot | "hands rest at the edge" invites a body | "nobody in the room" written outright |
+| Random people talking; numbers on signs | b-roll illustrates nouns; text asked for | Visualizing the words; no text; nobody talking |
+| Lip-synced "random dude" instead of the character | soft vertical stills | Never lip-sync a stranger; dubbed b-roll instead |
+| Agents idle 35 min with no files | tmux teammates parked on the folder-trust dialog (shell `cd` before spawn) | never `cd`; in-process teammates; pane watchdog |
+| Render exits 0 with a clip missing | fal lock/rate limit mid-run | retry missing clips once, then fail loudly |
+| Everything at 768P "same price" | wrong assumption | reference is $0.05 at 480P; follow --resolution |
+
+## 7. Shipping
+Symlink in `install.sh` and `~/.claude/skills/`, one bullet under "Other voices" and one under the collapsed changelog in README, never more; assets stay gitignored; commit the skill, not the renders; release videos as GitHub release assets.

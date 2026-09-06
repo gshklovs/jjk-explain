@@ -10,3 +10,6 @@ You are installing the `/explain` Claude Code skill for a human. They only need 
 6. From then on the human types `/explain <concept>` in Claude Code. Read `skills/explain/SKILL.md` and `reference.md`; the bible in reference.md is the whole voice, do not improvise around it.
 
 Conventions the renderer relies on: one Fish generation per sentence at speed 1.0, stitched with real silence; the cast paragraph from `script.json` is auto-substituted for "the sorcerer/sorceress" in every shot prompt; title cards are rendered locally with ffmpeg, never by the video model; the thumbnail is the brightest caption-free frame of the domain reveal.
+
+## Adding a new voice
+Read `docs/new-style-playbook.md` first: research, assets, the STYLES entry, the bible sections every style carries, the test protocol, and the table of failure modes already solved.

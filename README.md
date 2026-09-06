@@ -149,6 +149,7 @@ skills/explain-rick/reference.md   its bible: how he teaches, beats, registers, 
 examples/                      finished scripts with transcripts, both styles
 eval/cases.json                real ELI5 asks used as test inputs
 docs/research.md               model/voice/format research behind the design (Sept 2026)
+docs/new-style-playbook.md     how to add a voice: research, assets, STYLES entry, bible sections, test protocol, failure modes
 assets/  out/                  gitignored: music beds, reference stills, voice samples, renders
 ```
 
