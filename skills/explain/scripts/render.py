@@ -260,8 +260,10 @@ STYLES = {
         "say_lines": {"clav": ("The young man is centred in frame at chest height with a ring light catch in his eyes, looks "
                                "straight into the phone camera, deadpan, small hand gestures, and says, in the voice of "
                                "Audio 1, exactly these words and nothing else: \"{line}\"")},
-        "refs": ["assets/ref/clav/clav-face.jpg", "assets/ref/clav/clav-bust.jpg", "assets/ref/clav/clav-hands.jpg",
-                 "assets/ref/clav/clav-3q.jpg", "assets/ref/clav/clav-wide.jpg"],
+        # 1080p-native crops from a studio interview (docs/clav-research.md); the first set (clav-face/bust/hands/3q/wide,
+        # soft crops of the two source clips) produced "a random dude" and is kept on disk only as an override
+        "refs": ["assets/ref/clav/clav-hd-1.jpg", "assets/ref/clav/clav-hd-2.jpg", "assets/ref/clav/clav-hd-3.jpg",
+                 "assets/ref/clav/clav-hd-4.jpg", "assets/ref/clav/clav-hd-5.jpg"],
         "seed": 1217,
         "refs_prefix": ("Image 1 to Image {n} show the same young man; keep his face, dark wavy hair, jawline and build "
                         "consistent with them; his clothes and the room follow the description. "),
@@ -547,7 +549,7 @@ def whisper_words(audio, cache):
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         return None
-    if os.path.exists(cache):
+    if os.path.exists(cache) and os.path.getmtime(cache) >= os.path.getmtime(audio):   # a re-dubbed line invalidates the cache
         return json.load(open(cache))
     wav = cache.replace(".json", ".wav")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", audio, "-vn", "-ac", "1", "-ar", "16000", wav], check=True)

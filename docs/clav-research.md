@@ -194,3 +194,18 @@ Distilled quirks (used in the bible):
   `CLAV_FISH_VOICE_ID` overrides it (e.g. with one of the public IDs above).
 - Lean mode (the default) does not use Fish for character shots: the video model speaks from
   `clav-voice.wav`.
+
+## Likeness, second pass (2026-09-05, after the user's verdict)
+- The first Zero to One render lip-synced three character shots on the five soft stills above; the user's verdict was
+  "a random dude" (a generic curly-haired kid). Rule adopted: never lip-sync a person who is not clearly the character;
+  the shot becomes a dubbed snap over b-roll while his voice plays. Character shots default to zero for this style.
+- Sharper sources via `yt-dlp -S res:1080`: a 1080p studio interview (VladTV, 8D3NEp_yZLs; him alone, three-quarter
+  profile, white curtains, grey polo, lavalier mic, small watermark top-left) and a 1080p podcast segment (UMrnJ-hsmJs;
+  split-screen panels, him on a couch). The Piers Morgan interview section download stalled.
+- `clav-hd-1..5.jpg`: 1280x720 crops at native resolution from the VladTV clip (t = 40, 62, 100, 120 s and 150 s),
+  watermark cropped out, no captions. Sharp; not frontal (he faces an interviewer off left).
+- One paid test character shot (`out/zero-to-one-clav/hd-test/`, $0.60): noticeably closer than the first set (the
+  jaw, brows and the forehead curl read as him); a "counts on his fingers" gesture produced a rude-looking hand for a
+  few frames. The style's default refs now point at the hd set; whether it is clearly him is the user's call.
+- The rewritten all-snap render (`render3/`, six dubbed snaps, $1.75) is the deliverable: his voice and captions over
+  b-roll, no face.

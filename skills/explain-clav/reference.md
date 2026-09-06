@@ -42,16 +42,55 @@ The gold reference is the 92-second ad: a hook question in the first sentence, o
 
 Quirks to keep (from twelve moments in `docs/clav-research.md`): every verdict is a number with decimals or a percentile and every number gets a measurement as its reason, never a feeling; he corrects the scale before the person; he grants the exception and closes it in the same breath; he refuses anecdotes by naming them; he declines exactly one thing per conversation, on principle; he recruits the skeptic into the category; escalation is calm (a wild claim, then the mechanism, then "that's all I'm saying"); exits are polite and final.
 
-Cadence: 2.8 to 3.1 words per second, sentences of three to nine words, a full sentence then a fragment, "bro" or "dude" at the end of a line at most once per shot. Verdict words: brutal, mogged, over, jester, cooked, ascended, it's not over. Never "basically", never "so essentially", never a rhetorical "right?" more than once per video.
+Cadence: 2.8 to 3.1 words per second, sentences of three to nine words, a full sentence then a fragment, "bro" or "dude" at the end of a line at most once per shot. Never "basically", never "so essentially", never a rhetorical "right?" more than once per video.
+
+## Verdict vocabulary (his words; use them as verdicts, not as decoration)
+- **mogged** / **mog it**: outdone, outshone; the comparison verdict ("Billboard got mogged." "Don't be slightly better, mog it."). Variants for the axis: heightmog, framemog, pricemog.
+- **jester**: someone whose effort is a joke to everyone but themselves; the dismissal for the copier or the try-hard ("That guy's a jester, bro." "Competition is for jesters.").
+- **chud**: the flat dismissal for a loser with no plan, usually with a fake credential ("Certified chud."). Harsher than jester; one per video at most.
+- **brutal**: the one-word reaction to a cost or a number ("Twenty grand. Brutal.").
+- **over** / **it's over for him**: the terminal verdict; the last word of a short is often this.
+- **ascending** / **descending**: improving or falling off, said about a thing in the story like a stock ("That cart is ascending." "The copycat is descending, bro."). Ascending is his only compliment.
+- **cooked**: past saving; interchangeable with "over" for a thing rather than a person.
+- The rating: a decimal on his scale ("a three point seven five", "a six and a half"), always with a measurement as the reason, and "five is average" if anyone flinches.
+- **"Certified"**, **"bro"**, **"dude"**, **"I'm not gonna lie"**, **"swear to God"**, **"that's all I'm saying"**: the connective tissue; "bro" at least twice per video, the rest at most once each.
+
+## Funny things he says (paraphrased close; what each is for)
+1. "I won't be biased, you don't have to worry about that. Maybe a three point seven five." (a rating: the decimal is the joke; the flatness is the delivery)
+2. "Mostly the interpupillary distance. And the longer mid-face." (the reason: a measurement, never a feeling)
+3. "People don't understand the decimal scale. Five is average. Five is the fiftieth percentile." (a correction: he fixes the scale, not the number)
+4. "What you had to do to transcend a three point seven five was become famous and rich. The average three point seven five guy is never doing that." (a dismissal dressed as a concession)
+5. "Your bald fat buddy who gets laid is a one-off anecdote. We're talking general rules." (a dismissal by naming the argument)
+6. "I wouldn't rate myself. I just don't think it's the responsible thing to do." (a fake-serious refusal, the one careful sentence in the conversation)
+7. "There are no perfect tens because the technology isn't there yet." (a fake-serious aside: absurd premise, engineering tone)
+8. "He's a ninety-four. Fixing the forehead ratio for six percent would be ridiculous." (a rating with a cost-benefit, deadpan)
+9. "What's your score?" "I'm not going to tell you." (a refusal as a punchline)
+10. "You've done a calorie deficit. So by definition, you're a looksmaxxer. You're just on the surface level of it." (recruiting the skeptic into the category)
+11. "You might need to take it a step further. Maybe some peptides. Get a little leaner. That's all I'm saying." (an unprovoked verdict on the person in front of him, delivered as help)
+12. "That's a fair perspective. There's status mogs, money mogs. You might have me there. But it's not a looks mog." (granting the exception, then closing it)
+13. "By a small margin. That could be attributed to youth. Who knows." (a flex disguised as modesty)
+14. "This generational run would not have been possible without the looks." (a flex, stated as a finding)
+15. "Beautiful billboard, I'm not gonna lie. But it just sits there." (a self-undercut inside the pitch, then the knife)
+16. "Their own face, dude." "Mid-fade, dude." (the echo: the only joke he repeats, once)
+17. "See you, bro. Everything's fine." (the exit: polite and final, after ending the conversation himself)
+
+## Quirk budget (every script must hit all of these; check it before rendering)
+- At least one one-word verdict from the vocabulary above (jester, chud, mogged, brutal, over, ascending, descending, cooked), as its own sentence.
+- One rating on his scale, a decimal with a reason; this may be the video's one number ("That copycat cart is a three point seven five.").
+- "bro" at least twice.
+- One self-deprecating aside ("I'm not gonna lie, I'd have opened the copycat cart.").
+- One fake-serious pause: "Now look." or "Okay, so." or "That's all I'm saying." before or after the mechanism.
+- One out-of-pocket line: an unprovoked insult or verdict on someone in the story ("That guy's a jester." "Certified chud." "He's descending, bro."), placed where it is funniest, usually right after the wrong way is shown.
+- The concept's own slogan is rewritten in his words ("competition is for losers" becomes "competition is for jesters, bro"); a famous phrasing left intact is a sign the persona did not make it in.
 
 ## Beats (a short, not a lecture)
 1. TITLE (optional word slam): 1.5 s, the idea in white caps on black, a yellow one-line subtitle. "ZERO TO ONE" / "Competition is for losers". Silent. Leave it out of the script for no card at all.
-2. HOOK (character): the viewer's pain as a question, the running example named in the same breath, the concept's name dropped flat. Face on screen, lip-synced.
+2. HOOK (snap, or character once the refs prove out): the viewer's pain as a question, the running example named in the same breath, the concept's name dropped flat.
 3. THE ANALOGY (snap): the wrong way, shown. Cut to the picture the instant it is named; two or three labels pop as he lists what is wrong. The verdict word ends the shot.
-4. THE MECHANISM THROUGH THE ANALOGY (character): the one idea that makes the right way work, as a scene inside the running example ("Night nurses are starving before sunrise, and nobody feeds them.").
+4. THE MECHANISM THROUGH THE ANALOGY (snap): "Now look." Then the one idea that makes the right way work, as a scene inside the running example ("Night nurses are starving before sunrise, and nobody feeds them.").
 5. THE RIGHT WAY (snap): the running example done right, shown; labels for the concept's own words.
 6. THE NUMBER (snap): the one concrete number, said once, over a picture that makes it visible (the two things side by side). This is the only figure in the video.
-7. THE VERDICT (character): how it scales and the one-word verdict, to the lens, then a flat stare for the still frame. No new fact.
+7. THE VERDICT (snap, or character once the refs prove out): how it scales and the one-word verdict ("ascending", "over, bro"). No new fact.
 Keep the two hard rules from `/explain`: exactly one concrete number per video, and every line carries a distinct property (see "Say the number once"). The mechanism here is not a part he takes apart; it is a scene inside the analogy that the snap shows.
 
 ## Registers (--register)
@@ -121,7 +160,7 @@ The style's `captions` mode is `words`: the line is cut into groups of two to fo
 H3-Max generates native audio. Ask for the room and the b-roll only: "quiet room tone", "the faint hiss of a phone microphone", "street traffic", "a griddle sizzle", "a sliding door", "a vending machine thunk", "foil crinkling", "a keyboard", "a car passing". Always end with "no music" unless the script sets a `"music"` bed; the style has none by default.
 
 ## Reference stills and voice (default on)
-The style sets `"refs"` to five stills cut from the two clips (`assets/ref/clav/clav-face.jpg`, `clav-bust.jpg`, `clav-hands.jpg`, `clav-3q.jpg`, `clav-wide.jpg`) with `"seed": 1217`, so every character shot uses the reference-to-video endpoint and he is the same man across cuts. The renderer prepends "Image 1 to Image N show the same young man; keep his face, dark wavy hair, jawline and build consistent with them; his clothes and the room follow the description." The four office stills wear the ad's plaid shirt; the cast paragraph's black T-shirt overrides in the prompt. Extras: `clav-face-2.jpg` (a second close-up), `clav-ref.mp4` (7 s of him talking with both hands, for `"ref_videos"`, untested). User stills go FIRST in a script-level `"refs"` as `user-<n>.jpg`. `"refs": []` renders text-only. Snap shots send no refs.
+The style sets `"refs"` to five 1080p-native crops from a studio interview (`assets/ref/clav/clav-hd-1.jpg` to `clav-hd-5.jpg`: bust and medium, three-quarter profile, well lit, a lavalier mic on a grey polo) with `"seed": 1217`. The renderer prepends "Image 1 to Image N show the same young man; keep his face, dark wavy hair, jawline and build consistent with them; his clothes and the room follow the description." One paid test shot on these refs came out noticeably closer than the first set (the jaw, the brows, the forehead curl); whether it is clearly him is the user's call, and character shots stay off by default until they say so. The first set (`clav-face.jpg`, `clav-face-2.jpg`, `clav-bust.jpg`, `clav-hands.jpg`, `clav-3q.jpg`, `clav-wide.jpg`: soft crops of the two source clips) failed the likeness rule and is kept only as an explicit `"refs"` override. `clav-ref.mp4` (7 s of him talking with both hands) is for `"ref_videos"`, untested. User stills go FIRST in a script-level `"refs"` as `user-<n>.jpg`. `"refs": []` renders text-only. Snap shots send no refs. A finger-count gesture in the test prompt produced a rude-looking hand for a few frames: keep gestures to open hands and a temple tap.
 Voice: lean mode by default; `assets/ref/clav/clav-voice.wav` (14 s cut from the interview clip) is the sample the model speaks from on character shots. Snap shots are dubbed by the style's Fish voice: a private clone made from that same wav (`8a50551a527348a78507cb83fa300773`), overridable with `CLAV_FISH_VOICE_ID` (public "clav" voices exist on fish.audio; ids in `docs/clav-research.md`).
 
 ## Lean-mode rules
@@ -159,23 +198,23 @@ When the concept is about business, marketing, attention or persuasion, the runn
 - One thread: the running example is named in at least every other shot, so the verdict lands on something the viewer has been holding.
 - The payoff states the consequence in words, never a pose.
 
-## Two kinds of shots: character shots and snap shots (interleave them)
+## Two kinds of shots: snap shots by default, character shots only when the likeness holds
 Every shot is one of two kinds, set per scene with `"shot": "character" | "snap"` (`"work"` still works and means a snap that is not trimmed).
-- CHARACTER shot: the face is on screen and he speaks the line. Reference stills, the voice sample, the model's own lip-synced speech, reference-to-video ($0.05/s at 480P). Use it for the hook, the mechanism and the verdict.
-- SNAP shot: no face. The picture the line names: b-roll of the running example, a side-by-side, a screenshot-like card. Turbo ($0.025/s), the line dubbed by the Fish clone, trimmed to the line. Labels pop on cue words.
-- Interleave: three of each in a six-shot short, never two character shots in a row.
-- Cost: three character shots of 8-10 s plus three snaps is about $2.50 at 480P regular price.
-Before rendering, show the user the shot list with each shot's kind and the estimated cost, and ask which shots should be character (lip-synced) and which snap (dubbed); they may flip any.
+- SNAP shot (the default for this style): no face. The picture the line names: b-roll of the running example, a side-by-side, a screenshot-like card, stock-style footage. Turbo ($0.025/s), the line dubbed by the Fish clone, trimmed to the line. Labels pop on cue words. His voice and his captions carry the persona; the face is optional.
+- CHARACTER shot: the face is on screen and he speaks the line. Reference stills, the voice sample, the model's own lip-synced speech, reference-to-video ($0.05/s at 480P).
+- THE LIKENESS RULE (from the first Zero to One render): never lip-sync a person who is not clearly the character. The first cut used soft vertical close-ups as refs and the model drew a generic curly-haired kid; the user's verdict was "a random dude". If the likeness does not hold on a test shot, the shot becomes a snap: stock-style footage that fits the line while his voice plays. Character shots default to ZERO for this style until a set of refs has proven out on one paid test shot (see SKILL.md); then at most one or two per video, for the hook or the verdict.
+- Shot mix: more than half the shots are visuals; four, five or six of six as snaps is the normal shape. Never two character shots in a row.
+- Cost: six snaps of 7-10 s is about $1.50 at 480P regular price; each character shot adds about $0.50.
+Before rendering, show the user the shot list with each shot's kind and the estimated cost, and ask which shots (if any) should be character shots; they may flip any.
 
 ## The six-shot arc for this style
-Six shots after the optional word slam: three character, three snap, alternating:
-1. CHARACTER, hook: the question, the running example, the concept named flat.
-2. SNAP, the wrong way: the analogy's failure shown, labels for what is wrong, the verdict word.
-3. CHARACTER, the mechanism: the one idea, as a scene inside the example.
+Six shots after the optional word slam, all snaps unless the refs have proven out (then the hook or the verdict may be a character shot):
+1. SNAP, hook: the question, the running example, the concept named flat, over b-roll of the example's world.
+2. SNAP, the wrong way: the analogy's failure shown, labels for what is wrong, the rating and the out-of-pocket verdict.
+3. SNAP, the mechanism: the fake-serious pause, the one question, over the "before" state of the right way.
 4. SNAP, the right way: the example done right, labels for the concept's own words.
-5. SNAP, the number: the one figure over a side-by-side.
-6. CHARACTER, the verdict: how it scales, the one-word verdict, the flat stare.
-Two snaps in a row (4 and 5) are fine because both are short. Source 2-3 real images of any object that must look right; name objects literally in prompts; character shots carry likeness and voice, snaps carry the explanation.
+5. SNAP, the bar: the alternative side by side, "mog it", the self-deprecating aside.
+6. SNAP or CHARACTER, the verdict: how it scales (three places in three beats), "ascending", "over, bro". Source 2-3 real images of any object that must look right; name objects literally in prompts; character shots carry likeness and voice, snaps carry the explanation.
 
 ## Never lip-sync a stranger
 A character shot is allowed only when the reference stills reproduce the person. Check the rendered clip against the stills; if the model produced a generic look-alike, do not keep it: convert the shot to a dubbed work/snap shot (stock-style footage of the thing being talked about, no prominent face) with the character's voice over it, and re-render on turbo. A stranger lip-syncing the character's lines is worse than no face at all. When a style's stills are soft (vertical phone crops, low resolution), default to zero or one character shot until sharper stills are sourced, and let the voice, captions and cutaways carry the video.
