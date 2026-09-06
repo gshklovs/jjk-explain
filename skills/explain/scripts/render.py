@@ -228,7 +228,7 @@ STYLES = {
         # short-form talking head: a phone on a tripod, not a film camera
         # the talking-head framing lives in say_lines, not here: a lock that says "a young man talking into the lens"
         # made the turbo model open every snap on a stranger's face before cutting to the b-roll
-        "lock": ("Real phone-shot 4K video, a vertical short reframed to 16:9, ring-light clean, shallow phone-portrait "
+        "lock": ("Real phone-shot 4K video, a vertical short reframed to 16:9, soft even front lightn, shallow phone-portrait "
                  "depth of field, slightly warm colour, sharp and clean, handheld-still, no film grain, no anamorphic "
                  "flare, no cinematic grading. "),
         # a private fish.audio clone made from the interview clip (docs/clav-research.md); public "clav" voices exist
@@ -259,7 +259,7 @@ STYLES = {
         "outro": 0.0,
         "lean_tag": "clav",
         "say_lines": {"clav": ("The young man is framed dead centre, symmetrical, head and shoulders filling the middle of the "
-                               "frame, the ring light behind the camera and out of shot (no lamp, ring or stand visible), looks "
+                               "frame, soft even front light on the face, no lamp or light stand anywhere in the picture, looks "
                                "straight into the phone camera, deadpan, small hand gestures, and says, in the voice of "
                                "Audio 1, exactly these words and nothing else: \"{line}\"")},
         # 1080p-native crops from a studio interview (docs/clav-research.md); the first set (clav-face/bust/hands/3q/wide,
@@ -519,7 +519,7 @@ def title_clip(kanji, english, seconds, out):
 
 
 # ---------- per-scene assembly ----------
-def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labels_fc="", max_len=None):
+def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labels_fc="", max_len=None, reframe=None):
     """Normalize clip, extend to cover narration, mix narration over clip audio.
     lipsync clips carry the model's own speech track (spoken in sync with the mouth by construction).
     model_audio=True keeps that track as the voice and drops our narration; otherwise the clip audio
@@ -533,7 +533,11 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labe
         target = min(target, float(max_len))
     amb_gain = "-100dB" if (is_title or (lipsync and not model_audio)) else ("0dB" if model_audio else "-9dB")
     nar_gain = "-100dB" if model_audio else "0dB"
-    fc = (f"[0:v]scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,"
+    rf = ""
+    if reframe:   # centre a subject the model placed off-axis: crop a window around (cx, cy) and scale it back up
+        z = float(reframe.get("zoom", 1.25)); cx = float(reframe.get("cx", 0.5)); cy = float(reframe.get("cy", 0.5))
+        rf = (f"crop=iw/{z}:ih/{z}:min(max(iw*{cx}-iw/{2*z}\\,0)\\,iw-iw/{z}):min(max(ih*{cy}-ih/{2*z}\\,0)\\,ih-ih/{z}),")
+    fc = (f"[0:v]{rf}scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,"
           f"fps={FPS},format=yuv420p,tpad=stop_mode=clone:stop_duration={max(0, target-cd)+0.1}"
           + (f",{labels_fc}" if labels_fc else "") + "[v];"
           f"[0:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={amb_gain},apad[amb];"
@@ -991,6 +995,11 @@ def main():
                        or bool(sc.get("voice_sample", S.get("voice_sample")))) and sc["kind"] != "title" and not a.dry_run \
                       and not is_offscreen(sc)
         labels_fc = ""
+        if sc.get("reframe"):
+            stamp = f"{out}/{sc['id']}_reframe.txt"; sig = json.dumps(sc["reframe"], sort_keys=True)
+            if not (os.path.exists(stamp) and open(stamp).read() == sig):
+                open(stamp, "w").write(sig)
+                if os.path.exists(f): os.remove(f)
         if sc.get("labels") and sc["kind"] != "title":
             stamp = f"{out}/{sc['id']}_labels.txt"; sig = json.dumps(sc["labels"], sort_keys=True)
             if not (os.path.exists(stamp) and open(stamp).read() == sig):
@@ -1013,7 +1022,7 @@ def main():
                                  0.0 if model_audio else 0.6)
         durs.append(build_scene(f"{out}/{sc['id']}_clip.mp4", f"{out}/{sc['id']}_nar.wav", f, sc["kind"] == "title",
                                 lipsync=bool(sc.get("lipsync", S.get("lipsync", False))) and sc["kind"] != "title" and not a.dry_run,
-                                model_audio=model_audio, labels_fc=labels_fc, max_len=max_len))
+                                model_audio=model_audio, labels_fc=labels_fc, max_len=max_len, reframe=sc.get("reframe")))
         scene_files.append(f)
     starts = [sum(durs[:i]) for i in range(len(durs))]
 

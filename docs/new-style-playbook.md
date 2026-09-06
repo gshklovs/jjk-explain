@@ -45,7 +45,7 @@ How they teach (anchor lines from transcripts) · beats · registers · tiers ·
 | Agents idle 35 min with no files | tmux teammates parked on the folder-trust dialog (shell `cd` before spawn) | never `cd`; in-process teammates; pane watchdog |
 | Render exits 0 with a clip missing | fal lock/rate limit mid-run | retry missing clips once, then fail loudly |
 | Everything at 768P "same price" | wrong assumption | reference is $0.05 at 480P; follow --resolution |
-| Face shots off-centre despite "centred" in the prompt | reference stills were off-centre interview frames; composition is copied | re-crop refs centred and frontal; write symmetry and the absent lamp into the prompt |
+| Face shots off-centre despite "centred" in the prompt | reference stills were off-centre interview frames; composition is copied | re-crop refs centred; never name a light in the prompt (it gets drawn and pushes the subject aside); `reframe` a shot deterministically rather than re-rolling |
 
 ## 7. Shipping
 Symlink in `install.sh` and `~/.claude/skills/`, one bullet under "Other voices" and one under the collapsed changelog in README, never more; assets stay gitignored; commit the skill, not the renders; release videos as GitHub release assets.
