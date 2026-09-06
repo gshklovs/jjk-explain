@@ -230,3 +230,6 @@ The exit carries the only number ("in five minutes") unless the payoff needs one
 
 ## Thumbnail
 The poster is his face (the deadpan gets the clicks) with the video's phrase slammed across it in the caption look: script-level `"thumb": {"scene": "s2", "text": "IS IT COOKED IF IT TOUCHES A PIPE", "at": 3.0}`; the style default picks the first character shot. The text is the hook question or the exit, three to six words, caps.
+
+## Which stills (decided)
+Default refs are the channel stills: his mouth is visible and the studio reads as his. The interview stills (`iv-*.jpg`) put the big mic over his mouth in every frame, because the render copies the stills' composition; they stay on disk as a script-level `"refs"` override for a lesson that wants the exact interview frame. The user compared both renders and preferred the channel set.
