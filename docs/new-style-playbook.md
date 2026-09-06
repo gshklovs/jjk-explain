@@ -1,6 +1,38 @@
 # Building a new `/explain-*` style: the playbook
 
-Read this before adding a voice. It is the distilled record of what went wrong building the first six (JJK, Iroh, Rick, Stark, HxH, Clav) and what fixed it. The renderer is shared; a style is a data-table entry in `skills/explain/scripts/render.py` (`STYLES`) plus a bible (`skills/explain-<name>/reference.md`) and a `SKILL.md`. Do not fork the renderer; add fields.
+Read this before adding a voice. It is the living record of what went wrong building the first eight (JJK, Iroh, Rick, Stark, HxH, Clav, Matan) and what fixed it; every new style appends what it learned. The renderer is shared; a style is a data-table entry in `skills/explain/scripts/render.py` (`STYLES`) plus a bible (`skills/explain-<name>/reference.md`) and a `SKILL.md`. Do not fork the renderer; add fields.
+
+## 0. First decide which kind of voice it is
+Every style is one of three kinds, and the kinds have different lessons. Pick the kind first; then the general steps below, then the kind-specific section.
+
+| Kind | Examples | Who speaks | Where the face is | Cost per lesson |
+|---|---|---|---|---|
+| NARRATOR | JJK (`/explain`), HxH | an off-screen voice over generated footage; characters on screen never speak | optional; the cast can be original, or seeded stills with mouths closed | $0.30-2 on turbo |
+| CHARACTER / DIALOGUE | Iroh, Rick, Stark | one or two on-screen characters talking to each other or to the viewer, plus a bodiless voice (an AI, a student off-screen) | the seeded likeness, lip-synced on character shots; hands-only work shots between | $2-3 |
+| MONOLOGUE / SHORT-FORM | Clav, Matan | one real person talking to the lens, cut with snaps | the real person, seeded from real footage; three face shots, three snaps | $1.7-2.5 |
+
+### Narrator styles: what we learned
+- The narrator is Fish TTS over turbo clips; no likeness path needed, so it is the cheapest kind. Music bed with sidechain ducking, kanji title cards drawn locally, an outro hold (5 s, fades) so the theme plays out.
+- Captions are estimate-based per sentence; fine, because the TTS is ours. Pad every TTS segment's tail (the renderer does) or short sentences clip.
+- The writing carries everything: puzzle-first, the mechanism shown as a physical thing, one number said once, full sentences (fragments read as a shot list and the TTS rushes them), never narrate the camera, the last line a repeatable takeaway.
+- A seeded cast is possible without lip sync (HxH: refs for the two students, an off-screen narrator sample, mouths closed via `say_lines`), but the reference path costs 2-3x turbo; use it only where the likeness is the point.
+- Mechanism visuals: study a real diagram before writing the prompt (the cycloidal disc came out as a spur gear until we did), pass it as `objects` when exact shape matters, say "monochrome wireframe, ignore the reference's colors" for colored diagrams. Generative video will not enforce contact geometry; for a mechanism where the motion is the lesson, a computed diagram clip is the honest route.
+- Regression: the same script through the renderer must give byte-identical prompts; re-run the v0.1 example after big changes.
+
+### Character / dialogue styles: what we learned
+- Likeness = stills cut from real footage (4-5, first 4 free) + a fixed seed; voice = a 10-14 s clip-cut sample in lean mode (the model speaks and lip-syncs itself); the Fish clone is only for dubbed work shots. Never let a look-alike mouth the lines: if the likeness fails, the shot becomes dubbed b-roll.
+- Two speakers: tags per scene; a bodiless voice (the AI, the narrator) is `offscreen` (silent clip + Fish dub, no head in frame, not even a chin) or the model animates whatever face it finds.
+- The six-shot arc: character intro with the quirk, zoomed visualization of the object with labels, the mechanism on the object, reaction/stakes, the result, the concluding phrase. Half the shots are work shots (hands, the part, the hologram, the sand) on turbo, dubbed; ask the user which shots are lip-synced.
+- Work shots: the line asks, the visual answers, in that order; hands do one thing per named part in label order; name every motion; no face (write "nobody in the room" outright on turbo); ≤30 words per dubbed line; labels drawn by the renderer, never text in the picture; vary the device (the AI reads it, he builds it, he breaks it, on the suit, run it).
+- Persona lives in the physical business (Stark's number before every attempt, the robot with the extinguisher, Iroh's tea), not in adjectives. The payoff is on the thing itself (the suit lifting the car), cut straight to it, do not stage a transformation from seeded stills (the model replays the film shot).
+- Repetition: say the number once; repeat the main point only to conclude.
+
+### Monologue / short-form styles: what we learned
+- The person is the continuity: three face shots (hook, premise, verdict) seeded from the sharpest centred frontal stills, snaps between. Composition is copied from the stills (off-centre interview frames, a mic over the mouth, a second room in one still all showed up in the render): crop refs centred, keep one room, and `reframe` a shot deterministically rather than re-roll it. Never name a light in a prompt.
+- Snaps: 3-5 s b-roll cut to the dub length, dubbed by a clone trained on windows with the person's own vocabulary (an interview-only sample mispronounced "mog"), visualizing the verb of the line (tired nurses walking out, not "a hospital"), nobody talking, no text, more than half the runtime if it keeps it interesting.
+- Captions in their look: word groups timed per word from Whisper, one keyword highlighted, a word-slam title instead of a card, the face as the thumbnail with the phrase across it (he gets the clicks).
+- Persona: collect 12-15 tagged funny moments; write a quirk CEILING of one or two moves placed where they land, never a checklist (five in sixty seconds read as forced); use their vocabulary the way they use it ("got mogged", not "mog it"); one out-of-pocket verdict at most. The premise carries the only number; no decimal ratings on top.
+- Seeding on an interview: age-gated video needs exported cookies; the podcast feed gives the audio and transcript regardless; the solo stretch (an ad read) is where the clean stills are; a questioner persona becomes an interview with no guest.
 
 ## 1. Research the voice (before writing anything)
 - Get real footage: the user's clips first (`~/Library/Messages` attachments or links they texted themselves), then 2-3 more via `yt-dlp` (`--write-auto-sub --skip-download` gives cadence cheaply). Transcribe with Whisper (word timestamps) so the bible quotes real rhythm, not an impression.
