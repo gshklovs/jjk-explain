@@ -96,7 +96,7 @@ Rules (unchanged from `/explain` unless noted):
 - Helmet, armor: not his. If a suit appears it is a part on the bench, on a stand or on the rig, never on him. The suit-up stills (`suitup-*.jpg`) are for the final under-load beat only, via a per-scene `"refs"`.
 
 ## Cast (use verbatim; never name the films)
-Inventor: "a dark-haired man with a trimmed goatee in a dark tank top, oil on his hands and forearms, no armor, at a steel workbench in a private workshop"
+Inventor: "a dark-haired man with a trimmed goatee in a dark tank top, clean hands, no armor, at a steel workbench in a private workshop"
 The AI: "an unseen calm British-accented artificial intelligence, present only as pale blue holographic rings, text and schematic lines floating in the air"
 Robots (optional, describe only): "a wheeled robotic arm with a three-finger claw holding a fire extinguisher"; "a second robotic arm on a rail holding the part up to the light".
 
