@@ -18,7 +18,8 @@ Env (or <repo>/.env): FAL_API_KEY (or FAL_KEY), FISH_AI_API_KEY, OPENAI_API_KEY,
      EXPLAIN_LEAN_DRY=1 (with --dry-run: still compose lean prompts; missing samples/refs only warn; no fal call)
      STARK_FISH_VOICE_ID / AI_FISH_VOICE_ID (the inventor and the AI voices for "style": "stark")
      CLAV_FISH_VOICE_ID (the fish voice that dubs work/snap shots for "style": "clav"; default: a private clone)
-Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "hxh" | "stark" | "rick" | "clav". The style picks the
+     MATAN_FISH_VOICE_ID (same, for "style": "matan"; default: a private clone)
+Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "hxh" | "stark" | "rick" | "clav" | "matan". The style picks the
      prompt style lock, the title-card look, the default fish voice and the default music
      ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/; "rick" defaults to no music).
      "rick" is two-voice lean mode: "[rick] ..." / "[morty] ..." pick the voice sample and the prompt's speaker.
@@ -270,6 +271,54 @@ STYLES = {
         "refs_prefix": ("Image 1 to Image {n} show the same young man; keep his face, dark wavy hair, jawline and build "
                         "consistent with them; his clothes and the room follow the description. "),
         "ref_labels": {"clav": "the young man"},
+    },
+    "matan": {
+        # a deadpan podcast interview with no guest: one locked-off camera, flat light, a bedsheet backdrop. The
+        # table/card/mic framing lives in the cast paragraph and say_lines (character shots only), never in the lock,
+        # so turbo snaps stay plain documentary b-roll (same lesson as clav: a talking head in the lock leaks into b-roll)
+        "lock": ("Real video from a locked-off camera on a tripod, flat even lighting, plain unsaturated colour, sharp "
+                 "and clean, documentary-plain, no film grain, no anamorphic flare, no cinematic grading. "),
+        # a private fish.audio clone trained on eleven windows of him alone from the seed interview's podcast audio,
+        # including his signature lines (docs/matan-research.md). Only used to dub work/snap shots.
+        "fish_voice": os.environ.get("MATAN_FISH_VOICE_ID") or "4d4d9d307b4f4df1bc125c923fc16fd2",
+        "voice_label": "matan",
+        "voices": {"matan": os.environ.get("MATAN_FISH_VOICE_ID") or "4d4d9d307b4f4df1bc125c923fc16fd2"},
+        "fish_speed": 1.0,
+        "lipsync_audio": "model",
+        "voice_sample": "assets/ref/matan/matan-voice.wav",   # lean mode: 13 s of him alone (the intro + the nose question)
+        "voice_samples": {"matan": "assets/ref/matan/matan-voice.wav"},
+        "pause": 0.6,
+        "words_per_sec": 3.3,   # measured 3.3-4.3 wps on his lines (3.7 overall); he pauses between questions
+        "music": None,          # no bed unless the script or --music asks
+        "cast_words": r"young man|host|interviewer|teenager|kid",
+        "cast_on_work": False,  # snap/work b-roll never gets the cast paragraph bolted on (nobody should be in it)
+        "thumb_from": "character",   # the poster is his deadpan face with the question slammed across it
+        "default_sound": "quiet studio room tone, the faint hum of a microphone preamp, no music",
+        "default_instr": "Flat, sincere-sounding teenage interviewer asking absurd questions as if they were serious. No smile in the voice, no upspeak; a beat of silence after each question.",
+        # word slam in his studio's palette: black caps on white, a grey subtitle; 1.5 s; omit title scenes for no card
+        "title": {"bg": "white", "ink": "black", "en": "0x555555", "glyph": None, "noise": False,
+                  "font": "Arial Black", "split": False, "seconds": 1.5},
+        "thumb_kanji": "",
+        "label": {"color": "white", "border": "black", "size": 36, "font": "Arial Black"},   # stands in for his white pill labels
+        # captions: 2-3 word groups (his questions are short), centred just below the middle, one word in yellow
+        "captions": {"mode": "words", "group": 3, "size": 60, "y": 0.66, "font": "Arial Black",
+                     "color": "FFFFFF", "highlight": "00FFFF", "outline": 4, "upper": True},
+        "outro": 0.0,
+        "lean_tag": "matan",
+        "say_lines": {"matan": ("The young man sits low at the black folding table with the yellow index card in one hand, "
+                                "glances down at the card, then looks straight into the camera, deadpan, no smile, hands "
+                                "still, and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\" One unbroken "
+                                "take in this one room from start to finish: no cut, no dissolve, no second location.")},
+        # 1080p-native crops of two guest close-ups plus his own studio. The face stills show another room, and on the
+        # first render the model cut to that room (a dissolve into the still) for the last two seconds of a shot; the
+        # say_lines' "one unbroken take" clause fixed it on the retake (docs/matan-research.md); the seed interview is
+        # age-gated on the platform, so no still comes from it
+        "refs": ["assets/ref/matan/matan-face.jpg", "assets/ref/matan/matan-front.jpg", "assets/ref/matan/matan-3q.jpg",
+                 "assets/ref/matan/matan-set.jpg", "assets/ref/matan/matan-hands.jpg"],
+        "seed": 2007,
+        "refs_prefix": ("Image 1 to Image {n} show the same young man; keep his face, the mop of dark curly hair, round "
+                        "cheeks and build consistent with them; his clothes and the room follow the description. "),
+        "ref_labels": {"matan": "the young man"},
     },
 }
 STYLE = STYLES["jjk"]   # set from script.json in main()

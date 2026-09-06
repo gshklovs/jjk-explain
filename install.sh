@@ -12,8 +12,9 @@ ln -sfn "$HERE/skills/explain-rick" ~/.claude/skills/explain-rick
 ln -sfn "$HERE/skills/explain-stark" ~/.claude/skills/explain-stark
 ln -sfn "$HERE/skills/explain-hxh" ~/.claude/skills/explain-hxh
 ln -sfn "$HERE/skills/explain-clav" ~/.claude/skills/explain-clav
+ln -sfn "$HERE/skills/explain-matan" ~/.claude/skills/explain-matan
 command -v ffmpeg >/dev/null || echo "WARNING: ffmpeg not found. macOS: brew install ffmpeg"
 python3 -c "import requests" 2>/dev/null || echo "WARNING: pip install -r $HERE/requirements.txt"
 [ -f "$HERE/.env" ] || echo "Next: cp $HERE/.env.example $HERE/.env and add your keys."
 ls "$HERE"/assets/*.m4a "$HERE"/assets/*.mp3 >/dev/null 2>&1 || echo "Optional: drop a music bed (m4a/mp3) into $HERE/assets/ (any track; the Delirious 1 hour loop is the canonical choice)."
-echo "Installed: ~/.claude/skills/explain, explain-iroh and explain-hxh, explain-stark, explain-rick, explain-clav -> $HERE/skills/. In Claude Code, run: /explain <concept>, /explain-iroh <concept>, /explain-hxh <concept>, /explain-stark <concept>, /explain-rick <concept> or /explain-clav <concept>"
+echo "Installed: ~/.claude/skills/explain, explain-iroh and explain-hxh, explain-stark, explain-rick, explain-clav, explain-matan -> $HERE/skills/. In Claude Code, run: /explain <concept>, /explain-iroh <concept>, /explain-hxh <concept>, /explain-stark <concept>, /explain-rick <concept>, /explain-clav <concept> or /explain-matan <concept>"
