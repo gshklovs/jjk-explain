@@ -15,6 +15,9 @@ The gold reference is the 92-second ad: a hook question in the first sentence, o
 - He talks to one person, "bro", never to an audience. Second person, present tense. "Your competitor opens his door. It's you again. Next morning, you again. By Friday, he's a user."
 - The interview register is the same brain at half speed: a hedge ("like you said", "right?"), then the blunt line ("that's because they don't know what they're doing").
 - He is never warm, never cruel, never impressed. Flat. The content is the outrage, the delivery is a shrug.
+- He rates like a scoreboard and justifies like a lab: a decimal ("three point seven five", "ninety-four percent"), then the measurement behind it. When the viewer flinches, he corrects the scale ("five is average"), not the number.
+- He argues by category. An objection is named ("one-off anecdote", "status mog, not a looks mog") and thereby dismissed; the skeptic is recruited into the rule ("by definition, you're one of us").
+- One thing per video he refuses, on principle, in one sentence ("I wouldn't rate myself. Not responsible."). It is the only place he sounds careful, and it is funnier than the outrageous parts.
 
 ## Anchor lines (paraphrased from the clips; match the cadence, do not quote)
 - "Tired of seeing the same thing on your feed every day? Tired of never being the thing?"
@@ -28,6 +31,16 @@ The gold reference is the 92-second ad: a hook question in the first sentence, o
 - "Some clips hit ten thousand doors. Some hit ten. That guy's a jester, bro. His problem, not yours."
 - "Flops cost you nothing. Great deal, swear to God."
 - Interview: "That's because they don't know what they're doing." "It can be as simple as losing weight, right?"
+- Rating a host: "I won't be biased, you don't have to worry about that. Maybe a three point seven five. Mostly the interpupillary distance."
+- Correcting the scale: "People don't understand the decimal scale. Five is average. Five is the fiftieth percentile."
+- Granting the exception, then closing it: "That's a fair perspective. There's status mogs, money mogs. You might have me there. But it's not a looks mog."
+- Refusing the anecdote: "Your bald fat buddy who gets laid is a one-off anecdote. We're talking general rules."
+- Recruiting the skeptic: "You've done a calorie deficit. So by definition, you're a looksmaxxer. You're just on the surface level of it."
+- The number with its reason: "There are no perfect tens because the technology isn't there yet. He's a ninety-four. Fixing the forehead ratio for six percent would be ridiculous."
+- Declining on principle: "I wouldn't rate myself. I just don't think it's the responsible thing to do."
+- Exit lines: "Go for it." "Who knows." "That's all I'm saying." "See you, bro. Everything's fine."
+
+Quirks to keep (from twelve moments in `docs/clav-research.md`): every verdict is a number with decimals or a percentile and every number gets a measurement as its reason, never a feeling; he corrects the scale before the person; he grants the exception and closes it in the same breath; he refuses anecdotes by naming them; he declines exactly one thing per conversation, on principle; he recruits the skeptic into the category; escalation is calm (a wild claim, then the mechanism, then "that's all I'm saying"); exits are polite and final.
 
 Cadence: 2.8 to 3.1 words per second, sentences of three to nine words, a full sentence then a fragment, "bro" or "dude" at the end of a line at most once per shot. Verdict words: brutal, mogged, over, jester, cooked, ascended, it's not over. Never "basically", never "so essentially", never a rhetorical "right?" more than once per video.
 
@@ -83,7 +96,8 @@ The young man: "a young man with dark wavy hair, a sharp jawline and a plain bla
 Alternates for the room only (keep the first clause identical): "... in front of a plain office wall, lit by a ring light"; "... on a daytime city sidewalk, phone held at arm's length".
 
 ## Style lock (the renderer prepends this; write prompts that agree with it)
-"Real phone-shot 4K video, a vertical short reframed to 16:9, a young man centred in frame at chest height talking straight into the lens, ring light catch in the eyes, shallow phone-portrait depth of field, a plain bedroom or office wall or a daytime street behind him, slightly warm colour, sharp and clean, handheld-still, no film grain, no anamorphic flare, no cinematic grading. "
+"Real phone-shot 4K video, a vertical short reframed to 16:9, ring-light clean, shallow phone-portrait depth of field, slightly warm colour, sharp and clean, handheld-still, no film grain, no anamorphic flare, no cinematic grading. "
+The talking-head framing (centred at chest height, straight into the lens, ring light in the eyes) is added by the renderer on character shots only, through `say_lines`; when it lived in the lock, every snap opened on a stranger's face before cutting to the b-roll.
 Not cinematic: no anamorphic flare, no film grain, no teal-and-orange. A phone on a tripod, a ring light, a wall. Snaps are phone b-roll, a screenshot-like card, a meme-like still or a side-by-side, in the same warm clean phone look.
 Settings: the wall (bedroom or office, one plant or a shelf at most); the sidewalk (daytime, cars soft behind); the snap locations belong to the running example (the street corner, the hospital doors, the cart counter).
 Optional flavour, one video at a time: the 90s-office skit look of the ad (CRT monitors, a plaid shirt and a lanyard, VHS date stamp), written into every prompt of that video and into the cast paragraph's clothes; the stills carry that shirt already.
@@ -112,7 +126,7 @@ Voice: lean mode by default; `assets/ref/clav/clav-voice.wav` (14 s cut from the
 
 ## Lean-mode rules
 - At most 22 words and 3 sentences per character shot; the reference-audio window is 2-15 s.
-- The character shot is phrased "the young man looks straight into the phone camera, deadpan, small hand gestures, and says, in the voice of Audio 1, exactly these words"; he does look at the lens in this style, so do not fight it in the prompt.
+- The character shot is phrased "the young man is centred in frame at chest height with a ring light catch in his eyes, looks straight into the phone camera, deadpan, small hand gestures, and says, in the voice of Audio 1, exactly these words"; he does look at the lens in this style, so do not fight it in the prompt.
 - Snap shots are off-screen by construction (work shots): Fish dubs the line, nobody on screen mouths it, so keep faces away from the camera in snap prompts.
 - Title cards are silent.
 
@@ -165,3 +179,13 @@ Two snaps in a row (4 and 5) are fine because both are short. Source 2-3 real im
 
 ## Never lip-sync a stranger
 A character shot is allowed only when the reference stills reproduce the person. Check the rendered clip against the stills; if the model produced a generic look-alike, do not keep it: convert the shot to a dubbed work/snap shot (stock-style footage of the thing being talked about, no prominent face) with the character's voice over it, and re-render on turbo. A stranger lip-syncing the character's lines is worse than no face at all. When a style's stills are soft (vertical phone crops, low resolution), default to zero or one character shot until sharper stills are sourced, and let the voice, captions and cutaways carry the video.
+
+## The visual throughline (why b-roll goes random, and the fix)
+Shots without the character go random when each one is written to illustrate the phrase being spoken ("a street of carts", "a hospital at dawn", "a vending machine"): nothing ties them together, and the viewer sees a slideshow. The face was the continuity, and without it there is none. The fix is structural:
+- ONE PROP PARAGRAPH. The running example's object is described once, at script level, in the style's vocabulary ("a yellow taco cart with a red striped awning, a chalkboard menu and a propane griddle"), as `"prop"`, with `"prop_words"` (a regex of the words the prompts use for it, e.g. `cart|taco cart`). The renderer pastes the paragraph verbatim into every prompt that names it, exactly as it does with the cast paragraph, so every shot draws the same object.
+- EVERY WORK/SNAP SHOT SHOWS THE PROP IN A NEW STATE. The cart alone on the corner; the cart copied four times down the street; the cart at the hospital exit before sunrise; the cart with a queue; the cart with two more like it at the fire station and the depot. The visual is the story's object changing, never a place or a mood on its own. Test: strip the narration and the six pictures should still tell the story in order.
+- SEED THE PROP. Source 2-3 real images of the object (the "Object references" rule) and use one as the first frame (`"image"`) of the first work shot, or as `"objects"` on the shots where its exact look matters, so the prop is not reinvented.
+- VISUALIZE THE VERB, NOT THE NOUN. A line is a claim about something happening; the picture shows that happening, not the objects the line mentions. "Nobody clears anything" is four carts with no customers and food going cold on the griddles, not "a street of carts". "Night nurses are starving" is a nurse in scrubs finally eating at the cart before dawn. Write each snap as the consequence the line states, then check: would a viewer with the sound off understand the claim?
+- NO WRITING ON PROPS, NOBODY TALKING. Never ask for signs, menus, numbers, screens with text or price tags in the picture; the model garbles them (the carts got random numbers). Anything written becomes a renderer `"labels"` entry. On dubbed shots nobody speaks: people in b-roll do the thing (eat, queue, walk, work) with mouths closed and never facing the camera, or the model turns them into random people talking over the voice-over.
+- SAME PALETTE AND PLACE. Name the same time of day, weather and colours in every prompt unless the story moves; write the move ("the same cart, now at the hospital exit").
+This is not a Clav rule; it applies to every style's work shots, and the Stark hologram and Iroh's sand diagram obey it too (the same disc, the same drawing, changing state).

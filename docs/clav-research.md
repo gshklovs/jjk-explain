@@ -92,6 +92,71 @@ highlighted word, hard cuts to a visual the instant a concept is named) matches 
 clav-1's cutting; clav-1's 90s-sitcom look is a produced skit, kept as an optional flavour in prompts,
 not the default lock.
 
+## Twelve moments (yt-dlp auto-subs of four more clips; paraphrased, not verbatim)
+Sources: a podcast segment where two hosts ask him to rate them (UMrnJ-hsmJs), an interview segment on
+his "harmony score" (8D3NEp_yZLs), the full Piers Morgan interview (xQvhqt2r2l8), the Andrew Callaghan
+walk-off (-M3ZM_jq3b8). The commentary videos about the "frame mog" meme (MuQxhlTCr5k, Dw8e5Z9BjfU)
+were skimmed for vocabulary only.
+1. THE RATING. A host asks him to rate them, "don't be biased, dude." Him, flat: "No, I won't be biased.
+   You don't have to worry about that. I'd say maybe a three point seven five." Host: "3.75 is crazy."
+   Him: "Mostly the interpupillary distance. How close his eyes are. And the longer mid-face." He gives
+   the reason as a measurement, never as an opinion.
+2. THE DECIMAL SCALE. The other host gets a six and a half and is hurt ("not even a seven?"). Him: "People
+   don't understand the decimal scale. When a girl says you're a seven, you think that's average. Five is
+   average. Five is the fiftieth percentile." The correction is a statistics lesson, delivered as a shrug.
+3. SMV. Asked what really matters, he separates the face from the "sexual market value": "Your SMV would
+   be a lot higher, because you're famous, wealthy, tall. Top percentile. That's the number that matters
+   most." Then the knife: "But what you had to do to transcend a three point seven five was become a
+   multi-million-follower page with extreme wealth. The average three point seven five guy is never going
+   to accomplish that." He grants the exception and closes it in the same breath.
+4. THE OUTLIER. "My buddy is bald and fat and makes jokes and gets laid all the time." Him: "One-off
+   anecdotes. We're talking about a view of society. General rules." He refuses the anecdote by naming
+   what kind of argument it is.
+5. HE WON'T RATE HIMSELF. "What would you rate yourself?" "I wouldn't. I just don't think it's the
+   responsible thing to do." Then the reasoning: if you know your number you apply restrictions to
+   yourself about who you should go for, and that isn't beneficial. The one place he declines is the
+   one place it would cost him.
+6. THE HARMONY SCORE. "We use something called the harmony score. Facial metrics as a percentage. There
+   are no perfect tens because the technology isn't there yet." Who's highest? A named actor, "ninety-four
+   percent." Why not fix the other six? "It wouldn't make sense for him to go out and do a surgery to fix
+   some forehead ratio issue that costs him six percent. Ridiculous." Interviewer: "What's your score?"
+   "I'm not going to tell you."
+7. YOU ARE ALREADY ONE OF US. To a hostile interviewer: "You've done a calorie deficit before. That's
+   looksmaxxing. So by definition, you are a looksmaxxer. You're just on the surface level of it." Then,
+   deadpan: "In such a competitive dating market you might need to take it a step further. Maybe some
+   peptides. Maybe get a little leaner than your current body fat percentage. That's all I'm saying."
+8. THE MOG TAXONOMY. Interviewer: "I might argue that I'm mogging you right now." Him: "That's a fair
+   perspective. There's different types of mogs. Status mogs. Money mogs. You might have me in those
+   categories. But we need to add a little nuance: it's not a looks mog." Asked if he has the edge:
+   "By a small margin. That could be attributed to youth. Who knows."
+9. LOOKS ARE OBJECTIVE. "Looks are an extremely objective thing. You might not know the facial ratios
+   that make someone harmonious, but they're subconscious, everyone is judging you on them, and it's not
+   within anyone's control." The wild claim, then the mechanism, in one breath.
+10. THE LINEAR TIMELINE. "My life is on a one-to-one linear timeline with my ideology. As soon as I started
+    ascending into those high-percentile looks, look what happened. Millionaire. Famous. Who knows if
+    this happens if I'm in the lower percentiles. Maybe some of it is charisma. But this generational run
+    would not have been possible without the looks."
+11. JESTERMAXXING, DEFINED. "Self-deprecating humor. Someone cracking an egg on their head and saying
+    'look at me, I'm such an idiot' in front of girls." The interviewer admits he was doing a bit of it.
+    Him: "Go for it."
+12. THE WALK-OFF. Told he had done a bad interview: "From what context? If it's what you reached out
+    about, then you've done a pretty shitty job. Not one question about looksmaxxing." "I asked you about
+    looksmaxxing forty times." "Then ask about something specific. Hair loss." "You're telling me what to
+    ask?" "I guess there's no point to continue. Thanks for your time. See you, bro. Everything's fine."
+Also: "I usually just go by Clav, if you want to keep it chill." And on being called political: "I simply
+said that he's fat. I didn't support anyone."
+
+Distilled quirks (used in the bible):
+- Every verdict is a number with decimals or a percentile, and every number gets a measurement as its
+  reason ("interpupillary distance", "mid-face length", "forehead ratio"), never a feeling.
+- He corrects the scale before he corrects the person ("five is average").
+- He grants the exception, then closes it ("that's a fair perspective ... but it's not a looks mog").
+- He refuses anecdotes by naming them ("one-off anecdotes; we're talking general rules").
+- He declines exactly one thing, on principle ("I wouldn't rate myself; not responsible").
+- He recruits the skeptic into the category ("by definition, you are a looksmaxxer").
+- The escalation is calm: a wild claim, then a mechanism, then "that's all I'm saying".
+- Exit lines are polite and final: "Go for it." "Who knows." "See you, bro. Everything's fine."
+
 ## Caption rhythm to match (renderer `captions` mode "words")
 - Groups of 2-4 words (measured captions run 3-8; the shorts convention and the brief say shorter), so
   the renderer packs Whisper words into groups of at most 4, breaking at punctuation.

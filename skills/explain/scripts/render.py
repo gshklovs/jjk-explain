@@ -842,6 +842,14 @@ def main():
             return 0.0
         secs = min(15, max(5, math.ceil(nd + 0.8)))
         vp = sc["video_prompt"].strip()
+        # the visual throughline: a script-level "prop" paragraph (the running example's object, described once) is
+        # pasted verbatim wherever a prompt mentions it by its "prop_words" (regex), so every shot draws the same thing
+        prop = (S.get("prop") or "").strip()
+        if prop and prop[:40].lower() not in vp.lower():
+            pw = S.get("prop_words") or re.escape(prop.split(",")[0].split(" with ")[0].strip().split(" ")[-1])
+            vp, n = re.subn(r"\b([Tt]he|[Aa]|[Aa]n|[Hh]is|[Yy]our) (" + pw + r")\b", lambda m: prop, vp, count=1)
+            if n == 0 and re.search(pw, vp, re.I):
+                vp = prop[0].upper() + prop[1:] + " is in the shot. " + vp
         cast = S.get("cast", "").strip()
         if cast and is_work(sc) and STYLE.get("cast_on_work", True) is False:
             cast = ""   # a style may keep the character out of its work/snap b-roll entirely
