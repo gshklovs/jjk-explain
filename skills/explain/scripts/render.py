@@ -181,9 +181,9 @@ STYLES = {
                  "concrete and steel workshop, 24fps film look, fine film grain, photoreal. "),
         # public fish.audio voices, the most-used English ones (2026-09-02): "Iron Man/Tony Stark" 8.9k uses,
         # "Jarvis (MCU)" 106k uses. STARK_FISH_VOICE_ID / AI_FISH_VOICE_ID override. Only used off lean mode.
-        "fish_voice": os.environ.get("STARK_FISH_VOICE_ID") or "d7a76ce437d34163a48b7e683f85cac7",
+        "fish_voice": os.environ.get("STARK_FISH_VOICE_ID") or "b080dc966de544b99b3000c6fde1788e",
         "voice_label": "stark",
-        "voices": {"stark": os.environ.get("STARK_FISH_VOICE_ID") or "d7a76ce437d34163a48b7e683f85cac7",   # the inventor
+        "voices": {"stark": os.environ.get("STARK_FISH_VOICE_ID") or "b080dc966de544b99b3000c6fde1788e",   # the inventor
                    "ai": os.environ.get("AI_FISH_VOICE_ID") or "612b878b113047d9a770c069c8b4fdfe"},        # the calm British AI
         # narration may switch speakers inline: "[ai] Sir, the ratio is eleven to one. [stark] Eleven. Fine."
         "fish_speed": 1.0,
