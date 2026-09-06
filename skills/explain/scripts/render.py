@@ -537,7 +537,8 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labe
           + (f",{labels_fc}" if labels_fc else "") + "[v];"
           f"[0:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={amb_gain},apad[amb];"
           f"[1:a]aformat=sample_rates=48000:channel_layouts=stereo,volume={nar_gain},adelay={int(lead*1000)}|{int(lead*1000)}[nar];"
-          f"[amb][nar]amix=inputs=2:duration=longest:normalize=0[a]")
+          f"[amb][nar]amix=inputs=2:duration=longest:normalize=0" + ("" if is_title else ",loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000") + "[a]")
+    # per-scene loudnorm: the model's own speech (lip-synced shots) sat several dB under the Fish dubs
     sh(["ffmpeg", "-y", "-i", clip, "-i", nar, "-filter_complex", fc, "-map", "[v]", "-map", "[a]",
         "-t", f"{target:.3f}", "-c:v", "libx264", "-crf", "18", "-preset", "fast",
         "-c:a", "aac", "-b:a", "192k", out])
@@ -1131,8 +1132,10 @@ def main():
         if ttext:
             lab = STYLE.get("label", {})
             font = lab.get("font", "Arial Black") if STYLE.get("captions", {}).get("mode") == "words" else lab.get("font", EN_FONT)
-            hi = STYLE.get("captions", {}).get("highlight", "yellow")
-            vf += (f",drawtext=text='{esc(ttext)}':font='{font}':fontsize=84:fontcolor={hi}:borderw=6:bordercolor=black:"
+            # ASS colours are BGR hex; drawtext wants names or RGB, so the poster uses plain yellow.
+            # Size to fit: Arial Black runs ~0.78 em per character.
+            size = max(40, min(84, int((W - 120) / (0.78 * max(1, len(ttext))))))
+            vf += (f",drawtext=text='{esc(ttext)}':font='{font}':fontsize={size}:fontcolor=yellow:borderw=6:bordercolor=black:"
                    f"x=(w-tw)/2:y=h-th-90")
         sh(["ffmpeg", "-y", "-ss", f"{t:.2f}", "-i", clip, "-frames:v", "1", "-q:v", "2", "-vf", vf, thumb])
         # make it frame one too (a 2-frame hold, invisible in playback, so every player's poster is this frame)
