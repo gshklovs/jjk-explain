@@ -258,7 +258,8 @@ STYLES = {
                      "color": "FFFFFF", "highlight": "00FFFF", "outline": 4, "upper": True},
         "outro": 0.0,
         "lean_tag": "clav",
-        "say_lines": {"clav": ("The young man is centred in frame at chest height with a ring light catch in his eyes, looks "
+        "say_lines": {"clav": ("The young man is framed dead centre, symmetrical, head and shoulders filling the middle of the "
+                               "frame, the ring light behind the camera and out of shot (no lamp, ring or stand visible), looks "
                                "straight into the phone camera, deadpan, small hand gestures, and says, in the voice of "
                                "Audio 1, exactly these words and nothing else: \"{line}\"")},
         # 1080p-native crops from a studio interview (docs/clav-research.md); the first set (clav-face/bust/hands/3q/wide,

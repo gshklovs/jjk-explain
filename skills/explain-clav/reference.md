@@ -240,3 +240,6 @@ The premise carries the only number ("zero to one", "one to n"); do not add a de
 
 ## Thumbnail
 The poster is his face (he gets the clicks) with the video's phrase slammed across it in the caption look: script-level `"thumb": {"scene": "s2", "text": "COMPETITION IS FOR JESTERS", "at": 7.5}`; the style default picks the first character shot. The text is the premise or the verdict, three to five words, caps.
+
+## Framing
+Every face shot is framed dead centre and symmetrical, head and shoulders filling the middle of the frame, the ring light behind the camera and out of shot. "Centred" alone was not enough: the model put him left of frame with the ring light on the right. Write the symmetry and the absent lamp explicitly (the style's say_lines does).
