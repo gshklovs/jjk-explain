@@ -40,6 +40,7 @@ How they teach (anchor lines from transcripts) · beats · registers · tiers ·
 | Hands bob; nothing spins; diagram colors bleed in | one gesture; motion not named; colored reference | hands act per part in label order; name every motion; monochrome rule |
 | A stranger's face in a turbo work shot | "hands rest at the edge" invites a body | "nobody in the room" written outright |
 | Random people talking; numbers on signs | b-roll illustrates nouns; text asked for | Visualizing the words; no text; nobody talking |
+| Garbled prices / counters / handwriting | any prompt or line that needs a number or word drawn | No numbers, no text, in the footage: show quantities physically, words go in labels; the renderer warns on digits and sign/price/menu/written in a prompt |
 | Lip-synced "random dude" instead of the character | soft vertical stills | Never lip-sync a stranger; dubbed b-roll instead |
 | Agents idle 35 min with no files | tmux teammates parked on the folder-trust dialog (shell `cd` before spawn) | never `cd`; in-process teammates; pane watchdog |
 | Render exits 0 with a clip missing | fal lock/rate limit mid-run | retry missing clips once, then fail loudly |

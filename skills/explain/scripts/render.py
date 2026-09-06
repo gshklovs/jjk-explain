@@ -950,6 +950,9 @@ def main():
                        f"{who[0].upper() + who[1:]} looks at the camera and says, in the voice of Audio 1, exactly these words and nothing else: \"{line}\""))
             if LEAN_DRY:
                 ref_audio = None   # dry run: no fal call, the prompt file is the product
+        bad = re.findall(r"\b(\d+|sign|signs|price tag|price tags|menu|chalkboard|handwritten|handwriting|counter reads|screen reads|text reads|written on|writes|writing)\b", vp, re.I)
+        if bad:
+            print(f"[text-in-footage] {sc['id']}: the prompt asks for numbers or writing the model cannot draw: {sorted(set(b.lower() for b in bad))}; move them to labels", flush=True)
         open(f"{out}/{sc['id']}_prompt.txt", "w").write(prompt)
         if a.dry_run:
             placeholder_clip(f"{sc['id']}  {secs}s", secs, clip)

@@ -231,3 +231,6 @@ The quirk budget is a ceiling, not a quota. One or two of his moves per video, p
 
 ## He is on screen
 The face is the continuity of a short. Two of six shots are him talking to the lens (the hook and the verdict), seeded from the sharpest stills (`clav-hd-*.jpg`); the snaps between them carry the visuals. Zero face is a fallback for a likeness that failed, not the default.
+
+## No numbers, no text, in the footage (hard rule)
+Video models cannot draw digits or words; every price tag, counter, sign, label, screen, chalkboard or handwritten number comes out garbled. Never write a prompt that asks for one, and never write a line whose visual would need one ("crossing out the price", "the counter reads eleven", "a sign that says..."). Show the quantity physically instead (four carts, three queues, a plate full versus a plate empty, a disc with eleven lobes you can count) and put any words or numbers in renderer `"labels"` or captions. Pre-render check: grep the prompts for digits and for sign|price|menu|label|screen|text|number|written|chalk; any hit is rewritten.
