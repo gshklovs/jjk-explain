@@ -225,3 +225,9 @@ B-roll goes wrong in two ways: a stranger talking at the camera while the charac
 - NO WRITING ON PROPS, NOBODY TALKING. Never ask for signs, menus, numbers, screens with text or price tags; the model garbles them. Anything written becomes a renderer `"labels"` entry. On dubbed shots nobody speaks: people do the thing (eat, queue, walk, work, sleep) with mouths closed and never facing the camera, or the model turns them into random people talking over the voice-over.
 - CONTINUITY, LIGHTLY. Keep the palette, time of day and place consistent unless the story moves, and write the move. When a story genuinely tracks one object (a cart, a disc, a can), a script-level `"prop"` paragraph (+ `"prop_words"`) makes the renderer paste the same description into every prompt that names it, the way `cast` works; use it for that case, and do not force every shot onto one object when the line is about people or a place.
 - SEED WHAT MATTERS. Source a real image for anything whose exact look carries the meaning (the "Object references" rule) and use it as `"image"` or `"objects"`.
+
+## Dose the persona (the checklist is not the voice)
+The quirk budget is a ceiling, not a quota. One or two of his moves per video, placed where they land on their own: the vocabulary verdict where the wrong way is shown, the rating as the one number. Five quirks in sixty seconds ("certified chud, descending", a self-own, a fake-serious pause and a slogan all in a row) read as a bit being performed; the user called it forced. If a line would work without the quirk, leave the quirk out. He is deadpan because he says less, not more.
+
+## He is on screen
+The face is the continuity of a short. Two of six shots are him talking to the lens (the hook and the verdict), seeded from the sharpest stills (`clav-hd-*.jpg`); the snaps between them carry the visuals. Zero face is a fallback for a likeness that failed, not the default.

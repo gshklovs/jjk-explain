@@ -209,3 +209,19 @@ Distilled quirks (used in the bible):
   few frames. The style's default refs now point at the hd set; whether it is clearly him is the user's call.
 - The rewritten all-snap render (`render3/`, six dubbed snaps, $1.75) is the deliverable: his voice and captions over
   b-roll, no face.
+
+## Visuals, third pass (render4: visualize the verb, nobody talking, no text)
+- User verdict on render2/3: the b-roll was "random" (a stranger talking at the camera, numbers on cart signs instead of
+  people being fed). Rewrite per the bible's "Visualizing the words": each snap shows the line's verb happening, nobody
+  faces the camera or speaks, nothing written anywhere; a script-level `"prop"` paragraph (the yellow taco cart with
+  the striped awning, no chalkboard) is pasted by the renderer wherever a prompt says "cart".
+- Reference photos: Wikimedia Commons search via the API ("taco cart street food"); `assets/ref/objects/taco-cart/`
+  keeps `cart-1.jpg` (a Mexico City street cart, crowd around it) and `cart-2.jpg` (a yellow Portland taco trailer),
+  plus the raw downloads. Both carry painted text and faces, exactly what the user complained about, so they were NOT
+  used as an `"image"` first frame; the prop paragraph carries the cart instead. Keep them for `"objects"` only if a
+  cart's exact shape ever matters.
+- render4 ($1.73, 67 s): the same yellow cart in every cart shot, cooks from behind, the empty street with food going
+  cold, the break-room nurse asleep, staff walking out before dawn, the cart alone at the exit, a nurse eating on the
+  kerb with her eyes closed, the dim vending machine against the lit griddle and a full plate, then queues of nurses,
+  firefighters and bus drivers at three identical carts. Sound-off test: the pictures tell the story without the
+  voice. One label cue ("mog") was not matched by Whisper and showed from the shot's start.
