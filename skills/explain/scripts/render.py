@@ -313,8 +313,11 @@ STYLES = {
         # first render the model cut to that room (a dissolve into the still) for the last two seconds of a shot; the
         # say_lines' "one unbroken take" clause fixed it on the retake (docs/matan-research.md); the seed interview is
         # age-gated on the platform, so no still comes from it
-        "refs": ["assets/ref/matan/matan-face.jpg", "assets/ref/matan/matan-front.jpg", "assets/ref/matan/matan-3q.jpg",
-                 "assets/ref/matan/matan-set.jpg", "assets/ref/matan/matan-hands.jpg"],
+        # the seed interview's solo stretch (his ad read, 1080p, him alone and centred at the table): frontal, talking
+        # with hands, bust, the table wide, three-quarter. The channel stills (matan-face/front/3q/set/hands.jpg) are
+        # the previous default and stay on disk as an override
+        "refs": ["assets/ref/matan/iv-front.jpg", "assets/ref/matan/iv-hands.jpg", "assets/ref/matan/iv-bust.jpg",
+                 "assets/ref/matan/iv-table.jpg", "assets/ref/matan/iv-3q.jpg"],
         "seed": 2007,
         "refs_prefix": ("Image 1 to Image {n} show the same young man; keep his face, the mop of dark curly hair, round "
                         "cheeks and build consistent with them; his clothes and the room follow the description. "),

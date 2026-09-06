@@ -22,8 +22,11 @@ channel "Matan Even"; the same episode is a 53-min podcast on Apple/Spotify). Ev
   `source/pod-b.whisper.json` (1600 s on; add 1600 to its times). podscripts.co has the same episode as
   plain text with minute marks, no speaker labels; Matan's lines were separated by reading it (he asks,
   Clav explains) and confirmed by cutting and re-transcribing each window.
-- Stills came from his own channel's 1080p clip compilations (`source/comp-egos.mp4` 531 s,
-  `source/comp-crashout.mp4` 1625 s; both age 0), not from the gated interview.
+- The lead later obtained the 1080p upload (`source/clav-matan-interview.webm`, 2814 s, AV1). It is a wide
+  two-table shot where he is small, except the solo ad-read stretch (about 1300-1364 s) where he sits alone,
+  centred, frontal, with a sponsor banner along the bottom 15% of the frame. The default stills are cut there.
+  The first still set came from his channel's 1080p clip compilations (`source/comp-egos.mp4` 531 s,
+  `source/comp-crashout.mp4` 1625 s) and stays on disk as an override.
 
 ## How he interviews (the whole transcript, 48 min)
 He is the questioner, never the lecturer. The engine is one move repeated: a question with a ridiculous
@@ -142,3 +145,21 @@ Distilled quirks (the bible's ceiling is one or two per video):
 - Snaps: the coffee shop (a row of laptops, the sink puddle behind), the plumber's legs under the sink at night with the
   headlamp glow, the hands stamping a blank pile while three people leave. No stranger talks, nothing written, labels on
   cue. Sound-off test passes.
+
+## Interview stills (second set, now the default)
+- `iv-front.jpg` (t=1351), `iv-hands.jpg` (1309, both hands up), `iv-bust.jpg` (1303), `iv-table.jpg` (1303, native
+  1280x720 window), `iv-3q.jpg` (1327), `iv-face.jpg` (1339, 800x450 window, soft; extra). All centred on him, the
+  banner cropped out, viewed. The big microphone covers his mouth in most interview frames, so the cast paragraph
+  puts it beside his chin.
+- `matan-ref.mp4`: 7 s 854x480, interview 1309-1316 s, him alone talking with both hands (motion reference for
+  `"ref_videos"`, untested).
+
+## Second render on the interview stills (2026-09-06)
+- The three face shots re-rendered on `iv-*.jpg` ($1.50): centred, frontal, the interview look exactly (the coat,
+  the bedsheet, the black table, the card). The model spoke every line. The bled/off-set clips from the channel-still
+  pass are kept in `render/retake-channel-refs/`.
+- The interview's big microphone sits in front of his mouth in every frame of the solo stretch, and the render copies
+  it: the lips are hidden behind the mic in all three shots although the cast paragraph says "beside his chin, not
+  covering his mouth". A one-shot test with the two clean-mouth channel stills listed first plus three interview room
+  stills (`mix-test/`, $0.45) produced the same mic-over-mouth frame. The composition wins over the prompt. The
+  channel set (mouth visible, the studio drawn from the description) is the alternative if the user wants visible lips.
