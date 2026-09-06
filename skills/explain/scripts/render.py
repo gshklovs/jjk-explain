@@ -17,7 +17,8 @@ Env (or <repo>/.env): FAL_API_KEY (or FAL_KEY), FISH_AI_API_KEY, OPENAI_API_KEY,
      RICK_FISH_VOICE_ID / MORTY_FISH_VOICE_ID (fish voices for "style": "rick"; only needed off lean mode)
      EXPLAIN_LEAN_DRY=1 (with --dry-run: still compose lean prompts; missing samples/refs only warn; no fal call)
      STARK_FISH_VOICE_ID / AI_FISH_VOICE_ID (the inventor and the AI voices for "style": "stark")
-Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "hxh" | "stark" | "rick". The style picks the
+     CLAV_FISH_VOICE_ID (the fish voice that dubs work/snap shots for "style": "clav"; default: a private clone)
+Styles: script.json may carry a top-level "style": "jjk" (default) | "iroh" | "hxh" | "stark" | "rick" | "clav". The style picks the
      prompt style lock, the title-card look, the default fish voice and the default music
      ($EXPLAIN_HOME/assets/iroh/ first for iroh, then $EXPLAIN_HOME/assets/; "rick" defaults to no music).
      "rick" is two-voice lean mode: "[rick] ..." / "[morty] ..." pick the voice sample and the prompt's speaker.
@@ -222,6 +223,49 @@ STYLES = {
         "refs_prefix": ("Image 1 to Image {n} show the same man; keep his face, hair, goatee and build consistent "
                         "with them. "),
         "ref_labels": {"stark": "the inventor", "ai": "the AI"},   # how lean prompts name each speaker
+    },
+    "clav": {
+        # short-form talking head: a phone on a tripod, not a film camera
+        # the talking-head framing lives in say_lines, not here: a lock that says "a young man talking into the lens"
+        # made the turbo model open every snap on a stranger's face before cutting to the b-roll
+        "lock": ("Real phone-shot 4K video, a vertical short reframed to 16:9, ring-light clean, shallow phone-portrait "
+                 "depth of field, slightly warm colour, sharp and clean, handheld-still, no film grain, no anamorphic "
+                 "flare, no cinematic grading. "),
+        # a private fish.audio clone made from the interview clip (docs/clav-research.md); public "clav" voices exist
+        # too (caec241606a642b78cd9f7b321bb14b3, 8975245432fe4de28f8d8e512bf5558b). Only used to dub work/snap shots.
+        "fish_voice": os.environ.get("CLAV_FISH_VOICE_ID") or "8a50551a527348a78507cb83fa300773",
+        "voice_label": "clav",
+        "voices": {"clav": os.environ.get("CLAV_FISH_VOICE_ID") or "8a50551a527348a78507cb83fa300773"},
+        "fish_speed": 1.0,
+        "lipsync_audio": "model",
+        "voice_sample": "assets/ref/clav/clav-voice.wav",   # lean mode: 14 s of him alone, cut from the interview clip
+        "voice_samples": {"clav": "assets/ref/clav/clav-voice.wav"},
+        "pause": 0.5,
+        "words_per_sec": 2.8,   # he talks fast (measured 2.8-3.1 wps on the clips)
+        "music": None,          # no bed unless the script or --music asks
+        "cast_words": r"young man|creator|influencer|streamer|kid",
+        "cast_on_work": False,  # snap/work b-roll never gets the cast paragraph bolted on (nobody should be in it)
+        "default_sound": "quiet room tone, the faint hiss of a phone microphone, no music",
+        "default_instr": "Fast, flat, deadpan young man talking to his phone camera. Blunt one-word verdicts, no warmth, no upspeak; a beat of silence before the number.",
+        # word slam: 1.5 s, bold white caps on black, yellow subtitle; omit title scenes from the script for no card
+        "title": {"bg": "black", "ink": "white", "en": "0xFFD400", "glyph": None, "noise": False,
+                  "font": "Arial Black", "split": False, "seconds": 1.5},
+        "thumb_kanji": "",
+        "label": {"color": "white", "border": "black", "size": 36, "font": "Arial Black"},   # renderer-drawn labels on snap/work shots
+        # captions in his style: 2-4 word groups, centred just below the middle, one word in yellow, timed per word
+        "captions": {"mode": "words", "group": 4, "size": 64, "y": 0.64, "font": "Arial Black",
+                     "color": "FFFFFF", "highlight": "00FFFF", "outline": 4, "upper": True},
+        "outro": 0.0,
+        "lean_tag": "clav",
+        "say_lines": {"clav": ("The young man is centred in frame at chest height with a ring light catch in his eyes, looks "
+                               "straight into the phone camera, deadpan, small hand gestures, and says, in the voice of "
+                               "Audio 1, exactly these words and nothing else: \"{line}\"")},
+        "refs": ["assets/ref/clav/clav-face.jpg", "assets/ref/clav/clav-bust.jpg", "assets/ref/clav/clav-hands.jpg",
+                 "assets/ref/clav/clav-3q.jpg", "assets/ref/clav/clav-wide.jpg"],
+        "seed": 1217,
+        "refs_prefix": ("Image 1 to Image {n} show the same young man; keep his face, dark wavy hair, jawline and build "
+                        "consistent with them; his clothes and the room follow the description. "),
+        "ref_labels": {"clav": "the young man"},
     },
 }
 STYLE = STYLES["jjk"]   # set from script.json in main()
@@ -471,7 +515,7 @@ def title_clip(kanji, english, seconds, out):
 
 
 # ---------- per-scene assembly ----------
-def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labels_fc=""):
+def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labels_fc="", max_len=None):
     """Normalize clip, extend to cover narration, mix narration over clip audio.
     lipsync clips carry the model's own speech track (spoken in sync with the mouth by construction).
     model_audio=True keeps that track as the voice and drops our narration; otherwise the clip audio
@@ -481,6 +525,8 @@ def build_scene(clip, nar, out, is_title, lipsync=False, model_audio=False, labe
     cd, nd = dur(clip), dur(nar)
     lead = 0.0 if (lipsync or model_audio) else 0.6
     target = max(cd, nd + lead + 1.0)
+    if max_len:   # a style may cap a scene (a 1.5 s title slam; a snap shot cut to its line)
+        target = min(target, float(max_len))
     amb_gain = "-100dB" if (is_title or (lipsync and not model_audio)) else ("0dB" if model_audio else "-9dB")
     nar_gain = "-100dB" if model_audio else "0dB"
     fc = (f"[0:v]scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2,"
@@ -527,7 +573,9 @@ def label_chain(labels, words, offset):
         return ""
     lab = STYLE.get("label", {})
     font, color, size, border = lab.get("font", EN_FONT), lab.get("color", "white"), lab.get("size", 30), lab.get("border", "black")
-    norm = lambda w: re.sub(r"[^a-z0-9]", "", w.lower())
+    NUMS = {"zero": "0", "one": "1", "two": "2", "three": "3", "four": "4", "five": "5", "six": "6", "seven": "7",
+            "eight": "8", "nine": "9", "ten": "10", "twenty": "20", "fifty": "50", "hundred": "100", "thousand": "1000"}
+    norm = lambda w: NUMS.get(re.sub(r"[^a-z0-9]", "", w.lower()), re.sub(r"[^a-z0-9]", "", w.lower()))   # whisper writes "ten" as "10"
     parts, k = [], 0
     for i, L in enumerate(labels):
         cue = norm(L.get("cue", L["text"]))
@@ -588,6 +636,80 @@ def write_srt(scenes, starts, nar_durs, path, timings=None):
             lines.append(f"{n}\n{ts(a)} --> {ts(b)}\n{textwrap.fill(s, 48)}\n")
             n += 1; t = b
     open(path, "w").write("\n".join(lines))
+
+
+CAPTION_STOP = set(("the a an and or but of to in on at for with by from is are was were be it its this that these those "
+                    "you your he she his her they them we our us i my me as if so than then there here what which who "
+                    "not no do does did have has had will can just like about into over up out all any some very more "
+                    "most one two get got when how why way thing things thats its youre dont isnt im theyre whats theres").split())
+
+
+def write_ass_words(scenes, starts, nar_durs, path, cfg, timed):
+    """Short-form captions: the line in groups of 2-4 words, bold caps centred just below the middle of the frame,
+    one key word per group in a highlight colour, each group held until the next one starts. Timing per word comes
+    from whisper on the scene's audio (timed[scene id] = (words, lead offset)); without it the words are spread
+    evenly over the narration. The key word is the first scene "keywords" hit, else a number, else the longest
+    non-stopword. Returns the number of cues."""
+    size, y = int(cfg.get("size", 58)), float(cfg.get("y", 0.64))
+    font, color, hl = cfg.get("font", EN_FONT), cfg.get("color", "FFFFFF"), cfg.get("highlight", "00FFFF")
+    group, outline, upper = int(cfg.get("group", 4)), float(cfg.get("outline", 4)), bool(cfg.get("upper", True))
+    norm = lambda w: re.sub(r"[^a-z0-9]", "", w.lower())
+    def ts(x):
+        h, r = divmod(max(0.0, x), 3600); m, s = divmod(r, 60)
+        return f"{int(h)}:{int(m):02}:{int(s):02}.{int((s % 1) * 100):02}"
+    head = ["[Script Info]", "ScriptType: v4.00+", f"PlayResX: {W}", f"PlayResY: {H}", "ScaledBorderAndShadow: yes", "",
+            "[V4+ Styles]",
+            "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, "
+            "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
+            f"Style: Words,{font},{size},&H00{color},&H00{hl},&H00000000,&H00000000,-1,0,0,0,100,100,1,0,1,{outline:g},0,5,40,40,40,1",
+            "", "[Events]", "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"]
+    lines, n = [], 0
+    for sc, st, nd in zip(scenes, starts, nar_durs):
+        if sc["kind"] == "title" or not sc.get("narration", "").strip():
+            continue
+        toks = strip_speakers(sc["narration"]).split()
+        words, off = timed.get(sc["id"], (None, 0.35))
+        if words:
+            scale = len(words) / max(1, len(toks))
+            t0 = [words[min(len(words) - 1, int(k * scale))][1] + off for k in range(len(toks))]
+            t1 = [words[min(len(words) - 1, int((k + 1) * scale) - 1)][2] + off for k in range(len(toks))]
+        else:
+            per = max(0.05, nd - 0.3) / max(1, len(toks))
+            t0 = [off + k * per for k in range(len(toks))]
+            t1 = [off + (k + 1) * per for k in range(len(toks))]
+        groups, cur = [], []
+        for k, tok in enumerate(toks):
+            cur.append(k)
+            if len(cur) >= group or tok[-1] in ".,!?;:":
+                groups.append(cur); cur = []
+        if cur:
+            groups.append(cur)
+        merged = []
+        for g in groups:   # a lone trailing word joins the group before it when there is room
+            if merged and len(g) == 1 and len(merged[-1]) < group:
+                merged[-1] = merged[-1] + g
+            else:
+                merged.append(g)
+        kw = {norm(w) for w in (sc.get("keywords") or [])}
+        for gi, g in enumerate(merged):
+            a0 = t0[g[0]]
+            b0 = t0[merged[gi + 1][0]] if gi + 1 < len(merged) else t1[g[-1]] + 0.4
+            b0 = max(a0 + 0.3, min(b0, a0 + 3.0))
+            pick = next((k for k in g if norm(toks[k]) in kw), None)
+            if pick is None:
+                pick = next((k for k in g if any(c.isdigit() for c in toks[k])), None)
+            if pick is None:
+                cands = [k for k in g if norm(toks[k]) not in CAPTION_STOP and len(norm(toks[k])) >= 4]
+                pick = max(cands, key=lambda k: len(norm(toks[k]))) if cands else None
+            parts = []
+            for k in g:
+                w = toks[k].upper() if upper else toks[k]
+                w = w.replace("\\", "").replace("{", "(").replace("}", ")")
+                parts.append(f"{{\\c&H{hl}&}}{w}{{\\c&H{color}&}}" if k == pick else w)
+            lines.append(f"Dialogue: 0,{ts(st + a0)},{ts(st + b0)},Words,,0,0,0,,{{\\an5\\pos({W // 2},{int(H * y)})}}{' '.join(parts)}")
+            n += 1
+    open(path, "w").write("\n".join(head + lines) + "\n")
+    return n
 
 
 def main():
@@ -656,7 +778,7 @@ def main():
         # "shot": "work" = no face on screen (hands, the part, a diagram, a hologram, sand): rendered on the cheap
         # model with no character refs, and the line is dubbed as voice-over with the speaker's fish.audio voice.
         # "shot": "character" (default in seeded styles) = the face is on screen and speaks: reference path, lean voice.
-        return sc.get("shot", S.get("shot", "character")) == "work"
+        return sc.get("shot", S.get("shot", "character")) in ("work", "snap")
     def is_offscreen(sc):
         return bool(LEAN) and (lean_tag_of(sc) in OFFSCREEN or is_work(sc))
     out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.script)), "render")
@@ -716,11 +838,13 @@ def main():
         sc = scenes[i]; nd = nar_durs[i]
         clip = f"{out}/{sc['id']}_clip.mp4"
         if sc["kind"] == "title":
-            title_clip(sc["kanji"], sc.get("english", ""), max(3.0, nd + 1.0), clip)
+            title_clip(sc["kanji"], sc.get("english", ""), STYLE["title"].get("seconds") or max(3.0, nd + 1.0), clip)
             return 0.0
         secs = min(15, max(5, math.ceil(nd + 0.8)))
         vp = sc["video_prompt"].strip()
         cast = S.get("cast", "").strip()
+        if cast and is_work(sc) and STYLE.get("cast_on_work", True) is False:
+            cast = ""   # a style may keep the character out of its work/snap b-roll entirely
         if cast and cast[:40].lower() not in vp.lower():
             # enforce character consistency: expand the first generic mention into the full cast description
             vp, n = re.subn(r"\b[Tt]he (" + STYLE["cast_words"] + r")\b", cast, vp, count=1)
@@ -843,6 +967,7 @@ def main():
 
     # 3. per-scene mix
     scene_files, durs = [], []
+    cap_src = {}   # scene id -> (audio to time captions from, whisper cache, lead offset)
     for i, sc in enumerate(scenes):
         f = f"{out}/{sc['id']}_scene.mp4"
         model_audio = ((sc.get("lipsync_audio", S.get("lipsync_audio", STYLE.get("lipsync_audio", "narration"))) == "model"
@@ -861,9 +986,18 @@ def main():
                 words = whisper_words(audio, f"{out}/{sc['id']}_{'words' if model_audio else 'narwords'}.json")
             labels_fc = label_chain(sc["labels"], words, 0.0 if (model_audio or a.dry_run) else 0.6)
             print(f"[labels] {sc['id']}: {len(sc['labels'])} label(s)" + ("" if words else " (no word timing; shown from the start)"), flush=True)
+        max_len = None
+        if sc["kind"] == "title" and STYLE["title"].get("seconds"):
+            max_len = float(STYLE["title"]["seconds"])
+        elif sc.get("shot", S.get("shot", "character")) == "snap":
+            max_len = max(2.5, nar_durs[i] + (0.0 if model_audio else 0.6) + 0.3)   # the 5 s minimum clip, cut to the line
+        if sc["kind"] != "title":
+            cap_src[sc["id"]] = (f"{out}/{sc['id']}_clip.mp4" if model_audio else f"{out}/{sc['id']}_nar.wav",
+                                 f"{out}/{sc['id']}_{'words' if model_audio else 'narwords'}.json",
+                                 0.0 if model_audio else 0.6)
         durs.append(build_scene(f"{out}/{sc['id']}_clip.mp4", f"{out}/{sc['id']}_nar.wav", f, sc["kind"] == "title",
                                 lipsync=bool(sc.get("lipsync", S.get("lipsync", False))) and sc["kind"] != "title" and not a.dry_run,
-                                model_audio=model_audio, labels_fc=labels_fc))
+                                model_audio=model_audio, labels_fc=labels_fc, max_len=max_len))
         scene_files.append(f)
     starts = [sum(durs[:i]) for i in range(len(durs))]
 
@@ -909,6 +1043,20 @@ def main():
             vmap = "[vx]"
         else:
             vmap = "0:v"
+    elif (S.get("captions") or STYLE.get("captions") or {}).get("mode") == "words":
+        cfg = S.get("captions") or STYLE.get("captions")
+        ass = f"{out}/captions.ass"
+        timed = {}
+        if not a.dry_run:
+            for sc in scenes:
+                if sc["id"] in cap_src:
+                    audio, cache, off = cap_src[sc["id"]]
+                    ww = whisper_words(audio, cache)
+                    if ww:
+                        timed[sc["id"]] = (ww, off)
+        n = write_ass_words(scenes, starts, nar_durs, ass, cfg, timed)
+        print(f"[captions] word groups: {n} cue(s), {len(timed)} scene(s) timed by whisper", flush=True)
+        fc.append(f"{vsrc}subtitles='{ass}'[v]"); vmap = "[v]"
     else:
         srt = f"{out}/captions.srt"
         timings = {}
