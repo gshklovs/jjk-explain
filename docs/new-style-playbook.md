@@ -9,7 +9,7 @@ Read this before adding a voice. It is the distilled record of what went wrong b
 
 ## 2. Assets (`assets/ref/<name>/`, gitignored)
 - Stills cut from footage: face, bust, three-quarter, full, hands; 1280x720, no captions/watermarks; view every one. Soft or vertical crops give a "random dude" likeness: if the stills are weak, plan for zero or one character shot.
-- Voice sample 10-14 s, mono, no music, verified by transcription. Real clip audio beats a TTS clone. For dubbed shots, a fish.audio public clone or a private clone made from the sample.
+- Voice sample 10-14 s, mono, no music, verified by transcription. Real clip audio beats a TTS clone. For dubbed shots, a fish.audio public clone or a private clone made from the sample. The clone must HEAR the character's signature words: train it on windows where they say their own vocabulary ("billboard got mogged", "that guy's a jester"), or it guesses the pronunciation ("mog it" came out wrong from an interview-only sample). And write the vocabulary the way they use it (his verdict is "got mogged", never the command "mog it").
 - Object references for anything with a specific shape (Wikipedia diagrams, product photos), padded to 16:9. Colored diagrams need "monochrome wireframe, ignore the reference's colors" in the prompt.
 
 ## 3. Renderer entry (`STYLES["<name>"]`)

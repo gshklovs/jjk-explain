@@ -42,7 +42,7 @@ The style carries `voice_sample: "assets/ref/clav/clav-voice.wav"` (14 s of him 
 The style sets `"captions": {"mode": "words"}`: the renderer writes `render/captions.ass` with the line in groups of two to four words, bold white caps (Arial Black, 64 px on 720p) with a thick black outline, centred just below the middle of the frame, one word per group in yellow, timed from Whisper on each shot's own audio. `"keywords"` on a scene picks the yellow words; otherwise numbers, then the longest non-stopword. A script-level `"captions"` object overrides the style's (`group`, `size`, `y`, `font`, `color`, `highlight` as BGR hex, `outline`, `upper`). `--no-captions` turns them off. The other styles keep their per-sentence bottom subtitles.
 
 ### The Fish voice (snap dubs)
-`voices: {"clav": ...}` is a private fish.audio clone made from `clav-voice.wav` (`8a50551a527348a78507cb83fa300773`, on the user's account). `CLAV_FISH_VOICE_ID` overrides it; public "clav" / "Clavicular" voices exist on fish.audio (ids in `docs/clav-research.md`). Needs `FISH_AI_API_KEY`.
+`voices: {"clav": ...}` is a private fish.audio clone made from `clav-voice.wav` (`c4f02a26354448dabccf620116fbfc68`, on the user's account). `CLAV_FISH_VOICE_ID` overrides it; public "clav" / "Clavicular" voices exist on fish.audio (ids in `docs/clav-research.md`). Needs `FISH_AI_API_KEY`.
 
 ### No music
 `music: None`: no bed unless `--music FILE` or a script `"music"` key. The `sound` lines carry the room and the b-roll.

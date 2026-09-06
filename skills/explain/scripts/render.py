@@ -233,9 +233,9 @@ STYLES = {
                  "flare, no cinematic grading. "),
         # a private fish.audio clone made from the interview clip (docs/clav-research.md); public "clav" voices exist
         # too (caec241606a642b78cd9f7b321bb14b3, 8975245432fe4de28f8d8e512bf5558b). Only used to dub work/snap shots.
-        "fish_voice": os.environ.get("CLAV_FISH_VOICE_ID") or "8a50551a527348a78507cb83fa300773",
+        "fish_voice": os.environ.get("CLAV_FISH_VOICE_ID") or "c4f02a26354448dabccf620116fbfc68",
         "voice_label": "clav",
-        "voices": {"clav": os.environ.get("CLAV_FISH_VOICE_ID") or "8a50551a527348a78507cb83fa300773"},
+        "voices": {"clav": os.environ.get("CLAV_FISH_VOICE_ID") or "c4f02a26354448dabccf620116fbfc68"},
         "fish_speed": 1.0,
         "lipsync_audio": "model",
         "voice_sample": "assets/ref/clav/clav-voice.wav",   # lean mode: 14 s of him alone, cut from the interview clip
